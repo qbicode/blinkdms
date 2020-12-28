@@ -35,15 +35,11 @@ Following initial users are available:
   * testY: aPllqwbxnfhfzre52Ms (normal editor, reviewer)
   * testZ: ldlMmsh62Ds9ahUiu+dx (can only VIEW)
 
-User Tutorial
--------------
+Links
+-----
 
-See _Tutorial docs/index.html
-
-Installing
-----------
-
-See _Install docs/index.html
+ * Tutorial https://qbicode.github.io/blinkdms/
+ * Install https://qbicode.github.io/blinkdms/
 
 
   
