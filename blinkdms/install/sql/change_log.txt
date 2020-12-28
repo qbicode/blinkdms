@@ -1,0 +1,9 @@
+CHANGE-Log
+
+1.01 2020-12-28
+- new tables s_vario, s_vario_desc
+
+
+1.0 2020-12-21
+- new table globals
+- mod DB_USER:IS_ACTIVE

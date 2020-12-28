@@ -1,0 +1,106 @@
+# -*- coding: utf-8 -*-
+__docformat__ = "restructuredtext en"
+
+"""
+main Document links  sub methods
+File:           oD_LINK.py
+Copyright:      Blink AG   
+Author:         Steffen Kube <steffen@blink-dx.com>
+"""
+
+from blinkdms.code.lib.main_imports import *
+from ..obj_mod import Obj_assoc_mod
+
+from blinkdms.code.lib.oDOC import oDOC_VERS
+
+
+class Mainobj:
+    
+    __id = None
+    obj  = None # lib obj_abs()
+    
+    def __init__(self, idx):
+        '''
+        idx = VERSION_ID
+        '''
+        self.__id = idx
+        self._data_path = session['globals']['data_path']
+        self.obj = obj_abs('D_LINK', idx)
+
+    def features(self, db_obj, ch_id):
+        '''
+        :return: dict
+          'C_DOC_ID', 
+          'KEY'
+          
+        '''
+        if not self.__id or not pos:
+            raise BlinkError(1, 'Input missing.')
+
+        out_cols = ['C_DOC_ID', 'KEY']
+        features = db_obj.one_row_get('D_LINK', {'M_DOC_ID': self.__id, 'C_DOC_ID': ch_id}, out_cols)
+
+        return features
+
+    def get_links(self, db_obj):
+
+        sql_cmd = "C_DOC_ID, KEY from D_LINK where M_DOC_ID=" + str(self.__id) + ' order by C_DOC_ID'
+        db_obj.select_dict(sql_cmd)
+        all_data = []
+        while db_obj.ReadRow():
+            all_data.append(db_obj.RowData)
+        return all_data
+    
+    def get_links_nice(self, db_obj):
+        '''
+        get also:
+        'VERSION_ID']
+        'c.name_all'
+        '''
+        context = session['sesssec']['my.context']
+        doc_lib1 = oDOC_VERS.Table(context)
+        usetable = doc_lib1.table
+        
+        links = self.get_links(db_obj)
+
+        table_lib = table_cls(usetable)
+
+        i = 0
+        for row in links:
+            ch_id = row['C_DOC_ID']
+            
+            self.obj.set_objid(ch_id)
+            vers_info = table_lib.element_get(db_obj,  {'DOC_ID':ch_id}, ['C_ID', 'VERSION_ID', 'NAME'])
+            fullname = vers_info['C_ID'] + ' ' + vers_info['NAME']
+            links[i]['VERSION_ID'] = vers_info['VERSION_ID']
+            links[i]['c.name_all'] = fullname
+            i = i + 1
+        return links
+
+class Modify_obj(Obj_assoc_mod):
+    """
+    modify an object
+    """
+
+    
+    def __init__(self, db_obj, objid):
+
+        self._mainobj = Mainobj(objid)
+        super().__init__(db_obj, 'D_LINK', objid)
+
+    def new(self, db_obj, args, options={}):
+
+        if args['C_DOC_ID'] == self.objid:
+            raise BlinkError(1, 'Link to itself is not allowed.')
+
+        pks = self.pk_cols
+        debug.printx(__name__, "pks:" + str(pks))
+            
+        table_lib = table_cls('D_LINK')
+        if table_lib.element_exists(db_obj, {'M_DOC_ID': self.objid, 'C_DOC_ID': args['C_DOC_ID']}):
+            # already exists
+            return 
+        super().new(db_obj, args)
+        
+        return args['C_DOC_ID']
+

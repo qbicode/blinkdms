@@ -1,0 +1,37 @@
+/* tree view, need x_tree.js */
+ul, .tree_UL {
+  list-style-type: none;
+}
+
+.tree_UL {
+  margin: 0;
+  padding: 0;
+}
+
+.x_tree_caret {
+  cursor: pointer;
+  user-select: none;
+}
+
+.x_active{
+  background-color:yellow;
+}
+
+.x_tree_caret::before {
+  content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='9 18 15 12 9 6'></polyline></svg>"); 
+  color: black;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.x_tree_caret-down::before {
+  content: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>"); 
+}
+
+.x_tree_nested {
+  display: none;
+}
+
+.x_tree_active {
+  display: block;
+}

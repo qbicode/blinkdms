@@ -1,0 +1,59 @@
+{# MODAL form 
+INPUT:
+form:
+  'header'
+    'title'
+    'target_id': ID of modal div, e.g. NewProjLabel
+  'hidden': [OPTIONAL] hidden fields
+  'main': list of data rows {}
+    'title' : title of row
+    'name'
+    'object'
+    'inits' : for select list of (ID,NAME)
+    }
+#}
+
+<!-- Modal -->
+<div class="modal fade" id="{{ form['header']['target_id'] }}" tabindex="-1" role="dialog" aria-labelledby="{{ form['header']['target_id'] }}" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form style="display:inline;" method="post" name="editform2"  action="" >
+     {% if 'hidden' in form %}
+       {% for key,val in form['hidden'].items()  %}
+       <input type=hidden name="{{ key }}" value="{{ val }}">
+      {% endfor  %}
+    {% endif %}
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ form['header']['title'] }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      {%  for row in form['main']  %}
+        <div class="form-group">
+          <label>{{ row['title'] }}</label>
+          {% if  row['object']=='select' %}
+          <select class="form-control" name="{{ row['name'] }}"> 
+           {%  for sel_row in row['inits']  %}
+           <option value="{{ sel_row[0] }}">{{ sel_row[1] }}</option>
+           {% endfor %}
+          </select>
+          {% endif %}
+          {% if  row['object']=='' or row['object']=='text' %}
+          <input type="text" class="form-control" name="{{ row['name'] }}" value="">    
+          {% endif %}
+        </div>
+      {% endfor %}
+                
+                
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+        </form>
+  </div>
+</div>

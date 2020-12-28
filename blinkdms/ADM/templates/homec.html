@@ -1,0 +1,43 @@
+{% extends "ADM/b_home.html" %}
+{% block content %}
+
+  <div class="container">
+    <!-- Example row of columns -->
+    <div class="row">
+      <div class="col-md-4">
+        <h2>Important Tables</h2>
+        <ul>
+        {% for row in meta['some_tables'] %}
+        <li><a href="?mod=ADM/obj_list&t={{row['t']}}"> {{row['nice']}}</a> </li>
+        {% endfor %}
+        </ul>
+       
+       <h2>Management Tools</h2>
+        <ul>
+         <li><a  href="?mod=ADM/obj_list&t=DOC">Change Owner of documents</a> </li>
+        
+         </ul>
+        
+      </div>
+      <div class="col-md-4">
+        <h2>Misc Tools</h2>
+        <ul>
+         <li><a  href="?mod=ADM/g_sys_test">System Check</a> </li>
+         <li>ADMIN functions in the EDIT/VIEW context ?
+            <b>{{ 'Active' if meta['context.EDIT.admin.active'] else 'Inactive' }} </b> &nbsp;&nbsp;&nbsp;
+            <a href="?mod=ADM/homec&action=set.sess_var&parx[context.EDIT.admin.active]=1">Activate</a> |
+            <a href="?mod=ADM/homec&action=set.sess_var&parx[context.EDIT.admin.active]=0">Deactivate</a>
+         </li>
+        </ul>
+
+      </div>
+      <div class="col-md-4">
+      
+      </div>
+    </div>
+
+    <hr>
+
+  </div> <!-- /container -->
+
+{% endblock %}

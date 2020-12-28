@@ -1,0 +1,61 @@
+{#
+INPUT: massdata
+#}
+
+{% extends "b_home.html" %}
+{% block content %}
+
+{#<div class="container">
+  <div class="row"> #}
+    <div class="col">
+      <div class="card  h-100" style="width: 18rem;">
+       
+        <div class="card-body">
+          <h5 class="card-title">Create document</h5>
+          <a href="?mod=doc_new" class="btn btn-primary">Create</a>
+        </div>
+      </div>
+    </div>
+     <div class="col">
+      <div class="card  h-100" style="width: 18rem;">
+       
+        <div class="card-body">
+          <h5 class="card-title">My documents</h5>
+          <a href="?mod=doc_list_my" class="btn btn-primary">My docs</a>
+        </div>
+      </div>
+    </div>
+    {#}
+    <div class="col">
+      <div class="card h-100" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">Search document</h5>
+            <form class="form-inline my-2 my-lg-0" action="">
+                <input type="hidden" name="mod" value="search">
+                <span class="pl-5"></span>
+                <input name="text" class="form-control mr-sm-2" type="search" data-toggle="tooltip"  value=""
+                   placeholder="Search" aria-label="Search" title="document ID or title">
+            </form>
+        </div>
+      </div>
+    </div>
+    #}
+    
+    <div class="col">
+      <div class="card  h-100" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title">My tasks</h5>
+          <a href="?mod=doc_rv_list" class="btn btn-primary">Show</a>
+          {% if meta['task.num'] %}
+              <span class="badge badge-warning">{{meta['task.num']|string}}</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    
+{#
+  </div>
+</div>
+#}
+
+{% endblock %}

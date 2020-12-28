@@ -1,0 +1,126 @@
+{# edit reviewers
+INPUT:
+meta['id']
+massdata: 
+
+ 'show.review' : 0,1
+ 'show.release' : 0,1
+
+  'users.review' = list 
+  'users.rev.avai' = list
+  
+  users.release  = list
+  users.rel.avai = list
+#}
+
+{% extends "b_main.html" %}
+{% block content %}
+
+{% from "macros/form.html" import form1 %}
+
+<div class="container">
+
+{% if massdata %}
+
+<style>
+SELECT, INPUT[type="text"] {
+    width: 160px;
+    box-sizing: border-box;
+}
+SECTION {
+    padding: 8px;
+    background-color: #f0f0f0;
+    overflow: auto;
+}
+SECTION > DIV {
+    float: left;
+    padding: 4px;
+}
+SECTION > DIV + DIV {
+    width: 40px;
+    text-align: center;
+}
+</style>
+
+<section class="container">
+
+<form style="display:inline;" method="post" name="editform"> 
+<input type=hidden name="mod" value="doc_reved">
+<input type=hidden name="id" value="{{ meta['id']}}">
+<input type=hidden name="go" value="1">
+<input type=hidden name="reviewers" value="">
+<input type=hidden name="releasers" value="">
+
+<div class="row">
+    <div class="col-6">
+        {% if massdata['show.review'] %}
+        Reviewers
+        <section class="container">
+            <div>
+            Available Users<br>
+                <select id="f1leftValues" size="15" multiple>
+                {% for row in massdata['users.rev.avai'] %}
+                 <option value="{{row[0]}}">{{row[1]}}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div>
+            &nbsp;<br>
+                <input type="button" id="f1btnLeft" value="&lt;&lt;" />
+                <input type="button" id="f1btnRight" value="&gt;&gt;" />
+            </div>
+            <div>
+            Selected<br>
+                <select id="f1rightValues" size="10" multiple>
+                    {% for row in massdata['users.review'] %}
+                 <option value="{{row[0]}}">{{row[1]}}</option>
+                {% endfor %}
+                </select>
+                
+            </div>   
+        </section>
+        {% endif %}
+    </div>
+    <div class="col-6">
+        {% if massdata['show.release'] %}
+        Releasers
+        <section class="container">
+            <div>
+            Available Users<br>
+                <select id="f2leftValues" size="15" multiple>
+                {% for row in massdata['users.rel.avai'] %}
+                 <option value="{{row[0]}}">{{row[1]}}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <div>
+            &nbsp;<br>
+                <input type="button" id="f2btnLeft" value="&lt;&lt;" />
+                <input type="button" id="f2btnRight" value="&gt;&gt;" />
+            </div>
+            <div>
+            Selected<br>
+                <select id="f2rightValues" size="10" multiple>
+                    {% for row in massdata['users.release'] %}
+                 <option value="{{row[0]}}">{{row[1]}}</option>
+                {% endfor %}
+                </select>
+                
+            </div>   
+        </section>
+        {% endif %}
+    </div>
+</div>
+
+<button type="submit" class="btn btn-primary" onClick="x_on_submit()">Submit</button>
+</form> 
+ </section>
+ 
+
+{% endif %}
+</div>
+{% endblock %}
+
+{% block foot_scripts %}
+<script src="res/js/x_select_left_right.js"></script>
+{% endblock %}

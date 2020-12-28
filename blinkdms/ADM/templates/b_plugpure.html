@@ -1,0 +1,41 @@
+{% include "ADM/macros/h_head.html" %}
+
+ <!-- Main jumbotron  -->
+ <div class="container">
+       
+       {% if 'icon' in pageinfo %}
+       <img src="res/ADM/images/{{ pageinfo['icon'] }}" height=40> &nbsp;&nbsp;
+       {% endif %}
+       {{ pageinfo['title'] }}  
+       
+     
+ </div><!-- END: Main jumbotron  -->
+       
+       
+     <div class="container float-left"><!-- Main_Container  -->
+       
+
+     <main role="main" class="">
+      <!-- $this->sh_main_layout(); (-->
+      
+              {% include "ADM/macros/h_message.html" %}
+
+              {% if meta['forward'] %}
+                    {{ meta['forward']|safe }}		
+              {% endif %}
+              
+              {% block content %}{% endblock %}
+      
+               <footer class="footer">
+                      <br>
+                      <hr>
+        </footer>
+      </main>
+    
+      
+     </div> <!-- END: Main_Container  -->
+{% include "ADM/macros/h_foot.html" %}
+
+
+  </body>
+</html>

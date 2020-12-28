@@ -1,0 +1,218 @@
+{# 
+show/edit uploads
+INPUT: data
+    'edit' : 0,1
+    'version_id': version-id
+    'title'
+       
+    'data' : list 
+       'pos' : upload id
+       'name' : doc name
+       'has_pdf' : PDF flag
+       size
+       mod_date_hum
+#}
+{% macro upload_table(data) %}
+
+<!-- <NewDocument> Modal -->
+<div class="modal fade" id="NewDocDialog" tabindex="-1" role="dialog" aria-labelledby="NewDocLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form style="display:inline;" method="post" name="editform3" enctype="multipart/form-data" action="" >
+        <input type=hidden name="mod" value="doc_up">
+        <input type=hidden name="go" value="1">
+        <input type=hidden name="act" value="new">
+        <input type=hidden name="id" value="{{ data['version_id'] }}">
+        
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="NewDocLabel">Upload new document</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <div class="custom-file mb-3">
+        <input type="file" class="custom-file-input" id="customFile" name="y.file">
+        <label class="custom-file-label" for="customFile">Choose file</label>
+       </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Upload document</button>
+      </div>
+    </div>
+        </form>
+  </div>
+</div>
+<!-- </NewDocument> Modal -->
+
+<h3>{{ data['title'] }}
+ {% if data['edit'] %}
+    &nbsp; <a class="btn btn-primary"data-toggle="modal" href="#" data-target="#NewDocDialog">Upload a new file</a>
+ {% endif %}
+</h3>
+
+<table class="table">
+  
+
+{% for row in data['data'] %}
+<tr>  
+  <td>
+  {% if data['edit'] %}
+   <a class="btn btn-default" href="?mod=doc_up&act=upload&id={{ data['version_id']|string }}&pos={{ row['pos']|string }}">Upload</a>
+   <a class="btn btn-danger"  href="?mod=doc_up&act=del&id={{ data['version_id']|string }}&pos={{ row['pos']|string }}">Delete</a>
+  {% endif %}
+  </td>
+  <td><a href="?mod=doc_up&act=down&id={{ data['version_id']|string }}&pos={{ row['pos']|string }}"><img src="res/images/o.DOC.svg"> {{ row['name'] }}</a>
+  {% if row['has_pdf'] %}
+    <a href="?mod=doc_up&act=down&id={{ data['version_id']|string }}&pos={{ row['pos']|string }}&type=PDF"><img src="res/images/o.DOC.svg"> PDF</a>
+  {% endif %}
+  </td>
+  <td>{{row['size']}} Bytes</td>
+  <td>{{row['mod_date']}}</td>
+</tr>
+{% endfor %}
+
+</table>
+{% endmacro %}
+
+{# only VIEW the table, no edit allowed ... 
+ INPUT:  data
+   'edit' : 0,1
+   'context' :'EDIT, 'ACTIVE'
+   'title' :
+   'data': list of {
+      'pos':
+      'name':
+      'doctype': ['XXX'], 'PDF', 'DOCX'
+   }
+      
+      
+#}
+{% macro upload_view_table(data) %}
+
+{% set doc_down_url='doc_up' if data['context']=='EDIT' else 'doc_view' %}
+
+<h3>{{ data['title'] }}</h3>
+
+<table class="table">
+  
+{% for row in data['data'] %}
+<tr>  
+  <td>
+  {% if data['edit'] %}
+   <a class="btn btn-default" href="?mod=doc_up&act=upload&id={{ data['version_id']|string }}&pos={{ row[0]|string }}">Upload</a>
+   <a class="btn btn-danger"  href="?mod=doc_up&act=del&id={{ data['version_id']|string }}&pos={{ row[0]|string }}">Delete</a>
+  {% endif %}
+  </td>
+  <td>
+  {% if row['doctype']=='PDF' %}
+    <a href="?mod={{doc_down_url}}&act=down&id={{ data['version_id']|string }}&pos={{ row['pos']|string }}&type=PDF"><img src="res/images/o.DOC.svg"> {{ row['name'] }}</a>
+  {% else %}
+    <a href="?mod={{doc_down_url}}&act=down&id={{ data['version_id']|string }}&pos={{ row['pos']|string }}"><img src="res/images/o.DOC.svg"> {{ row['name'] }}</a>
+  {% endif %}
+  </td>
+</tr>
+{% endfor %}
+
+</table>
+
+{% endmacro %}
+
+
+{% macro doc_links_table(data) %} 
+{# 
+'header'
+'data'
+#}
+<script>
+function x_form5_modi(ch) {
+    document.editform5.elements['ch'].value = ch;
+}
+</script>
+
+<!-- <NewLinkument> Modal -->
+<div class="modal fade" id="NewLinkDialog" tabindex="-1" role="dialog" aria-labelledby="NewLinkLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form style="display:inline;" method="post" name="editform4" enctype="multipart/form-data" action="" >
+        <input type=hidden name="mod" value="doc_link">
+        <input type=hidden name="go" value="1">
+        <input type=hidden name="act" value="new">
+        <input type=hidden name="id" value="{{ data['version_id'] }}">
+        
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="NewLinkLabel">Create new link</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <div class="custom-text mb-3">
+        <input type="text" class="custom-text-input" id="customLinkText" name="code">
+        <label class="custom-text-label" for="customLinkText">Choose Link</label>
+       </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Create link</button>
+      </div>
+    </div>
+        </form>
+  </div>
+</div>
+<!-- </NewLinkument> Modal -->
+
+<!-- <DelLinkument> Modal -->
+<div class="modal fade" id="DelLinkDialog" tabindex="-1" role="dialog" aria-labelledby="DelLinkLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form style="display:inline;" method="post" name="editform5" action="" >
+        <input type=hidden name="mod" value="doc_link">
+        <input type=hidden name="go" value="1">
+        <input type=hidden name="act" value="del">
+        <input type=hidden name="ch" value="">
+        <input type=hidden name="id" value="{{ data['version_id'] }}">
+        
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="DelLinkLabel">Remove link?</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <div class="custom-text mb-3">
+       
+       </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Remove link</button>
+      </div>
+    </div>
+        </form>
+  </div>
+</div>
+<!-- </DelLinkument> Modal -->
+
+<h3>{{ data['title'] }}
+ {% if data['edit'] %}
+    &nbsp; <a class="btn btn-primary" data-toggle="modal" href="#" data-target="#NewLinkDialog">Create a new link</a>
+ {% endif %}
+</h3>
+
+<table class="table">
+  
+{% for row in data['data'] %}
+<tr>  
+  <td>
+  {% if data['edit'] %}
+   <a class="btn btn-danger" data-toggle="modal" href="#" data-target="#DelLinkDialog" onClick="x_form5_modi( {{ row['ch_d_id']|string }} )">Delete</a>
+  {% endif %}
+  </td>
+  <td><a href="?mod=doc_edit&id={{ row['v_id']|string }}"><img src="res/images/o.DOC.svg"> {{ row['nice'] }}</a></td>
+</tr>
+{% endfor %}
+
+</table>
+{% endmacro %}

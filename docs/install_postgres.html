@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RDBMS Postgres &#8212; blinkdms  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="rdbms-postgres">
+<h1>RDBMS Postgres<a class="headerlink" href="#rdbms-postgres" title="Permalink to this headline">¶</a></h1>
+<p>The application is based on data transfer with a database service on a remote database server.
+The underlying database model is named <strong>Blinkdms Magasin</strong>.</p>
+<p>main Postgres directories/files:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>[etc-config-dir] = /etc/postgresql/11/main</p></li>
+<li><p>[PG_DATA_DIR] = /data/postgresql/main</p></li>
+<li><p>[PG_DUMP_DIR] = /data/postgresql/dumps</p></li>
+</ul>
+</div></blockquote>
+<p>Install Postgres 11:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>apt-get install postgresql postgresql-contrib  <span class="o">(</span>118MB<span class="o">)</span>
+apt-get install libpq-dev <span class="o">(</span><span class="k">for</span> postgres + python<span class="o">)</span>
+</pre></div>
+</div>
+<p>Docu see <a class="reference external" href="https://wiki.debian.org/PostgreSql#Installation">https://wiki.debian.org/PostgreSql#Installation</a></p>
+<p>Manage data dir (create data dir verb+[PG_DATA_DIR]+, move original data dir to this location):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir /data/postgresql/main
+chown -R postgres:postgres /data/postgresql/main
+mv /var/lib/postgresql/11/main /data/postgresql/
+
+<span class="c1"># create dump dir for export, import, backup</span>
+mkdir /data/postgresql/dumps
+chown -R postgres:postgres /data/postgresql/dumps
+</pre></div>
+</div>
+<p>set configs in etc-config-dir postgresql.conf :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">data_directory</span><span class="o">=</span><span class="s1">&#39;/data/postgresql/main&#39;</span>
+SET <span class="nv">standard_conforming_strings</span><span class="o">=</span>on
+</pre></div>
+</div>
+<p>set AUTHORIZATION in [etc-config-dir]/pg_hba.conf ; change ident to trust !</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>---
+<span class="c1"># TYPE  DATABASE    USER        CIDR-ADDRESS          METHOD</span>
+
+<span class="c1"># &quot;local&quot; is for Unix domain socket connections only</span>
+<span class="nb">local</span>   all         all                               trust
+host    all         all         <span class="m">127</span>.0.0.1/32          trust
+<span class="c1"># IPv6 local connections:</span>
+host    all         all         ::1/128               trust
+---
+</pre></div>
+</div>
+<p>Start DB:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl stop postgresql
+systemctl start postgresql
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">blinkdms</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install_1.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/index.html">User’s Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgres_maintenance.html">Postgres: maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tables.html">Database tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="technologies.html">Technologies</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Steffen Kube.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/install_postgres.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

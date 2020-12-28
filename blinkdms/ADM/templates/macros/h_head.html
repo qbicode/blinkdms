@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.5">
+    <title>{{ pageinfo['site.title'] }}</title>
+
+
+    <!-- Bootstrap core CSS -->
+<link href="res/ADM/css/bootstrap.min.css" rel="stylesheet">
+{% if 'css.scripts' in pageinfo %}
+{% for scriptx in pageinfo['css.scripts'] %}
+  <link href="res/ADM/css/{{ scriptx }}" rel="stylesheet">
+{% endfor %}
+{% endif %}
+
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+    </style>
+    
+    <!-- Custom styles for this template -->
+  
+    <link href="res/ADM/css/dashboard.css" rel="stylesheet">
+    <link href="res/ADM/css/jumbotron.css" rel="stylesheet">
+    <link href="res/ADM/css/mainpage.css" rel="stylesheet">
+  </head>
+  <body class="blink-body">

@@ -1,0 +1,22 @@
+{% extends "ADM/b_home.html" %}
+{% block content %}
+
+<div class="container">
+Action: {{ meta['action'] }} <br><br>
+
+    {% from "ADM/macros/form.html" import form1 %}
+    {{ form1( massdata['form'] ) }} 
+
+
+<h2>{{ meta['data_table_title']}}</h2>
+{% if  meta['data_table'] %}
+{% for row  in meta['data_table'] %}
+ - {{ row }} <br>
+{% endfor %}
+{% endif %}
+
+</div>
+
+{% endblock %}
+
+

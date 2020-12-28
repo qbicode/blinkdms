@@ -1,0 +1,68 @@
+{#
+INPUT:
+meta:
+  action
+massdata
+  'header'
+      'show'
+      'sort'
+      'nice'
+      'name'
+#}
+
+
+{%  set doc_link=''  %}
+{% if pageinfo['context']=='EDIT' %}
+{%  set doc_link='doc_edit' %}
+{% endif %}
+{% if pageinfo['context']=='ACTIVE' %}
+{%  set doc_link='doc_view' %}
+{% endif %}
+
+
+<table class="table table-striped table-sm">
+    <thead>
+      <tr>
+      <th> # </th>
+     {% for col_def in massdata['header'] %}
+     
+       {% if col_def['show'] %}
+      <th>  
+      {% if col_def['sort']!='' %}
+       {% set order = 'DESC' if col_def['sort']=='ASC' else 'ASC' %}
+       <a href="?mod=doc_list&qs[{{ col_def['name'] }}]={{ order }}" class="x-link-calm">{{ col_def['nice'] }}
+       {% if col_def['sort']=='ASC' %}
+          <i data-feather="chevron-down"></i>
+       {% endif %}
+       {% if col_def['sort']=='DESC' %}
+          <i data-feather="chevron-up"></i>
+       {% endif %}
+       </a>
+      {% else %}
+      {{ col_def['nice'] }}
+      {% endif %}
+      </th>
+       {% endif %}
+      {% endfor %}
+       
+      </tr>
+    </thead>
+    
+ <tbody>
+ 
+  {% for row in massdata['data'] %}
+     
+      <tr>
+
+       <td><a class="text-secondary" href="?mod={{ doc_link }}&id={{ row[0] }}"><svg  width="24" height="24" xmlns="http://www.w3.org/2000/svg"  class="feather" data-feather="play"></svg></a></td>
+
+        {% for col_def in massdata['header'] %}
+        {% if col_def['show'] %}
+          <td> {{ row[loop.index0]  if  row[loop.index0] is not none }} </td>
+        {% endif %}
+        {% endfor %}
+
+      </tr>
+      {% endfor %}
+  </tbody>
+  </table>

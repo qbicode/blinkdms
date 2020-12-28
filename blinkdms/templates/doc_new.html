@@ -1,0 +1,20 @@
+{# myprofile
+INPUT:
+
+massdata:
+ 'form'
+
+#}
+
+{% extends "b_main.html" %}
+{% block content %}
+
+
+<div class="container">
+
+   {% from "macros/form.html" import form1 %}
+
+    {{ form1( massdata['form'] ) }} 
+    
+</div>
+{% endblock %}

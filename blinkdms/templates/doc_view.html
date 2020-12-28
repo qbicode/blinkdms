@@ -1,0 +1,59 @@
+{# view a version, edit not allowed here
+INPUT:
+ meta:
+  'workflow.active' :0,1
+ massdata:
+  'form'
+  'auditlog'
+  'uploads'
+
+#}
+
+{% extends "b_main.html" %}
+{% block content %}
+
+
+{% from "macros/form.html" import form1 %}
+{% from "macros/table.html" import table1 %}
+{% from "macros/uploads.html" import upload_view_table %}
+
+
+{% if 'proj.path' in meta %}
+ <div class="container">
+    <img src="res/images/o.PROJ.svg"> <a href="?mod=folder&id=0"> db: </a> / 
+    {% for proj in meta['proj.path'] %}
+        <a href="?mod=folder&id={{ proj[0]|string }}">{{ proj[1] }}</a> / 
+    {% endfor %} 
+    
+  {% if 'proj.other' in meta %}
+    <br>Other folders:
+    {% for row in meta['proj.other'] %}
+    <a href="?mod=folder&id={{row['id']}}">{{row['nice']}}</a> &nbsp;&nbsp;&nbsp;
+    {% endfor %}
+    <br>
+  {% endif %}
+  &nbsp;<br>&nbsp;<br>
+  </div>
+{% endif %}
+
+<div class="container">
+ 
+ {{ upload_view_table( massdata['uploads'] )   }}
+    
+</div>
+
+<div class="container">
+ <h3>Meta</h3>
+ {{ form1( massdata['form'] ) }} 
+    
+</div>
+
+
+
+<div class="container">
+
+  {{ table1( massdata['auditlog'] ) }}   
+    
+</div>
+
+{% endblock %}

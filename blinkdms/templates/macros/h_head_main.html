@@ -1,0 +1,61 @@
+{#
+INPUT:
+pageinfo['site.title']
+pageinfo['mdo_grp.name']
+pageinfo['user.fullname']
+#}
+{% include "macros/h_head.html" %}
+    
+          <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+            <div class="container-fluid px-md-4	">
+              <img src="res/images/Blink_Icon_white.png" height=40 style="margin-right:30px;">
+              <a class="navbar-brand" href="?mod=home">  {{pageinfo['site.title']}} </a>
+              {# &nbsp; &nbsp; &nbsp; <a class="navbar-brand" href="?mod=profile">{{ pageinfo['user.fullname'] }}</a> #}
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="oi oi-menu"></span> Menu
+              </button>
+
+              <div class="collapse navbar-collapse" id="ftco-nav">
+              <form class="form-inline my-2 my-lg-0" action="">
+                <input type="hidden" name="mod" value="search">
+                <span class="pl-5"></span>
+                <input name="text" class="form-control mr-sm-2" type="search" data-toggle="tooltip"  {{ ('value="'+pageinfo['head.search']['text']+'"')|safe if 'head.search' in pageinfo }} placeholder="Search" aria-label="Search" title="document ID or title">
+              </form>
+                <ul class="navbar-nav ml-auto">
+                  {% if pageinfo['admin.is'] %}
+                  <li class="nav-item"><a href="?mod=ADM/home" class="nav-link">ROOT</a></li>
+                  {% endif %}
+                  {% if 'admin' in pageinfo['user.roles'] %}
+                  <li class="nav-item"><a href="?mod=ADM/homec" class="nav-link">Admin</a></li>
+                  {% endif %}
+                  
+                  {#
+                  <li class="nav-item"><a href="?mod=home" class="nav-link">Home</a></li> 
+                  #}
+                  <li class="nav-item"><a href="?mod=folder&id=0" class="nav-link">Folders</a></li>
+                  
+                  <li class="nav-item"><a href="?mod=sys_set&context=ACTIVE" class="nav-link {{ 'active' if pageinfo['context']=='ACTIVE' }}">VIEW</a></li>
+                  
+                  {% if pageinfo['mainmenu.sh.EDIT'] %}
+                  <li class="nav-item"><a href="?mod=sys_set&context=EDIT" class="nav-link {{ 'blink-important' if pageinfo['context']=='EDIT' }}">EDIT</a></li>
+                  {% endif %}
+                  
+                  
+                  <li class="nav-item">
+                  <a href="?mod=doc_rv_list" class="nav-link">Tasks
+                  {% if meta['task.num'] %}
+                  <span class="badge badge-warning">{{meta['task.num']|string}}</span>
+                  {% endif %}
+                  </a>
+                  </li>
+                  <li class="nav-item"><a href="?mod=profile" class="nav-link" title="Profile: {{ pageinfo['user.fullname'] }}"><i data-feather="user"></i> {{ pageinfo['user.sign'] }} </a></li>
+                  <li class="nav-item"><a href="?mod=logout" class="nav-link">Logout</a></li>
+                 
+                  
+
+                </ul>
+              </div>
+            </div>
+          </nav>
+    <!-- END nav -->
+    

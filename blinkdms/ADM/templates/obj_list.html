@@ -1,0 +1,183 @@
+{% if pageinfo['html']=='ADM/plugpure' %}
+{% extends "ADM/b_plugpure.html" %}
+{% else %}
+{% extends "ADM/b_home.html" %}
+{% endif %}
+
+{% block content %}
+
+
+{% set LIST_URL = "?mod=ADM/obj_list&t=" + meta['table']  %}
+
+<style>
+.xform-control {border: 1px solid #E0E0E0; padding-left: 10px; padding-right: 10px;}
+</style>
+<script language="JavaScript">
+function formx( actionx ) {
+    document.viewform.action.value=actionx;
+    document.viewform.submit();
+}
+
+{# variables for x_modal.js #}
+x_dest_id = {{massdata['meta'].get('modal_id',0)}};
+tablename = '{{meta['table']}}';
+
+</script>
+
+{% from "ADM/macros/menu2.html" import menu1, menu2 %}
+{{ menu1( meta['menu'] ) }}
+
+<nav class="navbar navbar-light bg-light">
+&nbsp;&nbsp;
+<!--  search form  form-control -->
+{#
+meta:
+  q.sql_where
+  q.filter_active : 0,1
+  q.cols : [{ 'nice': , 'name': }]
+form-variables:   'col'     
+        
+q['col']
+q['op']
+q['val']
+q['logop']
+
+#}
+<form method="POST" name="qform" >
+<input type=hidden name="mod" value="ADM/obj_list">
+<input type=hidden name="t" value="{{ meta['table'] }}">
+
+     <div class="col-xs-6 ">
+        <div class="input-group">
+               
+               <select  class="xform-control" name="q[logop]">
+             
+                 <option value="AND"selected>and</option>
+                 <option value="OR">or</option>
+                 <option value="NEW">new</option>
+               </select>
+               <select  class="xform-control" name="q[col]">
+                 <option disabled selected>... column</option>
+                   {% for coldata in meta['q.cols'] %}
+                   <option value=" {{ coldata['name'] }}"> {{ coldata['nice'] }} </option>
+                   {% endfor %}
+
+               </select>
+               <select  class="xform-control" name="q[op]">
+                 <option disabled selected>... condition</option>
+                 <option>&lt;</option>
+                 <option>&gt;</option>
+                 <option>=</option>
+                 <option>like</option>
+                 <option>contains</option>
+               </select>
+                                           
+            <input type="text" class="form-control" name="q[val]" placeholder="Search term..." name="q[val]">
+            <span class="input-group-append">
+             <label><input type=submit style="display:none">
+                <button class="btn btn-default btn-outline-secondary" type="submit">
+                <svg xmlns="http://www.w3.org/2000/svg"  class="feather" data-feather="search" ></svg>
+                </button>
+             </label>
+            </span>
+  
+      </div>
+    </div>
+</form>
+<!--  END search form -->
+        
+    
+</nav>
+{#
+massdata
+['meta'] 
+  'pk_col_ind'
+  'imp_col_ind'
+  ['modal_id'] : modal id
+  ['select.type'] : 'checkbox', 'select'
+
+#}
+<div class="container"> 
+  <span style="color:gray;">Selected elements: <strong>{{ meta['cnt.select'] }}</strong> of {{ meta['cnt.all'] }}  &nbsp;&nbsp;&nbsp;
+  {%  if meta['q.filter_active'] %}
+  &nbsp; [<a href="?mod=ADM/obj_list&t={{ meta['table'] }}&q[new]=1">Clear Filter</a>] &nbsp;
+  {%  endif %}
+  Show: {{ meta['cnt_per_page'] }} per page &nbsp;&nbsp;&nbsp;
+  SQL-condition: {{ meta['q.sql_where'] }}
+  </span>
+  <br>
+  
+  {% if 'data' in massdata %}{# <MAIN_TABLE> #}
+  
+  {% set pk_col_ind  = massdata['meta']['pk_col_ind'] %}
+  {% set imp_col_ind = massdata['meta']['imp_col_ind'] %}
+
+  <form method="POST" name="viewform" >
+  <input type=hidden name="mod" value="ADM/obj_list">
+  <input type=hidden name="t" value="{{ meta['table'] }}">
+  <input type=hidden name="action" value="view">
+  <table class="table table-striped table-sm">
+    <thead>
+      <tr>
+      <th> # </th>
+      <th> # </th>
+      {% for col_def in massdata['header'] %}
+       {% if col_def['show'] %}
+      <th> {{ col_def['nice'] }} </th>
+       {% endif %}
+      {% endfor %}
+       
+        
+      </tr>
+    </thead>
+    
+    <tbody>
+    
+      {% for row in massdata['data'] %}
+     
+      {% set pk_val  = row[pk_col_ind] %}
+      {% set imp_val = row[imp_col_ind] %}
+      <tr>
+       {% if massdata['meta']['select.type']=='checkbox'  %}
+          <td><input type=checkbox name="sel[{{pk_val}}]" value=1></td>
+       {% else %}
+          {# imp_val|urlencode  #}
+          <td><a href="javascript:x_selback( '{{ pk_val }}', '{{imp_val}}', 'ADM/')"><svg  width="24" height="24" xmlns="http://www.w3.org/2000/svg"  class="feather" data-feather="arrow-left-circle"></svg></a></td>
+       {% endif %}
+       <td><a class="text-secondary" href="?mod=ADM/obj_one&t={{ meta['table']}}&id={{ pk_val }}"><svg  width="24" height="24" xmlns="http://www.w3.org/2000/svg"  class="feather" data-feather="play"></svg></a></td>
+
+       {% set count = namespace(a=0)  %}
+        {% for col_def in massdata['header'] %}
+          {% if col_def['show'] %}
+          {#  |default("", True) #}
+        <td> {{ row[count.a]  if row[count.a] is not none }} </td>
+        
+          {% set count.a = count.a + 1 %}
+          {% endif %}
+        {% endfor %}
+
+      </tr>
+      {% endfor %}
+     
+    </tbody>
+  </table>
+  </form>
+   <ul class="pagination">
+   
+  <li class="page-item {% if meta['page.prev'] < 1    %}disabled{% endif %}"><a class="page-link" href="{{ LIST_URL }}&page_no={{ meta['page.prev'] }}">Previous</a></li>
+  {% if (meta['page.no']-2) >= 1    %}
+  <li class="page-item disabled"><a class="page-link" href='#'>...</a></li>
+  {% endif %}
+  <li class="page-item {% if meta['page.min1'] != ""  %}disabled{% endif %}"><a class="page-link" href="{{ LIST_URL }}&page_no={{ meta['page.min1'] }}">{{meta['page.min1']}}</a></li>
+  <li class="page-item active"><a class="page-link" href="{{ LIST_URL }}&page_no={{ meta['page.no'] }}&t={{ meta['table'] }}">{{ meta['page.no'] }}</a></li>
+  <li class="page-item {% if meta['page.plus1'] != ""  %}disabled{% endif %}"><a class="page-link" href="{{ LIST_URL }}&page_no={{ meta['page.plus1'] }}">{{meta['page.plus1']}}</a></li>
+  {% if (meta['page.no']+2) <=  meta['page.max']  %}
+  <li class="page-item disabled"><a class="page-link" href='#'>...</a></li>
+  {% endif %}
+  <li class="page-item {% if meta['page.next'] < 1     %}disabled{% endif %}"><a class="page-link" href="{{ LIST_URL }}&page_no={{ meta['page.next'] }}">Next</a></li>
+</ul> 
+
+  {% endif %}{# <MAIN_TABLE> #}
+</div>
+
+{% endblock %}

@@ -1,0 +1,25 @@
+/* Move down content because we have a fixed navbar that is 3.5rem tall */
+body {
+  /* padding-top: 3.5rem; */
+  padding-top: 0rem;
+  
+}
+
+.top-jumbotron { margin-bottom: 0; }
+.jumbotron h1 {color:white }
+.jumbotron_blk { 
+  font-family: "Segoe UI Light";
+  /*letter-spacing: 1.5px;*/
+  font-size: 2.5em;
+  color:white;
+  padding: 2rem 1rem; 
+  margin-bottom: 1rem;
+	
+}
+
+.blink-section {
+  padding: 3em 0;
+}
+
+
+

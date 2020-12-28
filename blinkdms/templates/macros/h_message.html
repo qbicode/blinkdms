@@ -1,0 +1,30 @@
+{# show message boxes  + HTML forwarding
+ INPUT: 
+ meta['forward']
+ pageinfo['err.mess']
+ pageinfo['ok.mess']
+ 
+ #}
+ 
+{% if meta['forward'] %}
+    {{ meta['forward']|safe }}		
+{% endif %}
+{% if 'err.mess' in pageinfo %}
+  <div class="alert alert-danger"> <strong>Error!</strong> 
+     {{ pageinfo['err.mess']['text'] }}	
+     {# THIS COULD MAKE THE Error stack visaible to the user: &nbsp;&nbsp;&nbsp; <span title="{{ pageinfo['err.mess']['stack_str'] }}">(Error-Stack)</span> #}
+  </div>
+  <br><br>
+{% endif %}
+               
+{% if 'ok.mess' in pageinfo %}
+ {% if pageinfo['ok.mess']['warn']>0 %}
+   <div class="alert alert-warning"> 
+   <strong>WARNING:</strong>
+ {% else %}
+   <div class="alert alert-success"> 
+   <strong>OK:</strong>
+ {% endif %}
+ {{ pageinfo['ok.mess']['text'] }}	
+ </div>
+{% endif %}

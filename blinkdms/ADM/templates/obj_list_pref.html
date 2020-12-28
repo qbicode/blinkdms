@@ -1,0 +1,9 @@
+{% extends "ADM/home.html" %}
+{% block content %}
+
+
+<h3>Show columns:</h3>
+{% from "ADM/macros/form.html" import form1 %}
+{{ form1( massdata['form'] ) }}
+   
+{% endblock %}

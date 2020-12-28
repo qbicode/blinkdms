@@ -1,0 +1,94 @@
+{#
+show folder + content
+
+INPUT:
+ pageinfo['id']
+ meta['proj.path'] 
+ meta['proj.form.mod_key'] [OPTIONAL] : 
+     default: oPROJ_actions
+     'DOC.new'
+ meta['parent_id'] 
+ massdata:    content of folder
+   table => row
+   where row: 'id', 'name', 'title'
+   where table:
+    'PROJ_ORI'
+    'PROJ'
+    'DOC'
+#}
+
+<script>
+function goproj( id ) {
+  url_name="?mod=folder_sel&back_key=DOC.new&id=" + id;
+  location.href=url_name;
+}
+
+function x_on_submit_sel() {
+  document.projform.action.value='select'; 
+  document.projform.submit();
+}
+
+</script>
+
+{% macro proj_link(id) %}
+  {% if meta['proj.form.mod_key']=='DOC.new' %}
+    {{ 'javascript:goproj('+ id|string +')'|safe  }}
+  {% else %}
+    {{ '?mod=folder&id='|safe + id|string }}
+  {% endif %}
+{% endmacro %}
+
+{% if meta['proj.form.mod_key']=='DOC.new' %}
+<input type="submit" class="btn btn-primary"  onClick="x_on_submit_sel()" value="Select folder"><br>
+{% endif %}
+
+<img src="res/images/o.PROJ.svg"> <a href="?mod=folder&id=0"> db: </a> / 
+{% for proj in meta['proj.path'] %}
+  <a href="?mod=folder&id={{ proj[0]|string }}">{{ proj[1] }}</a> / 
+{% endfor %} 
+{% if meta['proj.notes'] %}
+&nbsp;<br><span style="color:gray;">{{ meta['proj.notes'] }}</span>
+{% endif %}
+&nbsp;<br>&nbsp;<br>
+
+{% set form_mod = 'folder_sel' if meta['proj.form.mod_key']=='DOC.new' else 'oPROJ_actions' %}
+
+<form style="display:inline;" method="post" name="projform">
+<input type=hidden name="mod" value="{{ form_mod }}">
+<input type=hidden name="action" value="">
+<input type=hidden name="back_key" value="{{  meta['proj.form.mod_key'] }}">
+<input type=hidden name="id" value="{{ pageinfo['id'] }}">
+<div class="table-responsive">
+
+
+<table class="x-proj_elements">
+{% if pageinfo['id']|int > 0 %}
+      <tr><td class="x-tr"><input class="x-checkbox" type=checkbox disabled="disabled"></td><td><a href="{{ proj_link(meta['parent_id']) }}"><img src="res/images/o.PROJ.svg" border=0> ..</a></td></tr>
+{% endif %}
+{% if 'PROJ_ORI' in massdata %}
+  {%for proj in massdata['PROJ_ORI'] %}
+        <tr ><td class="x-tr"><input class="x-checkbox" type=checkbox name="sel[PROJ_ORI][{{proj['id']}}]" value="1"></td><td><a href="{{ proj_link(proj['id']) }}"><img src="res/images/o.PROJ.svg" border=0> {{proj['name']}}</a></td></tr>
+  {% endfor %}
+{% endif %}
+{% if 'PROJ' in massdata %}
+  {%for proj in massdata['PROJ'] %}
+        <tr><td class="x-tr"><input class="x-checkbox" type=checkbox name="sel[PROJ][{{proj['id']}}]" value="1"></td><td><a href="{{ proj_link(proj['id']) }}"><img src="res/images/o.PROJ_link.svg" border=0> {{proj['name']}}</a></td></tr>
+  {% endfor %}
+{% endif %}
+{% for l_table, tab_data in massdata.items() %}
+  {% if l_table!='PROJ_ORI' and l_table!='PROJ' %}
+    {% for object_one in tab_data %}
+      <tr><td class="x-tr">
+          {% if table_nice=='' %}
+            <input class="x-checkbox" type=checkbox disabled="disabled"></td><td><img src="res/img/ots/question.svg"> {{object_one['name']}}
+          {% else %}
+            <input class="x-checkbox" type=checkbox name="sel[{{l_table}}][{{object_one['id']}}]" value="1"></td><td><a href="?mod={{ doc_link }}&d_id={{object_one['id']}}">
+            <img src="res/images/o.DOC.svg"> {{object_one['name']}} : {{object_one['title']}}</a>
+          {% endif %}    
+      </td></tr>
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+</table>
+</div>
+</form>

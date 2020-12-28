@@ -1,0 +1,287 @@
+{% extends "b_main.html" %}
+{# Template for single folder navigator
+meta  variables:
+  proj.id
+  proj.path : pute HTML ...
+  ['menu']
+    ['new_tables'] 
+    ['PROJ.new'] = 'enable' |  ['disable']
+#}
+{% block content %}
+{# https://www.w3schools.com/bootstrap4/tryit.asp?filename=trybs_nav_tabs_toggleable&stacked=h #}
+<script type="text/javascript">
+var tablename='{{ meta['table'] }}';
+var menu_type='{{ pageinfo['mod'] }}';
+</script>
+
+{%  set doc_link=''  %}
+{%  set menu_show=1 %}
+{% if pageinfo['context']=='EDIT' %}
+{%  set doc_link='doc_edit' %}
+{% endif %}
+{% if pageinfo['context']=='ACTIVE' %}
+{%  set doc_link='doc_view' %}
+{%  set menu_show=0 %}
+{% endif %}
+
+<div class="container"><!-- MAIN_CONTAINER:start-->
+
+{% if menu_show %}
+<div class="container-fluid p-0 pb-2" id="q_main_menu">
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist" id="myTab">
+   
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#m1">Folder</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#m2">Manage</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#m3">Info</a>
+    </li>
+    
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    
+    <div id="m1" class="container tab-pane active">
+    <br>
+      <li class="btn x_btn-transparent{{ '" data-toggle="modal" data-target="#NewProjDialog"'|safe if meta['menu']['PROJ.new'] == 'enabled' else '  disabled"'|safe }}
+      type="button"><svg xmlns="http://www.w3.org/2000/svg"  class="feather" data-feather="folder-plus"></svg> new </li>
+      <li class="btn x_btn-transparent{{ '" data-toggle="modal" data-target="#EditProjDialog"'|safe if meta['menu']['PROJ.edit'] == 'enabled' else '  disabled"'|safe }}  
+      type="button" ><svg xmlns="http://www.w3.org/2000/svg"  class="feather" data-feather="edit"></svg> edit</li>
+      <li class="btn x_btn-transparent{{ '" data-toggle="modal" data-target="#DelProjDialog"'|safe if meta['menu']['PROJ.del'] == 'enabled' else '  disabled"'|safe }}  
+      type="button" ><svg xmlns="http://www.w3.org/2000/svg"  class="feather" data-feather="x"></svg> delete</li>
+      
+      <a href="?mod=doc_new&proj_id={{ meta['proj.id'] }}"><img src="res/images/o.DOC.svg"> New document</a> 
+      {# <a  class="btn x_btn-transparent"  type="button" href="?mod=folder&id={{meta['proj.id']}}&action=access"><svg xmlns="http://www.w3.org/2000/svg"  class="feather" data-feather="lock"></svg> access </a>#}
+      {#<a  class="btn x_btn-transparent"  type="button" href="?mod=obj_meta&t=PROJ&id={{meta['proj.id']}}&action=access"><svg xmlns="http://www.w3.org/2000/svg"  class="feather" data-feather="aperture"></svg> meta info </a>#}
+    </div>
+    
+    <div id="m2" class="container tab-pane fade">
+    <br>
+      <a  class="btn x_btn-transparent"  type="button" href="javascript:x_pr_manage('copy')"><svg xmlns="http://www.w3.org/2000/svg"  class="feather" data-feather="copy"></svg> copy</a>
+      <a  class="btn x_btn-transparent"  type="button" href="javascript:x_pr_manage('paste')"><svg xmlns="http://www.w3.org/2000/svg"  class="feather" data-feather="clipboard"></svg> paste</a>
+      <a  class="btn x_btn-transparent"  type="button" href="javascript:x_pr_manage('cut')"><svg xmlns="http://www.w3.org/2000/svg"  class="feather" data-feather="scissors"></svg> cut</a>
+      <a  class="btn x_btn-transparent"  type="button" href="javascript:x_pr_manage('delete')"><svg xmlns="http://www.w3.org/2000/svg"  class="feather" data-feather="delete"></svg> unlink</a>
+      {# <a  class="btn x_btn-transparent"  type="button" href="javascript:x_pr_manage('add_col')"><img src="res/img/heart_plus.svg"> add to collection</a> #}
+      
+      {#
+      <li class="nav-item dropdown" style="display: inline-block;">
+	<a class="nav-link dropdown-toggle text-secondary" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	   <svg xmlns="http://www.w3.org/2000/svg"  class="feather" data-feather="check-square"></svg> select all
+	</a>
+	  <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+	   {% for row in meta['menu']['sel_tables'] %}
+	  <a class="dropdown-item" href="?mod=obj_list&t={{  row['name'] }}&q[proj_id]={{ meta['proj.id'] }}">{{  row['nice'] }}</a>
+	  {% endfor %}
+	  </div>
+      </li>
+      #}
+    </div>
+    
+    <div id="m3" class="container tab-pane fade">
+    <br>
+      Creator:  {{ meta['info']['crea_user'] if meta['info']['crea_user'] is not none else '-'}} &nbsp;&nbsp;
+      Creation date:  {{ meta['info']['crea_date'] if meta['info']['crea_date'] is not none else '-'}} &nbsp;&nbsp;
+      Modified by:   {{ meta['info']['mod_user'] if meta['info']['mod_user'] is not none else '-'}} &nbsp;&nbsp;
+      Modification date:  {{ meta['info']['mod_date'] if meta['info']['mod_date'] is not none else '-'}} &nbsp;&nbsp;
+      
+      
+    </div>
+    
+  </div>
+  <hr>
+</div>
+
+ 
+
+
+<!-- EditProjDialog -->
+<div class="modal fade" id="EditProjDialog" tabindex="-1" role="dialog" aria-labelledby="EditProjLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form style="display:inline;" method="post" name="editform"  action="" >
+	<input type=hidden name="mod" value="folder">
+	<input type=hidden id="form_action" name="action" value="edit">
+	<input type=hidden name="id" value="{{ pageinfo['id'] }}">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="EditProjLabel">Edit folder features</h5>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <div class="form-group">
+			<label for="projName">Name</label>
+			<input type="text" class="form-control" id="projName" name="parx[NAME]" value="{{ meta['proj.name'] }}">
+			
+		  </div>
+		  <div class="form-group">
+			<label for="projNotes">Notes</label>
+			<input type="text" class="form-control" name="parx[NOTES]" id="projNotes"  value="{{ meta['proj.notes'] }}">
+		  </div>
+		
+		
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+	</form>
+  </div>
+</div>
+<!-- /EditProjDialog -->
+
+<!-- DelProjDialog -->
+<div class="modal fade" id="DelProjDialog" tabindex="-1" role="dialog" aria-labelledby="DelProjLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form style="display:inline;" method="post" name="editform"  action="" >
+	<input type=hidden name="mod" value="folder">
+	<input type=hidden id="form_action" name="action" value="del">
+	<input type=hidden name="id" value="{{ pageinfo['id'] }}">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="DelProjLabel">Delete this folder?</h5>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Delete</button>
+      </div>
+    </div>
+	</form>
+  </div>
+</div>
+<!-- /DelProjDialog  -->
+
+<!-- NewProjDialog> Modal -->
+<div class="modal fade" id="NewProjDialog" tabindex="-1" role="dialog" aria-labelledby="NewDocLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form style="display:inline;" method="post" name="editform2"  action="" >
+	<input type=hidden name="mod" value="folder">
+	<input type=hidden id="form_action" name="action" value="new">
+	<input type=hidden name="id" value="{{ pageinfo['id'] }}">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="NewDocLabel">New folder</h5>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <div class="form-group">
+			<label for="projName">Name</label>
+			<input type="text" class="form-control" id="projName" name="parx[NAME]" value="">
+			
+		  </div>
+		  <div class="form-group">
+			<label for="projNotes">Notes</label>
+			<input type="text" class="form-control" name="parx[NOTES]" id="projNotes"  value="">
+		  </div>
+		
+		
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+	</form>
+  </div>
+</div>
+<!-- /NewProjDialog> Modal -->
+
+<!-- NewDocument> Modal -->
+<div class="modal fade" id="NewDocDialog" tabindex="-1" role="dialog" aria-labelledby="NewProjLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form style="display:inline;" method="post" name="editform3" enctype="multipart/form-data" action="" >
+	<input type=hidden name="mod" value="obj_new">
+	<input type=hidden name="t" value="LINK">
+	<input type=hidden name="go" value="1">
+	<input type=hidden name="id" value="{{ pageinfo['id'] }}">
+	<input type=hidden name="proj_id" value="{{ meta['proj.id'] }}">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="NewDocLabel">Upload new document</h5>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <div class="custom-file mb-3">
+	<input type="file" class="custom-file-input" id="customFile" name="y.file">
+	<label class="custom-file-label" for="customFile">Choose file</label>
+       </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Upload document</button>
+      </div>
+    </div>
+	</form>
+  </div>
+</div>
+<!-- </NewDocument> Modal -->
+
+{% endif %}{# end of menu_show ? #}
+
+{% include 'macros/folder.html' %}
+
+</div><!-- MAIN_CONTAINER:end-->
+
+<script type="text/javascript">
+var chk_boxes_active=0;
+
+function x_pr_manage(action) {
+  document.projform.action.value=action; 
+  document.projform.submit();
+}
+
+/* manage checkboxes */
+var tr_class_all    = document.querySelectorAll(".x-tr");
+var check_class_all = document.querySelectorAll(".x-checkbox");
+
+function x_chk_over( event ) {
+    if (chk_boxes_active) return; // already active 
+    
+    var targetx  = event.target;
+    var chk_box  = targetx.querySelector(".x-checkbox");
+    chk_box.style.display  = 'inline';
+}
+
+function x_chk_showall( event ) {
+    if (chk_boxes_active) return; // already active 
+    
+    chk_boxes_active=1;
+    var chk_list = document.getElementsByClassName("x-checkbox");
+    for (chk of chk_list) {
+      chk.style.display  = 'inline';
+    }
+}
+
+for (tr of tr_class_all) {
+   tr.addEventListener('mouseover', x_chk_over, false);
+}
+for (chk of check_class_all) {
+   chk.addEventListener('click', x_chk_showall, false);
+}
+</script>
+
+{% endblock %}
+
+
+
+{% block foot_scripts %}
+<script src="res/js/x_menu2.js"></script>
+{% endblock %}

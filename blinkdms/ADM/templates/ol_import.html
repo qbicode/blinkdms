@@ -1,0 +1,24 @@
+{% from "ADM/macros/form.html" import form1 %}
+
+{% extends "ADM/b_home.html" %}
+{% block content %}
+
+<div class="container">
+
+{% if 'form' in massdata %}
+    {{ form1( massdata['form'] ) }}
+    <br>
+{% endif %}   
+
+    {% if massdata['file_data'] %}
+    
+      {% set chunkin = massdata['file_data'] %}
+      {% set test    = chunkin.update( { 'header': {'title':'Imported data'} } ) %}
+      {% include "ADM/macros/table.html" %}
+    {% endif %}  
+
+    {% for row in massdata['messages'] %}
+    {{  row['status']}}: {{ row['mess'] }}<br>
+    {% endfor %}
+
+{% endblock %}

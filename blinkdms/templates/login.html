@@ -1,0 +1,38 @@
+{# 
+meta 
+  'old_mod'
+#}
+{% include "macros/h_login_head.html" %}
+
+  <form class="form-signin" action="?mod=login" method="post">
+    <h1 class="h3 mb-3 font-weight-normal"> {{ pageinfo['site.title'] }} - {{ pageinfo['title'] }}</h1>
+  <img class="mb-4" src="res/images/Blink_Icon_white.png" alt="" width="72" height="72">
+  <br>
+  <br>
+  {% if meta['forward'] %}
+        {{ meta['forward']|safe }}		
+  {% endif %}
+  
+  {% if 'err.mess' in pageinfo %}
+        
+        <div class="alert alert-warning" role="alert">
+        {{ pageinfo['err.mess']['text'] }}
+        </div>
+
+  {% endif %}
+  
+  <label for="inputEmail" class="sr-only">Email</label>
+  <input type="text" id="inputEmail" class="form-control" name="user" placeholder="Email" required="" autofocus="">
+  <label for="inputPassword" class="sr-only">Password</label>
+  <input type="password" id="inputPassword" class="form-control" name="password" placeholder="Password" required="">
+  <input type="hidden" name="go" value="1">
+  <input type="hidden" name="old_mod" value="{{ meta['old_mod'] }}">
+  <input type="hidden" name="cid" value="{{ meta['cid'] }}">
+  <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+  <div class='text-right'><a href="?mod=p_reset">Forgot Password?</a></div>
+   
+  <p class="mt-5 mb-3 text-muted"><a href="https://github.com/qbicode/blinkdms">BlinkDMS</a>, Steffen Kube 2020-2021</p>
+</form>
+
+{% include "macros/h_login_foot.html" %}
+

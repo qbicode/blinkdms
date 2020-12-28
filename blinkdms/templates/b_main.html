@@ -1,0 +1,59 @@
+{# MAIN Template for most views
+input:
+pageinfo['html.area'] : 'n' -- normal, 's' - service
+-- meta --
+#}
+
+{% if pageinfo['html.area']=='s' %}
+{% include "macros/hs_head_main.html" %}
+{% else %}
+{% include "macros/h_head_main.html" %}
+{% endif %}
+    {# Blink-Design: ""hero-wrap-blink" makes smaller height "#}
+    <div class="hero-wrap hero-wrap-blink img" style="background-image: url(res/images/bg_blink_dx.jpg); background-position: 50% 0%;'">
+      <div class="overlay"></div>
+        <div class="container">
+          <div class="row d-md-flex no-gutters slider-text justify-content-center">
+                  <div class="col-md-10 d-flex ftco-animate">
+                  
+                    <div class="text text-center">
+                      <p style="margin-top: 90px;"></p>
+                         <p style="margin-top: 30px;"></p>
+                         <p class="x_breadcrumbs mb-0"> {#OLD: <h1 class="mb-5"> #}
+                          {% if pageinfo['locrow'] %}
+                         
+                          {% for path_row in pageinfo['locrow'] %}
+                          <i class="ion-ios-arrow-forward"></i> <span class="mr-3"><a href="?mod={{path_row['url']}}">{{path_row['text']}} </a>
+                          {% endfor %}
+                          <i class="ion-ios-arrow-forward"></i>
+                          {% endif %}
+                         &nbsp;<span style="font-size:3em;">{{ pageinfo['title'] }}</span>
+                          {# {% include "macros/h_search.html" %} #}  
+                         </p>
+                    </div>
+                  </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <section class="blink-section">
+      <div class="container">
+        <div class="row">  
+            {% include "macros/h_message.html" %}
+        </div>  
+        <div class="row">
+           {% block content %}{% endblock %} 
+        </div>
+      </div>
+    </section> 
+
+
+   
+    
+   
+{% include "macros/h_foot_main.html" %}
+{% block foot_scripts %}{% endblock %} 
+
+  </body>
+</html>

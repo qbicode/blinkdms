@@ -1,0 +1,50 @@
+{# input:
+-- meta --
+ ['DEVICE']['cnt']
+ ['STOCK']['cart_cnt']
+ 'ser.open-tasks'
+#}
+
+{% include "macros/h_head_main.html" %}
+    {#NEW: Blink-Design: ""hero-wrap-blink-home" makes smaller height "#}
+    <div class="hero-wrap hero-wrap-blink-home img" style="background-image: url(res/images/bg_blink_dx.jpg);">
+      <div class="overlay"></div>
+      <div class="container">
+      	<div class="row d-md-flex no-gutters slider-text  align-items-center justify-content-center"> 
+	        <div class="d-flex  align-items-center ftco-animate"> {#removed: col-md-10  #} 
+	        	<div class="text text-center"> {# <TEXT-center>y#} 
+			   {#OLD:  <!--NEW:QBI: removed mt-md-5 -->
+	        		<!-- p class="mb-4">Welcome to Blink Hub-E</p>--> #}
+	                    <h1 class="mb-5">Regulated docs at {{ pageinfo['system.company'] }}</h1>
+				
+			    {#OLD: {% include "macros/h_search.html" %} #}
+	                    </div>
+			</div> {# </TEXT-center>y#}
+	    	</div>
+      </div>
+    </div><!-- </hero-wrap> -->
+   {#OLD: ftco-section ftco-no-pt ftco-no-pb #}
+   
+
+  
+  
+ <section class="blink-section">
+      <div class="container">
+	<div class="row">  
+	    {% include "macros/h_message.html" %}
+	</div>  
+	<div class="row">
+	   {% block content %}{% endblock %} 
+	</div>
+      </div>
+</section> 
+
+
+
+   
+{% include "macros/h_foot_main.html" %}
+
+{% block foot_scripts %}{% endblock %} 
+ 
+  </body>
+</html>

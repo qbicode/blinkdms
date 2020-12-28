@@ -1,0 +1,54 @@
+{# very simple table 
+
+INPUT: 
+  chunkin
+  {
+    'header': {
+       'title' : 'xxx',
+       'other_cont' :  ''
+    },
+   'act_button' : {'text': '', 'target_id': 'ID of target modal window' },
+   'cols' : [],  # OPTIONAL
+   'data' : [],   # list of rows                
+   'opt': {
+     'safe': 0,1 : HTML data is safe ?
+     'col_t': [] list of dict : 
+        'type':'but', 'icon':'plus', 'target': ''
+        'type':'but_link', 'icon':'download', 'url': '...' + cell_data
+    }
+  }
+#}
+
+{% set c_type=0 %}
+{% if 'opt' in chunkin %}
+  {% set c_type = 1 if chunkin['opt'].get('safe',0) > 0 else 0 %}
+{% endif %}
+
+
+<h3>{{ chunkin['header']['title'] }}
+{% if 'other_cont' in chunkin['header'] %}
+&nbsp;&nbsp; {{ chunkin['header']['other_cont']|safe }}
+{% endif %}
+</h3>
+<table class="table">
+{% if 'cols' in chunkin %} 
+  <tr>
+  {% for col in chunkin['cols'] %}
+  <th>{{ col }}</th>
+  {% endfor %}
+  </tr>
+{% endif %} 
+{% for row in chunkin['data'] %}
+<tr>
+
+{% for cell in row %}
+  {% if c_type==1 %} 
+  <td>{{ cell|safe }}</td>
+  {% else %} 
+  <td>{{ cell if cell is not none }}</td>
+  {% endif %} 
+{% endfor %}
+</tr>
+{% endfor %}
+
+</table>

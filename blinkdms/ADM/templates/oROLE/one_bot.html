@@ -1,0 +1,63 @@
+{# INPUT: 
+  meta['bot_RIGHTS_LI']
+  meta['bot_role_rights']
+  meta[id]
+  FORM output: 
+    xarg : dict
+    sub_action
+#}
+<br>
+<div>
+
+{% from "ADM/macros/macro.html" import nav_link with context %}
+{% from "ADM/macros/macro.html" import nav_button  %}
+
+<h2>Object role rights &nbsp;&nbsp;&nbsp;<small>{{ nav_button( {'type':'modal', 'target': 'xRightAdd', 'txt':'Add Role-right', 'ico':'plus'} ) }}</small></h2>
+
+
+<form style="display:inline;" method="post" name="role_rig"  action="" >
+<input type=hidden name="go"  value="1">
+<input type=hidden name="mod" value="ADM/obj_one">
+<input type=hidden name="t" value="ROLE">
+<input type=hidden name="id" value="{{ meta['id']|string }}">
+<input type=hidden name="sub_action" value="upd_rights">
+<table>
+<tr>
+<th>Object</th>
+{% for right in meta['bot_RIGHTS_LI'] %}
+  <th>{{ right }}</th>
+{% endfor %}
+</tr>
+
+{% for tab_row in meta['bot_role_R_O']['tabs'] %}
+<tr>
+<td>{{ tab_row['n'] }}</td>
+{% set tab_loop = tab_row['t'] %}
+{% for right in meta['bot_RIGHTS_LI'] %}
+  {% set checked = '' %}
+  {% if tab_loop in meta['bot_role_R_O']['rights'] %}
+  {% set checked = 'checked' if right in meta['bot_role_R_O']['rights'][tab_loop] else '' %}
+  {% endif %}
+    <td><input type=checkbox name="xarg[{{ tab_loop }}][{{ right }}]" value="1" {{ checked }}></td>
+  {% endfor %}
+</tr>
+{% endfor %}
+<tr><td></td>
+<td colspan=5>
+<input type=submit value="Save">
+</td>
+</tr>
+</table>
+</form>
+
+
+{% set chunkin = meta['bot_f_rig_tab'] %}
+{% include "ADM/macros/table.html" %}
+
+{% set form = meta['bot_form'] %}
+{% include "ADM/macros/form_modal.html" %}
+
+</div>
+
+
+

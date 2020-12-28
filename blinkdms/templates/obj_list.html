@@ -1,0 +1,23 @@
+{#
+INPUT:
+meta:
+  action
+massdata
+  'header'
+      'show'
+      'sort'
+      'nice'
+      'name'
+#}
+
+{% if pageinfo['html']=='plugpure' %}
+{% extends "b_plugpure.html" %}
+{% else %}
+{% extends "b_main.html" %}
+{% endif %}
+
+{% block content %}
+
+{% include "macros/obj_list_m.html" %}
+
+{% endblock %}

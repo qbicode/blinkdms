@@ -1,0 +1,99 @@
+{# Template for a FORM
+ meta  variables:
+  
+ form_data
+    'hidden'
+    ['init']
+        'editmode': 'edit', 'view'
+        'submit.text' : '...'
+        'app.space.prefix' : '' or 'ADM/'
+        'submit.extra' : extra free HTML text in submit row
+    'main': list of rows
+     'object' : type
+     'edit' : 0,1
+     'name' : name of field; e.g. parx[NOTES]
+     --- for 'object'=='objlink'
+     need ['init']['app.space.prefix'] for ADM area ...
+     'id'   : field-ID
+     'name' : name of field; e.g. parx[NOTES]
+     'val.nice'
+     'fk_t'
+     
+#}
+
+{% macro form1(form_data) %}
+
+{% if form_data['init']['editmode'] =='edit' %}
+  <form style="display:inline;" method="post" name="editform">
+  {% for key, value in form_data['hidden'].items() %}
+  <input type=hidden name="{{key}}" value="{{value}}">
+  {% endfor %}
+{% endif %}
+{% set submit_text = 'Save' if 'submit.text' not in form_data['init'] else form_data['init']['submit.text'] %}
+
+
+{% if 'title' in form_data['init'] %}
+<h2>{{ form_data['init']['title'] }}</h2>
+{% endif %}
+
+<table class="table">
+
+  <tbody>
+    
+{% for row in form_data['main'] %}
+
+    {% set rowval = row['val'] %}
+    <tr>
+      <td>{{ row['title'] }}</td><td>
+      {% if row['edit']>0 %}
+        {% if row['object']=='checkbox' %}
+        {% set loop_checked =  'checked' if rowval == 1 else '' %}
+         <input type=checkbox name="{{ row['name'] }}" value="1" {{ loop_checked }}>
+        {% endif %}
+        {% if row['object']=='objlink' %}
+            <input id="xfo{{row['id']}}" type=hidden name="{{ row['name'] }}" value="{{rowval|string}}"><input type=text disabled="disabled" id="xfo{{row['id']}}shy" value="{{row['val.nice']}}"> 
+            &nbsp; <a href="javascript:x_openwin('{{row['fk_t']}}', {{row['id']}}, '', '{{ form_data['init']['app.space.prefix'] }}')" title="select from list"><svg xmlns="http://www.w3.org/2000/svg"  class="feather" data-feather="align-justify"></svg> </a>
+        {% endif %}
+        {%  if row['object']=='password'  %}
+         <input type=password name="{{ row['name'] }}" value="{{rowval|string}}">
+        {% endif %}
+        {% if  row['object']=='select' %}
+            <select class="form-control" name="{{ row['name'] }}"> 
+             <option value="">- select -</option>
+             {%  for sel_row in row['inits']  %}
+             <option value="{{ sel_row[0] }}"{{ ' selected' if sel_row[0]==rowval }}>{{ sel_row[1] }}</option>
+             {% endfor %}
+            </select>
+          {% endif %}
+        {% if  row['object']=='textarea' %}
+          <textarea  class="form-control" name="{{ row['name'] }}">{{ rowval|string if rowval is not none }}</textarea>   
+        {% endif %}
+        {%  if row['object']=='text'  %}
+         <input type={{ row['object'] }} name="{{ row['name'] }}" value="{{rowval|string if rowval is not none}}">
+        {% endif %}
+        
+      {% else %}
+        {{  rowval|string if rowval is not none  }}
+      {% endif %}
+      </td>
+      {% if row['notes']!='' %}
+      <td>{{ row['notes'] }}</td>
+      {% endif %}
+    </tr>
+{% endfor %}
+{% if form_data['init']['editmode'] =='edit' %}
+ <tr><td></td><td>
+ {% if form_data['init']['submit'] %}
+ {{ form_data['init']['submit']|safe }}
+ {% else %}
+ <button type="submit" class="btn btn-primary">{{ submit_text }}</button>
+ {% endif %}
+ {{ form_data['init']['submit.extra']|safe }}
+ </td></tr>
+{% endif %}
+    </tbody>
+</table>
+{% if form_data['init']['editmode'] =='edit' %}
+</form>
+{% endif %}
+{% endmacro %}

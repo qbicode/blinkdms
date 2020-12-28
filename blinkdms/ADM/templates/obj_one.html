@@ -1,0 +1,74 @@
+{# Template for single object view
+ meta  variables:
+  view.tab.type = ['home'], 'meta'
+  table
+  id
+  editmode
+  obj.name
+  proj.path : long html string
+  table.nice
+  bot.include : 0,1 bottom-include:  "ADM/macros/o"+meta["table"]+"/one_bot.html"
+massdata variables:
+  'main' # for meta['view.tab.type'] = meta and home
+#}
+{% extends "ADM/b_home.html" %}
+{% block content %}
+
+
+
+{% set OBJ_URL = "?mod=ADM/obj_one&t=" + meta['table'] + '&id=' + meta['id']|string %}
+{% set page = {'app.space.prefix':'ADM/' } %}
+
+
+{% from "ADM/macros/menu2.html" import menu1, menu2 %}
+{{ menu2( meta['nav'] ) }}
+{{ menu1( meta['menu'] ) }}
+
+<div class="container"> {# <CONTAINER:22> #}
+<br>
+{% if 'proj.path' in meta %}
+
+    <img src="res/img/o.PROJ.svg"> <a href="?mod=folder&id=0"> db: </a> / 
+    {% for proj in meta['proj.path'] %}
+        <a href="?mod=folder&id={{ proj[0]|string }}">{{ proj[1] }}</a> / 
+    {% endfor %} 
+  
+  {% if 'proj.other' in meta %}
+    <br>Other folders:
+    {% for row in meta['proj.other'] %}
+    <a href="?mod=ADM/folder&id={{row['id']}}">{{row['nice']}}</a> &nbsp;&nbsp;&nbsp;
+    {% endfor %}
+    <br>
+  {% endif %}
+  &nbsp;<br>&nbsp;<br>
+{% endif %}
+{#
+<nav class="navbar navbar-light bg-light" style="padding-left:20px;">
+    <span style="font-size: 150%; font-weight:bold"> {{ meta['obj.name'] }}</span> &nbsp; [ID:{{ pageinfo['id']  }}] {{meta['table.nice'] }} <br>
+</nav>
+#}
+
+
+{% if meta['editmode'] =='edit' %}
+<form style="display:inline;" method="post" name="editform">
+<input type=hidden name="mod" value="ADM/obj_one"> 
+<input type=hidden name="action" value="update">
+<input type=hidden name="t" value="{{ meta['table'] }}">
+<input type=hidden name="id" value="{{ meta['id']|string }}">
+<input type=hidden name="go" value="1">
+{% endif %}
+
+{% include "ADM/macros/obj_one_table.html" %}
+
+{% if meta['editmode'] =='edit' %}
+</form>
+{% endif %}
+</div> {# </CONTAINER:22> #}
+
+{% if 'bot.include' in meta %}
+<div class="container"> {# <CONTAINER:60> #}
+{% include "ADM/o"+meta["table"]+"/one_bot.html"  %}
+</div>  {# <CONTAINER:60> #}
+{% endif %}
+
+{% endblock %}

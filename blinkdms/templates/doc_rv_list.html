@@ -1,0 +1,46 @@
+{#
+INPUT:
+meta:
+massdata
+    'header'
+    data
+#}
+
+{% extends "b_main.html" %}
+
+{% block content %}
+
+{% set doc_link='doc_edit' %}
+
+
+
+<table class="table table-striped table-sm">
+    <thead>
+      <tr>
+      <th> # </th>
+      {% for col_def in massdata['header'] %}
+       
+      <th> {{ col_def }} </th>
+      
+      {% endfor %} 
+      </tr>
+    </thead>
+    
+ <tbody>
+ 
+  {% for row in massdata['data'] %}
+     
+      <tr>
+
+       <td><a class="text-secondary" href="?mod={{ doc_link }}&id={{ row[0] }}"><svg  width="24" height="24" xmlns="http://www.w3.org/2000/svg"  class="feather" data-feather="play"></svg></a></td>
+
+        {% for cell in row %}
+        <td> {{ cell  if cell is not none }} </td>
+        {% endfor %}
+
+      </tr>
+      {% endfor %}
+  </tbody>
+  </table>
+
+{% endblock %}

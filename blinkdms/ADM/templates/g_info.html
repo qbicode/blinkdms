@@ -1,0 +1,24 @@
+{#
+INPUT:
+massdata:
+  'globals'
+  'user_glob'
+  ...
+#}
+{% extends "ADM/b_home.html" %}
+{% block content %}
+
+<div class="container">
+
+<h2>{{ meta['action']}}</h2>
+
+{% if  massdata['t'] %}
+{% for one_table  in  massdata['t'] %}
+  {% set chunkin = one_table %}
+  {% include "ADM/macros/table.html" %}
+  <p></p>
+{% endfor %}
+{% endif %}
+
+</div>
+{% endblock %}

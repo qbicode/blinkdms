@@ -1,0 +1,80 @@
+/*!
+Copyright (c) 2019 Blink-DX
+*/
+.hero-wrap.hero-wrap-blink {
+    height: 200px !important;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: top center; }
+    @media (max-width: 1199.98px) {
+      .hero-wrap.hero-wrap-blink {
+        background-position: top center !important; } }
+    .hero-wrap.hero-wrap-blink .slider-text {
+      height: 400px !important; }
+      @media (max-width: 991.98px) {
+        .hero-wrap.hero-wrap-blink .slider-text {
+          text-align: center;
+          height: 200px !important; } }
+          
+.hero-wrap.hero-wrap-blink-home {
+    height: 300px !important;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: top center; }
+    @media (max-width: 1199.98px) {
+      .hero-wrap.hero-wrap-blink-home {
+        background-position: top center !important; } }
+    .hero-wrap.hero-wrap-blink-home .slider-text {
+      height: 400px !important; }
+      @media (max-width: 991.98px) {
+        .hero-wrap.hero-wrap-blink-home .slider-text {
+          text-align: center;
+          height: 300px !important; } }
+          
+.blink-section {
+  padding: 3em 0;
+  position: relative;
+}
+
+.blink-important {
+  background-color: #CCAF11;
+  border-radius: 4px;
+}
+
+.x_breadcrumbs span {
+    color: #fff; 
+}
+.x_breadcrumbs span a {
+    color: #fff; 
+    margin-left: 7px; margin-right: 7px;
+}
+
+.x_box_wrapper {
+  margin: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 150px);
+  grid-gap: 10px;
+  color: #99b3ff;
+}
+
+.x_box {
+  background-color: #99b3ff;
+  color: #fff;
+  border-radius: 5px;
+  padding: 20px;
+  /* font-size: 110%; */
+}
+
+.x_box.expty {
+ background-color: #fff;
+}
+
+.x_box.active {
+  background-color: #4d94ff;
+}
+
+/* without scroll bar !*/
+select[multiple] {
+    overflow-y: auto;
+}
+

@@ -1,0 +1,64 @@
+{# INPUT: 
+  meta['id']
+  meta['mdo_group'] if exists
+  meta['bot_roles_all'] 
+  meta['bot_role_rights']
+#}
+<br>
+<div>
+
+{% from "ADM/macros/macro.html" import nav_link with context %}
+
+
+{#
+add delete button to USER_GROUPs
+#}
+{% set group_list = [] %}
+{% for row in meta['bot_groups'] %}
+  {% set url='?mod=ADM/oUSER_GROUP/actions&id='+ row[0]|string +'&action=del_user&ids['+ meta['id']|string  +']=1' %}
+  {% do row.append('<a href="'+ url +'">remove</a>') %}
+  {% do group_list.append(row) %}
+{% endfor %}
+
+
+{% set chunkin = { 'header': {'title': 'Groups'}, 'act_button' : {'text':'add group', 'target_id': 'xGrpAdd' }, 'opt': {'safe':1} } %}
+{% set test = chunkin.update( { 'data': group_list } ) %}
+{% include "ADM/macros/table.html" %}
+
+
+{% set form = { 'header': {'title': 'Add user to group', 'target_id': 'xGrpAdd'} } %}
+{% set test = form.update( { 'hidden': {'mod':'ADM/oDB_USER/actions', 'action':'add_grp', 'id':meta['id'], 'go': 1 } } ) %}
+{% set test = form.update( { 'main': meta['bot_grp_form'] } ) %}
+
+{% include "ADM/macros/form_modal.html" %}
+
+{% if meta['bot_roles_all'] %}
+
+  {% set role_list = [] %}
+  {% for row in meta['bot_roles'] %}
+    {% set url='?mod=ADM/oDB_USER/actions&id='+ meta['id']|string +'&action=del_role&parx[role_key]='+ row[0]|string %}
+    {% do row.append('<a href="'+ url +'">remove</a>') %}
+    {% do role_list.append(row) %}
+  {% endfor %}
+  
+  {% set chunkin = { 'header': {'title': 'Roles'}, 'act_button' : {'text':'add role', 'target_id': 'xRoleAdd' }, 'opt': {'safe':1} } %}
+  {% set test = chunkin.update( { 'data': role_list } ) %}
+  {% include "ADM/macros/table.html" %}
+  
+  {% set form = { 'header': {'title': 'Add Role to user', 'target_id': 'xRoleAdd'} } %}
+  {% set test = form.update( { 'hidden': {'mod':'ADM/oDB_USER/actions', 'action':'add_role', 'id':meta['id'], 'go': 1 } } ) %}
+  {% set test = form.update( { 'main': meta['bot_roles_all'] } ) %}
+  {% include "ADM/macros/form_modal.html" %}
+  
+  {# inactive
+  {% set chunkin = { 'header': {'title': 'Role rights'} } %}
+  {% set test = chunkin.update( { 'data': meta['bot_role_rights'] } ) %}
+  {% include "ADM/macros/table.html" %}
+  #}
+  
+  
+{% endif %}
+</div>
+
+
+

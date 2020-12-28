@@ -1,0 +1,54 @@
+{# Template for single object view
+ meta  variables:
+  nav : navigation
+  tab = ['home'], 'meta'
+     'meta' : give also meta['CCT_ACCESS_ID']
+  table
+  id
+  editmode
+  obj.name
+  proj.path : long html string
+  table.nice
+  bot.include : 0,1 bottom-include:  "ADM/macros/o"+meta["table"]+"/one_bot.html"
+massdata variables:
+  'main' # for meta['tab'] = meta and home
+#}
+{% extends "ADM/b_home.html" %}
+{% block content %}
+
+
+{% set OBJ_URL = "?mod=ADM/obj_one&t=" + meta['table'] + '&id=' + meta['id']|string %}
+{% set page = {'app.space.prefix':'ADM/' } %}
+
+{% from "ADM/macros/menu2.html" import menu1, menu2 %}
+{% from "ADM/macros/form.html" import form1 %}
+
+{{ menu2( meta['nav'] ) }}
+
+</div>
+<div class="row">
+
+
+
+
+{% if meta['tab']=='tab.descr' %}{# <tab.descr> #}
+  {% if 'main' not in massdata %}
+    This object has no table description data.
+  {% else %} 
+    [<a href="?mod=ADM/obj_one&t=CCT_TABLE&id={{ meta['table'] }}">Edit columns</a>]<p />
+    {% set chunkin =  massdata['main'] %}
+    {% include "ADM/macros/table.html" %}
+  {% endif %}
+{% endif %}{# </tab.descr>  #}
+
+{% if meta['tab']=='vario' %}{# <vario> #}
+  {% if 'vario' not in massdata %}
+    This object has no vario data.
+  {% else %} 
+    {{ form1(massdata['vario']) }}
+  {% endif %}
+{% endif %}{# </vario>  #}
+
+</div>
+
+{% endblock %}

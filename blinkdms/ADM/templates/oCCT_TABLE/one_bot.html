@@ -1,0 +1,67 @@
+{# INPUT: 
+  meta['bot_columns']
+    'cols' : []
+    'data' 'COLNAME': []
+  
+  FORM output: 
+    xarg : dict
+    sub_action
+#}
+<br>
+<div>
+
+{% from "ADM/macros/macro.html" import nav_link with context %}
+{% from "ADM/macros/macro.html" import nav_button  %}
+
+{% set chunkin=meta['bot_columns'] %}
+{% set hidden_vars = dict( {'mod':'ADM/oCCT_TABLE/upd', 'id': pageinfo['id'], 'go':1 } ) %}
+
+{#   #}
+<h3>{{ chunkin['header']['title'] }}
+
+</h3>
+
+<form style="display:inline;" method="post" name="editform">
+{% for key, value in hidden_vars.items() %}
+<input type=hidden name="{{key}}" value="{{value|string}}">
+{% endfor %}
+
+<table class="table">
+{% set pk_index = 0 %}
+<tr>
+{% for col in chunkin['cols'] %}
+<th>{{ col }}</th>
+{% if col=='COLUMN_NAME' %}
+   {% set pk_index = loop.index0 %}
+{% endif %}
+{% endfor %}
+</tr>
+
+{% for row in chunkin['data'] %}
+<tr>
+  {% set colname = row[0] %}
+  {% for sub_col in chunkin['cols'] %}
+    <td>
+    {% if pk_index==loop.index0 %}
+      {{ row[loop.index0]|string }}
+    {% else %}
+      {% set dtype = chunkin['dtypes'][loop.index0] %}
+      {% set flen  = 15 if dtype=='STRING' else 3 %}
+      <input name="y[{{colname}}][{{sub_col}}]" value="{{ row[loop.index0]|string if row[loop.index0] != None }}" size={{ flen }}>
+    {% endif %}
+    </td>
+  {% endfor %}
+</tr>
+{% endfor %}
+
+<tr><td>
+ <button type="submit" class="btn btn-primary">Save</button>
+ </td></tr>
+</table>
+</form>
+
+
+</div>
+
+
+

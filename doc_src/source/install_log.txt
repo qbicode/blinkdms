@@ -1,0 +1,50 @@
+
+
+Vbox IP: 192.168.2.113
+
+start: 10:36 (postgres)
+
+stop at 10:42 (Create database)
+
+weiter 13:12 ... create database
+  bis  13:18
+       13:26  Python start
+       13:33  Python end
+       14:00  nginx start
+       14:10  nginx stop
+       14:17  start blinkdms python code
+       14:30  fertig
+
+
+
+
+
+--------------------
+pg_dump blkdmsdb --file=/Data/postgresql/dumps/2020-12-19.dump.sql    --format=plain --encoding=UTF8 --schema=blinkdms_tab -x --no-tablespaces --no-owner
+
+
+sed --in-place  -e 's/SELECT pg_catalog.set_config.*//' -e 's/blinkdms_tab\.//g'  -e 's/CREATE SCHEMA.*//' schema_dump.sql
+
+postgres user pw: 17QwueurBn63
+root: 1234
+steffen: s1234
+
+app-users
+---------
+root: pw: euwQe2783GH
+steffen : 1234
+test1: t1234
+test2: r1234
+
+
+psql -d dmsdb -v ON_ERROR_STOP=1 < /opt/blinkdms/blinkdms/install/sql/create_users_and_so.sql
+
+psql -d dmsdb -U blinkdms -W
+
+psql -v ON_ERROR_STOP=1 -d dmsdb -U blinkdms < /opt/blinkdms/blinkdms/install/sql/schema_dump.sql
+
+#
+# export
+#
+pg_dump dmsdb --file=/data/postgresql/dumps/2020-12-20.init.sql  --format=plain --encoding=UTF8 --schema=blinkdms_tab   -x --no-tablespaces --no-owner
+

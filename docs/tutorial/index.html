@@ -1,0 +1,300 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User’s Guide &#8212; blinkdms  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Postgres: maintenance" href="../postgres_maintenance.html" />
+    <link rel="prev" title="Install" href="../install_1.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="users-guide">
+<h1>User’s Guide<a class="headerlink" href="#users-guide" title="Permalink to this headline">¶</a></h1>
+<p><img alt="home_scr_view.png" src="../_images/home_screen.png" /></p>
+<div class="section" id="role-system">
+<h2>Role system<a class="headerlink" href="#role-system" title="Permalink to this headline">¶</a></h2>
+<dl class="simple">
+<dt>Following roles are available:</dt><dd><ul class="simple">
+<li><p>Editor (can create, edit, review, release documents)</p></li>
+<li><p>Viewer (can view documents)</p></li>
+<li><p>Admin (can do, what an editor can do + create/edit users, create root folders)</p></li>
+<li><p>Folder.Edit (can create, edit folders)</p></li>
+<li><p>QM (FUTURE: can release documents)</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="first-steps">
+<h2>First steps<a class="headerlink" href="#first-steps" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="root-actions">
+<h3>Root actions<a class="headerlink" href="#root-actions" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>go to table “document type”</p></li>
+<li><p>create a new document type, e.g. “Order form”</p></li>
+<li><p>create a new user for yourself with the role “Editor”, “Folder.Edit” and “Admin”</p></li>
+<li><p>now you can create new users and documents with your personal account</p></li>
+<li><p>logout</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="create-a-new-document">
+<h3>Create a new document<a class="headerlink" href="#create-a-new-document" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>login as normal user</p></li>
+<li><p>activate the EDIT area (see head menu)</p></li>
+<li><p>click “Create document”</p></li>
+<li><p>select/create a destination folder</p></li>
+<li><p>select the document type and give a title</p></li>
+<li><p>now the document object is created</p></li>
+<li><p>upload documents, add reviewers, add links</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="start-a-release-process">
+<h3>Start a release process<a class="headerlink" href="#start-a-release-process" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>the owner of the document can start a release workflow</p></li>
+<li><p>go to the document</p></li>
+<li><p>click  “Start Release Workflow”</p></li>
+<li><p>now the document cannot be edited anymore, but the workflow can be rejected by you</p></li>
+<li><p>now the other reviewrs/releasers can login and do their review process</p></li>
+<li><p>the last reviewer automatically releases the document</p></li>
+<li><p>if configured in the “document type”, define the original Word document will be converted to to PDF
+(see <a class="reference internal" href="#convert-word-documents-to-pdf">Convert Word documents to PDF</a>. )</p></li>
+<li><p>the document is now visible in the VIEW area</p></li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="areas">
+<h2>Areas<a class="headerlink" href="#areas" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="edit-area">
+<h3>EDIT area<a class="headerlink" href="#edit-area" title="Permalink to this headline">¶</a></h3>
+<p><img alt="home_scr_edit.png" src="../_images/home_scr_edit.png" /></p>
+<dl class="simple">
+<dt>Scope:</dt><dd><ul class="simple">
+<li><p>allow create/modification of documents</p></li>
+<li><p>allow creation/modification of folders</p></li>
+<li><p>allow linking of documents to folders</p></li>
+<li><p>see your active tasks</p></li>
+<li><p>do reviews</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="view-area">
+<h3>VIEW area<a class="headerlink" href="#view-area" title="Permalink to this headline">¶</a></h3>
+<p><img alt="home_scr_view.png" src="../_images/home_screen.png" /></p>
+<dl class="simple">
+<dt>Scope:</dt><dd><ul class="simple">
+<li><p>allow search/retrieve released documents</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="admin-area">
+<h3>Admin area<a class="headerlink" href="#admin-area" title="Permalink to this headline">¶</a></h3>
+<p><img alt="home_scr_admin.png" src="../_images/home_scr_admin.png" /></p>
+<p><strong>Main functions:</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Create/modify users</p></li>
+<li><p>Create/modify document types</p></li>
+<li><p>Do a system check</p></li>
+<li><p>Activate/deactive admin functions in the normal user context GUI</p></li>
+<li><p>Reject any active workflows</p></li>
+<li><p>Change Owners of documents</p></li>
+</ul>
+</div></blockquote>
+<p><strong>User management</strong></p>
+<dl class="simple">
+<dt>Useful activities:</dt><dd><ul class="simple">
+<li><p>Set login method=LDAP to activate ActiveDirectory authorization</p></li>
+<li><p>Set “user is active“=0 to deactivate a user</p></li>
+<li><p>Set roles to allow user activities</p></li>
+<li><p>Set password</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>document type management</strong></p>
+<dl class="simple">
+<dt>Useful activities:</dt><dd><ul class="simple">
+<li><p>create new document types</p></li>
+<li><p>define the “Doc code” : this is the prefix for the “Document ID”</p></li>
+<li><p>define “Covert Word document to PDF” yes or no : automatically convert a *.docx document to PDF at the end of the document release;
+the users in the VIEW area just see the produced PDF document; the Word doc must contain VARIABLES, which will be replaced
+by the database data, like title, Document-ID, version and so on</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>System Configuration</strong></p>
+<dl class="simple">
+<dt>some important config in conf/config.py:</dt><dd><ul class="simple">
+<li><p>workflow.sign.password.need : 0 or 1 : defines if the user must give the password on an approval workflow (electronic signature support)
+this is required by FDA CFR820 Part11</p></li>
+<li><p>email.send.allow : 0 or 1 : defines, if the system should send emails to the users, mainly in the workflow process</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="scenarios">
+<h2>Scenarios<a class="headerlink" href="#scenarios" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="start-approval-workflow-a04">
+<h3>Start Approval-Workflow (A04)<a class="headerlink" href="#start-approval-workflow-a04" title="Permalink to this headline">¶</a></h3>
+<p>Prerequisites:</p>
+<dl class="simple">
+<dt>Following users are planned for approval:</dt><dd><ul class="simple">
+<li><p>test1 (editor of the document)</p></li>
+<li><p>test2 (reviewer1)</p></li>
+<li><p>test3 (reviewer2)</p></li>
+<li><p>test4 (releaser1)</p></li>
+<li><p>test5 (releaser2)</p></li>
+</ul>
+</dd>
+<dt>Actions:</dt><dd><ul class="simple">
+<li><p>Start Workflow</p></li>
+<li><p>if email-function is active on the system: All REVIEW-users get an email, the system allows them to review the document version</p></li>
+<li><p>The review-users review</p></li>
+<li><p>After last reviewer: all releasers get an email</p></li>
+<li><p>All releasers do a review</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="convert-word-documents-to-pdf">
+<h3>Convert Word documents to PDF<a class="headerlink" href="#convert-word-documents-to-pdf" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>What to keep in mind:</dt><dd><ul class="simple">
+<li><p>there is an example for a proper WOrd template: see [GIT-PROJ]/doc/examples/Template_SOP_v1.docx</p></li>
+<li><p>the PDF conversions takes places at the end of the release process</p></li>
+<li><p>a VIEWER can only retrieve the PDF version, not the Word-version</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">blinkdms</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../install_1.html">Install</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">User’s Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#role-system">Role system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#first-steps">First steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#root-actions">Root actions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-a-new-document">Create a new document</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#start-a-release-process">Start a release process</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#areas">Areas</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#edit-area">EDIT area</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#view-area">VIEW area</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#admin-area">Admin area</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#scenarios">Scenarios</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#start-approval-workflow-a04">Start Approval-Workflow (A04)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#convert-word-documents-to-pdf">Convert Word documents to PDF</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../postgres_maintenance.html">Postgres: maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tables.html">Database tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../technologies.html">Technologies</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../install_1.html" title="previous chapter">Install</a></li>
+      <li>Next: <a href="../postgres_maintenance.html" title="next chapter">Postgres: maintenance</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Steffen Kube.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/tutorial/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

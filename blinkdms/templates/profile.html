@@ -1,0 +1,62 @@
+{# myprofile
+INPUT:
+
+massdata:
+ 'form1'
+ 'form2'
+ 'form3'
+#}
+
+{% extends "b_main.html" %}
+{% block content %}
+
+
+<div class="container">
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#m0"><svg xmlns="http://www.w3.org/2000/svg"  class="feather" data-feather="chevron-up"></svg></a>
+    </li>
+
+       <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="#m3">Info</a>
+      </li> 
+      
+       <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#m2">Settings</a>
+      </li> 
+      
+       <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#m1">Set Password</a>
+      </li> 
+      
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#m4">System info</a>
+      </li> 
+  </ul>
+  
+   <!-- Tab panes -->
+  {% from "macros/form.html" import form1 %}
+  {% from "macros/table.html" import table1 %}
+
+  <div class="tab-content">
+    <div id="m0" class="container tab-pane fade">
+    </div>
+    <div id="m2" class="container tab-pane fade">
+    {{ form1( massdata['form2'] ) }} 
+    </div>
+    <div id="m1" class="container tab-pane fade">
+    {{ form1( massdata['form1'] ) }}
+    </div>
+    
+    <div id="m3" class="container tab-pane fade  show active">
+    {{ form1( massdata['form3'] ) }}
+    </div>
+    
+     <div id="m4" class="container tab-pane fade">
+    {{ table1( massdata['sysinfo'] ) }}
+    </div>
+    
+  </div>
+</div>
+{% endblock %}

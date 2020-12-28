@@ -1,0 +1,16 @@
+{# doc_up
+INPUT:
+  meta[id]
+  massdata['form']
+#}
+
+{% extends "b_main.html" %}
+{% block content %}
+
+{% from "macros/form.html" import form1 %}
+
+{% if massdata['form'] %}
+{{ form1(massdata['form']) }}
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,89 @@
+{#
+Menues
+#}
+
+{% macro menu1( menu_data ) %}
+{#
+source: https://www.w3schools.com/bootstrap4/tryit.asp?filename=trybs_nav_tabs_toggleable&stacked=h
+meta['menu.type'] : string e.g. "obj", 'list', 'proj'
+menu_data
+  [
+  { 'title':, 'url':, 'image.alias' : or 'image': URL
+    'submenu': [{ 'jinja_inc': jinja-macro  } ],
+    }
+  ]
+- macro menu_inject_start() must be defined in caller code !
+- need in plugin:
+  def register(self) :
+      ???self.infoarr['js.scripts'] = ['x_menu2.js']
+#}
+{# OLD: 
+<script type="text/javascript">
+  var tablename='{{ meta['table'] }}';
+  var menu_type='{{ pageinfo['mod'] }}';
+</script>
+#}
+<div class="container x-menu-container">
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist" id="myTab">
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#m0"><svg xmlns="http://www.w3.org/2000/svg"  class="feather" data-feather="chevron-up"></svg></a>
+    </li>
+    
+    {% for row in menu_data %}
+      {% set menu_cnt =loop.index %}
+      {% set href= row['url']       %}
+      {% if 'submenu' in row %}
+         {% set href = '#m'+ menu_cnt|string     %}
+      {% endif %}                    
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="{{ href }}">{{ row['title'] }}</a>
+      </li>
+     
+    {% endfor %}
+    
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div id="m0" class="container tab-pane fade">
+    </div>
+    
+    {% for row in menu_data %}
+      {% set menu_cnt =loop.index %}
+      {% if 'submenu' in row %}
+          
+          <div id="m{{menu_cnt}}" class="container tab-pane fade">
+          <br>
+          {% for row2 in row['submenu'] %}
+          {% if 'jinja_inc' in row2 %}
+          {% include "macros/"+row2['jinja_inc']  %}
+          {% else %}
+            <a  class="btn btn-light{% if row2.get('active',0)>0 %} active{% endif %}"  type="button" title="{{row2['title']}}"  href="{{row2['url']}}" >
+            {% if 'image.alias' in row2 %} 
+            <svg xmlns="http://www.w3.org/2000/svg"  class="feather" data-feather="{{ row2['image.alias' ] }}"></svg> 
+            {% endif %}
+            {{row2['title']}} </a>
+          {% endif %}
+          {% endfor %}
+          </div>
+      {% endif %} 
+    {% endfor %}  
+      
+  </div>
+  
+</div>
+{% endmacro %}
+
+{% macro menu2( menu_data ) %}
+{# simple menu #}
+ <ul class="nav nav-tabs">
+   {% for row in menu_data %}
+  <li class="nav-item">
+    <a class="nav-link {{'active' if row['active']}}" href="{{row['url']}}">{{row['title']}}</a>
+  </li>
+  {% endfor %}
+</ul> 
+{% endmacro %}
+
+

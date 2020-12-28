@@ -1,0 +1,17 @@
+{# Template for a common list view
+ meta  variables: none
+ massdata: 
+     'title'
+     'data'
+     'opt'
+#}
+{% extends "ADM/home.html" %}
+{% block content %}
+
+
+<h2>Table description</h2>
+{% set chunkin = { 'header': {'title': massdata['title'] }, 'opt':massdata['opt'] } %}
+{% set test = chunkin.update( { 'data': massdata['data'] } ) %}
+
+{% include "ADM/macros/table.html" %}
+{% endblock %}

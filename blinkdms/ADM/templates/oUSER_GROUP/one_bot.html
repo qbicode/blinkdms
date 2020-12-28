@@ -1,0 +1,18 @@
+{# INPUT: meta['bot_users']:
+
+#}
+<br>
+<div>
+<h2> Members </h2>
+
+{% set chunkin = { 'header': {'title': 'Users'} } %}
+{% set test = chunkin.update( { 'data': meta['bot_users'] } ) %}
+
+{% include "ADM/macros/table.html" %}
+
+
+
+</div>
+
+
+

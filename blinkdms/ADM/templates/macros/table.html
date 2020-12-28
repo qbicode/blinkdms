@@ -1,0 +1,90 @@
+{# very simple table 
+
+INPUT: 
+  chunkin (table_simple_STRUCT)
+  {
+    'header': {
+       'title' : 'xxx',
+       'other_cont' :  ''
+    },
+   'act_button' : {'text': '', 'target_id': 'ID of target modal window' },
+   'cols' : [],  # OPTIONAL
+   'data' : [],   # list of rows                
+   'opt': {
+     'safe': 0,1 : HTML data is safe ?
+     'col_t': [] list of dict : 
+        'type':'but', 'icon':'plus', 'target': ''
+        'type':'but_link', 'icon':'download', 'url': '...' + cell_data
+    }
+  }
+#}
+
+{% set c_type=0 %}
+{% set col_t = None %}
+
+{% if 'opt' in chunkin %}
+  {% set c_type = 1 if chunkin['opt'].get('safe',0) > 0 else 0 %}
+  {% if chunkin['opt']['col_t']  %}
+  {% set col_t = chunkin['opt']['col_t'] %}
+  {% endif %}
+{% endif %}
+
+
+<h3>{{ chunkin['header']['title'] }}
+{% if 'other_cont' in chunkin['header'] %}
+&nbsp;&nbsp; {{ chunkin['header']['other_cont']|safe }}
+{% endif %}
+{% if 'act_button' in chunkin %}
+<button class="btn x_btn-transparent"  type="button" data-toggle="modal" data-target="#{{ chunkin['act_button']['target_id'] }}" ><svg xmlns="http://www.w3.org/2000/svg"  
+  class="feather" data-feather="plus"></svg> {{  chunkin['act_button']['text']  }} </button>
+  {% if 'notes' in chunkin['header'] %}
+    <span style="font-size:0.6em; font-weight:normal;">{{ chunkin['header']['notes']|safe }}</span>
+  {% endif %}
+{% endif %}
+</h3>
+<table class="table">
+{% if 'cols' in chunkin %} 
+  <tr>
+  {% for col in chunkin['cols'] %}
+  <th>{{ col }}</th>
+  {% endfor %}
+  </tr>
+{% endif %} 
+{% for row in chunkin['data'] %}
+<tr>
+
+{% for cell in row %}
+{% if col_t %} {# <col_t> #}
+  {% set safe_now=0 %}
+  {% if col_t[loop.index0] is defined %}
+    {% set tmp = col_t[loop.index0] %}
+    {% if tmp['type']=='but' %} 
+      {% set cell ='<button class="btn x_btn-transparent" type="button" data-toggle="modal" data-target="#'+  tmp['target'] +'" 
+           onClick="' + cell +'" title="Edit" ><i data-feather="edit"></i></button>' %}
+      {% set safe_now=1 %}
+    {% endif %}
+    {% if tmp['type']=='but_link' %} 
+      {% set cell ='<a class="btn x_btn-transparent" type="button" href="'+tmp['url']+ cell|string + '" title="'+tmp['icon']+'" ><i data-feather="'+ tmp['icon'] +'"></i><a>' %}
+      {% set safe_now=1 %}
+    {% endif %}
+  {% endif %}
+  
+  {% if c_type==1 or safe_now %} 
+  <td>{{ cell|safe }}</td>
+  {% else %} 
+  <td>{{ cell  if cell is not none }}</td>
+  {% endif %} 
+  
+{% else %} {# <col_t> #}
+  {% if c_type==1 %} 
+  <td>{{ cell|safe }}</td>
+  {% else %} 
+  <td>{{ cell if cell is not none }}</td>
+  {% endif %} 
+{% endif %} {# <col_t> #}
+
+{% endfor %}
+</tr>
+{% endfor %}
+
+</table>

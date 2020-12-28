@@ -1,0 +1,24 @@
+{# general macros #}
+
+{# nav_link:
+input:
+  't'
+  'id'
+  'name'
+#}
+{% macro nav_link(nav_dict) %}
+<a href="?mod=ADM/obj_one&t={{ nav_dict['t'] }}&id={{ nav_dict['id'] }}">{{ nav_dict['name'] }} [ID:{{ nav_dict['id'] }}]</a>
+{% endmacro %}
+
+{% macro nav_button( but_dict ) %}
+{% set icon    = '<i data-feather="'+ but_dict['ico']+ '"></i>' if 'ico2' not in but_dict else '<img src="res/images/feather/'+but_dict['ico2']+'.svg">'  %}
+{% set a_title = but_dict['itxt'] if 'itxt' in but_dict else but_dict['txt'] %}
+
+{% if but_dict['type'] == 'modal' %}
+<a class="btn btn-outline-primary" type="button" title="{{ a_title }}" data-toggle="modal" data-target="#{{ but_dict['target'] }}"  
+{{ ('onClick="'+but_dict['onClick']+'"')|safe if 'onClick' in but_dict }}>  {{ icon|safe }}  {{ but_dict['txt'] }} </a>
+{% else %}
+<a class="btn btn-outline-primary" type="button" title="{{ a_title }}" href="?mod={{ but_dict['url'] }}">
+ {{ icon|safe }}  {{ but_dict['txt'] }} </a>
+{% endif %}
+{% endmacro %}

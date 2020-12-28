@@ -1,0 +1,134 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Technologies &#8212; blinkdms  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Database tables" href="tables.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="technologies">
+<h1>Technologies<a class="headerlink" href="#technologies" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="convert-word-2-pdf">
+<h2>Convert Word 2 PDF<a class="headerlink" href="#convert-word-2-pdf" title="Permalink to this headline">¶</a></h2>
+<p>Requirements on the document:</p>
+<ul class="simple">
+<li><p>one word file as attachment on the document</p></li>
+<li><p>the word file containes some KEYWORDS which will be replaced automatically</p></li>
+</ul>
+<p>Process:</p>
+<ul class="simple">
+<li><p>take the word file</p></li>
+<li><p>do DocReplaceText() for title, doc code, version, …</p></li>
+<li><p>produce a temp word file (TMP.docx)</p></li>
+<li><p>produce a final PDF file (set UPLOADS.HAS_PDF=1 for this upload)</p></li>
+<li><p>save PDF as oDOC.{VERSION}.{POS}.pdf</p></li>
+</ul>
+<p>Relevant code modules:</p>
+<ul class="simple">
+<li><p>lib/oVERSION/docfile_convert.py (converts a version attachment)</p></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">blinkdms</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install_1.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/index.html">User’s Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgres_maintenance.html">Postgres: maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tables.html">Database tables</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Technologies</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#convert-word-2-pdf">Convert Word 2 PDF</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="tables.html" title="previous chapter">Database tables</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Steffen Kube.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/technologies.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

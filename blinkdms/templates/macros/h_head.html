@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>{{ pageinfo['site.title'] }}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="res/css/open-iconic-bootstrap.min.css">
+    <link rel="stylesheet" href="res/css/animate.css">
+    
+    <link rel="stylesheet" href="res/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="res/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="res/css/magnific-popup.css">
+
+    <link rel="stylesheet" href="res/css/aos.css">
+
+    <link rel="stylesheet" href="res/css/ionicons.min.css">
+
+    <link rel="stylesheet" href="res/css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="res/css/jquery.timepicker.css">
+
+    
+    <link rel="stylesheet" href="res/css/flaticon.css">
+    <link rel="stylesheet" href="res/css/icomoon.css">
+    <link rel="stylesheet" href="res/css/style.css">
+    <link rel="stylesheet" href="res/css/blink.css">
+    
+{% if 'css.scripts' in pageinfo %}
+{% for scriptx in pageinfo['css.scripts'] %}
+  <link href="res/css/{{ scriptx }}" rel="stylesheet">
+{% endfor %}
+{% endif %}
+      
+{% if 'js.scripts.start' in pageinfo %}
+{% for scriptx in pageinfo['js.scripts.start'] %}
+   <script src="res/js/{{ scriptx }}" ></script>
+{% endfor %}
+{% endif %}
+  </head>
+  <body>

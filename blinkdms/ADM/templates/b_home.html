@@ -1,0 +1,80 @@
+{# input:
+-- meta --
+
+
+#}
+
+{% include "ADM/macros/h_head.html" %}
+    
+          <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+            <div class="container-fluid px-md-4	">
+              <a class="navbar-brand" href="?mod=home">{{pageinfo['site.title']}} 
+                &nbsp; <a class="navbar-brand" href="#">&gt; &nbsp; {{ pageinfo['user.fullname'] }}</a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="oi oi-menu"></span> Menu
+              </button>
+
+              <div class="collapse navbar-collapse" id="ftco-nav">
+                <ul class="navbar-nav ml-auto">
+                
+                
+                  {% if 'admin' in pageinfo['user.roles'] %}
+                  <li class="nav-item"><a href="?mod=ADM/homec" class="nav-link">Admin-Home</a></li>
+                  {% endif %}
+                  {% if pageinfo['admin.is'] %}
+                  <li class="nav-item"><a href="?mod=ADM/home" class="nav-link">ROOT-Home</a></li>
+                  {% endif %}
+                  <li class="nav-item"><a href="?mod=logout" class="nav-link">Logout</a></li>
+                 
+                  
+
+                </ul>
+              </div>
+            </div>
+          </nav>
+    <!-- END nav -->
+    
+    {# Blink-Design: ""hero-wrap-blink" makes smaller height "#}
+    <div class="img" style="background-image: url(res/ADM/images/bg_1.jpg); 
+          background-position: 50% 0%; ">
+      <div class="overlay"></div>
+        <div class="container">
+          <div class="row d-md-flex no-gutters slider-text justify-content-center">
+                  <div class="col-md-10 d-flex ftco-animate">
+                  
+                    <div class="text text-center">
+                      <p style="margin-top: 20px;"></p>
+                      <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                          {% for path_row in pageinfo['locrow'] %}
+                          <li class="breadcrumb-item"><a href="?mod={{path_row['url']}}">{{path_row['text']}} </a></li>   
+                          {% endfor %}
+                        </ol>
+                      </nav>
+                      
+                      <h1 class="mb-5">{{ pageinfo['title'] }}</h1><br>
+                         
+                    </div>
+                  </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <section class="blink-section bg-light">
+      <div class="container">
+        <div class="row d-flex mb-5">
+          {% include "ADM/macros/h_message.html" %}
+
+          {% block content %}{% endblock %}
+       </div>
+     </div>
+    </section> 
+    
+
+   
+{% include "ADM/macros/h_foot_main.html" %}
+
+{% block foot_scripts %}{% endblock %} 
+  </body>
+</html>

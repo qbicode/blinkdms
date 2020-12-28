@@ -1,0 +1,49 @@
+{#  workflow status form
+INPUT:
+massdata: 
+'form'
+'form.state.REJECT' : ID of REJECT state
+'form.state.STD': ID of normal state
+'reject.button.show'
+#}
+
+{% extends "b_main.html" %}
+{% block content %}
+
+{% from "macros/form.html" import form1 %}
+
+<div class="container">
+
+{% if massdata %}
+ {% if 'form' in massdata %} 
+ 
+ <script>
+ function x_submit() {
+    document.editform.elements['parx[STATE_ID]'].value='{{ massdata['form.state.STD']|string }}'; 
+    document.editform.submit();
+ }
+ 
+ function x_form_reject_but() {
+    if (document.editform.elements['parx[NOTES]'].value=='') {
+       alert('Please give a comment!');
+       return false;
+    }
+    document.editform.elements['parx[STATE_ID]'].value='{{ massdata['form.state.REJECT']|string }}'; 
+    document.editform.submit();
+    return true;
+ }
+ </script>
+ 
+  {% set x = massdata['form']['init'].update( {'submit':
+      '<button class="btn btn-primary" onclick=\"x_submit();\">Save</button>' } ) 
+   %}
+  {% if massdata['reject.button.show'] %}
+  {% set x = massdata['form']['init'].update( {'submit.extra':
+      '<button  class="btn btn-danger" onclick=\"return x_form_reject_but();\">Reject</button>' } ) 
+   %}
+  {% endif %}
+  {{ form1( massdata['form'] ) }} 
+ {% endif %}
+{% endif %}
+</div>
+{% endblock %}

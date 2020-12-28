@@ -1,0 +1,638 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Install &#8212; blinkdms  documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="User’s Guide" href="tutorial/index.html" />
+    <link rel="prev" title="Welcome to blinkdms’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="install">
+<h1>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="ots-software">
+<h2>OTS software<a class="headerlink" href="#ots-software" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="linux">
+<h3>Linux<a class="headerlink" href="#linux" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Debian 10</p></li>
+</ul>
+<p>install small helper packages:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>apt install openssh-server
+apt install zip
+</pre></div>
+</div>
+</div>
+<div class="section" id="rdbms-postgres">
+<h3>RDBMS Postgres<a class="headerlink" href="#rdbms-postgres" title="Permalink to this headline">¶</a></h3>
+<p>The application is based on data transfer with a database service on a remote database server.
+The underlying database model is named <strong>Blinkdms Magasin</strong>.</p>
+<p>main Postgres directories/files:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>[etc-config-dir] = /etc/postgresql/11/main</p></li>
+<li><p>[PG_DATA_DIR] = /data/postgresql/main</p></li>
+<li><p>[PG_DUMP_DIR] = /data/postgresql/dumps</p></li>
+</ul>
+</div></blockquote>
+<p>Install Postgres 11:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>apt-get install postgresql postgresql-contrib  <span class="o">(</span>118MB<span class="o">)</span>
+apt-get install libpq-dev <span class="o">(</span><span class="k">for</span> postgres + python<span class="o">)</span>
+</pre></div>
+</div>
+<p>Docu see <a class="reference external" href="https://wiki.debian.org/PostgreSql#Installation">https://wiki.debian.org/PostgreSql#Installation</a></p>
+<p>Manage data dir (create data dir verb+[PG_DATA_DIR]+, move original data dir to this location):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir /data/postgresql/main
+chown -R postgres:postgres /data/postgresql/main
+mv /var/lib/postgresql/11/main /data/postgresql/
+
+<span class="c1"># create dump dir for export, import, backup</span>
+mkdir /data/postgresql/dumps
+chown -R postgres:postgres /data/postgresql/dumps
+</pre></div>
+</div>
+<p>set configs in etc-config-dir postgresql.conf :</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">data_directory</span><span class="o">=</span><span class="s1">&#39;/data/postgresql/main&#39;</span>
+SET <span class="nv">standard_conforming_strings</span><span class="o">=</span>on
+</pre></div>
+</div>
+<p>set AUTHORIZATION in [etc-config-dir]/pg_hba.conf ; change ident to trust !</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>---
+<span class="c1"># TYPE  DATABASE    USER        CIDR-ADDRESS          METHOD</span>
+
+<span class="c1"># &quot;local&quot; is for Unix domain socket connections only</span>
+<span class="nb">local</span>   all         all                               trust
+host    all         all         <span class="m">127</span>.0.0.1/32          trust
+<span class="c1"># IPv6 local connections:</span>
+host    all         all         ::1/128               trust
+---
+</pre></div>
+</div>
+<p>Start DB:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>systemctl stop postgresql
+systemctl start postgresql
+</pre></div>
+</div>
+</div>
+<div class="section" id="openoffice">
+<h3>OpenOffice<a class="headerlink" href="#openoffice" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>needed for conversion docx to pdf</p></li>
+<li><p>use program lowriter in the application</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># size: 480MB</span>
+apt install default-jre
+
+<span class="c1"># size: 390MB</span>
+apt install libreoffice-java-common
+
+<span class="c1"># size: 50MB</span>
+apt install --no-install-recommends  libreoffice-writer
+
+<span class="c1"># test, if java and lowriter are installed</span>
+java -version
+<span class="c1"># output: e.g. openjdk version &quot;11.0.9.1&quot; 2020-11-04</span>
+
+lowriter --version
+<span class="c1"># output: e.g. LibreOffice 6.1.5.2 10(Build:2)</span>
+
+<span class="c1"># example convert</span>
+lowriter --convert-to pdf TR_20200709_Agarosebeads.docx
+</pre></div>
+</div>
+</div>
+<div class="section" id="python-modules">
+<h3>Python + Modules<a class="headerlink" href="#python-modules" title="Permalink to this headline">¶</a></h3>
+<table class="hlist"><tr><td><ul class="simple">
+<li><p>minimum version: Python3.7</p></li>
+<li><p>python3-pip (use: pip3)</p></li>
+<li><p>Currently: no virtualenv !</p></li>
+</ul>
+</td></tr></table>
+<p><strong>Check Python version</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 --version
+<span class="c1"># expected output: Python 3.7.3</span>
+
+<span class="c1"># Pip (250 MB)</span>
+apt install python3-pip
+
+<span class="c1"># check version</span>
+pip3 --version
+<span class="c1"># output: pip 18.1</span>
+</pre></div>
+</div>
+<p>Install Pip modules:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3 install jsonrpcclient jsonrpcserver requests Flask  Flask-Session Flask-mail psycopg2 ldap3 python-docx
+
+<span class="c1"># upgrade needded for ldpa3</span>
+pip3 install --upgrade pyasn1
+</pre></div>
+</div>
+<p>More details to the modules:</p>
+<table class="hlist"><tr><td><ul class="simple">
+<li><p>jsonrpcclient (for gozilla_jsonrpc)</p></li>
+<li><p>jsonrpcserver (for JSONRPC) <a class="reference external" href="https://jsonrpcserver.readthedocs.io/en/latest">https://jsonrpcserver.readthedocs.io/en/latest</a></p></li>
+<li><p>requests (for gozilla_jsonrpc)</p></li>
+<li><p>Flask</p></li>
+<li><p>Flask-Session (for extented session)</p></li>
+<li><p>Flask-mail (for emails)</p></li>
+<li><p>psycopg2 (postgres, need apt-get package: libpq-dev)</p></li>
+<li><p>ldap3    (since 2020-03)</p></li>
+<li><p>python-docx (for fOffice document convert)</p></li>
+</ul>
+</td></tr></table>
+</div>
+<div class="section" id="webserver-uwsgi-nginx">
+<h3>Webserver uWSGI + Nginx<a class="headerlink" href="#webserver-uwsgi-nginx" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>Install-Source: <a class="reference external" href="https://www.digitalocean.com/community/tutorials/">https://www.digitalocean.com/community/tutorials/</a></dt><dd><p>how-to-serve-flask-applications-with-uswgi-and-nginx-on-ubuntu-18-04</p>
+</dd>
+</dl>
+<p>Source as PDF: see [WebSrvInstall]</p>
+<div class="section" id="uwsgi-dynamic">
+<h4>uWSGI (dynamic)<a class="headerlink" href="#uwsgi-dynamic" title="Permalink to this headline">¶</a></h4>
+<p>Install</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>apt install  libssl-dev
+</pre></div>
+</div>
+<p>The application provides dynamic HTML pages.</p>
+</div>
+<div class="section" id="nginx-static">
+<h4>Nginx (static)<a class="headerlink" href="#nginx-static" title="Permalink to this headline">¶</a></h4>
+<p>The application provides static HTML pages.</p>
+</div>
+<div class="section" id="install-procedure">
+<h4>Install procedure<a class="headerlink" href="#install-procedure" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">#</span>
+<span class="c1"># install uWSGI + NGINX</span>
+<span class="c1">#</span>
+
+<span class="c1"># PATH: /opt/blinkdms/blinkdms</span>
+/var/log/daemon.log
+
+<span class="c1"># UFW</span>
+%  apt install ufw
+
+
+<span class="c1">### NGINX ##</span>
+<span class="c1"># see https://www.digitalocean.com/community/tutorials/</span>
+      how-to-install-nginx-on-ubuntu-18-04
+% apt install nginx
+
+<span class="c1"># firewall: if needed TBD: ask your network admin</span>
+% ufw allow <span class="s1">&#39;Nginx HTTP&#39;</span>
+
+% systemctl stop nginx
+% systemctl start nginx
+<span class="c1"># reload: systemctl reload nginx</span>
+<span class="c1"># check NGINX</span>
+%systemctl status nginx
+</pre></div>
+</div>
+<p>No create a file /etc/nginx/sites-available/blinkdms</p>
+<p>Content:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>If you want to set a server-name add option: server_name  YOUR_LAN YOUR_HOST_NAME;</p></li>
+<li><p>Please set your YOUR_HOST_NAME, set YOUR_LAN: e.g. blink.lan)</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>server <span class="o">{</span>
+    listen <span class="m">8080</span><span class="p">;</span>
+    listen <span class="o">[</span>::<span class="o">]</span>:8080<span class="p">;</span>
+
+    location / <span class="o">{</span>
+        include uwsgi_params<span class="p">;</span>
+        uwsgi_pass unix:/opt/blinkdms/blinkdms/app.sock<span class="p">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>Continue configuration</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># copy config to sites-enabled</span>
+ln -s /etc/nginx/sites-available/blinkdms /etc/nginx/sites-enabled
+<span class="c1"># test config</span>
+nginx -t
+</pre></div>
+</div>
+<p>Install uWSGI</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3 install uwsgi
+</pre></div>
+</div>
+<p>create a system service file /etc/systemd/system/blinkdms.service</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Unit<span class="o">]</span>
+<span class="nv">Description</span><span class="o">=</span>uWSGI instance to serve blinkdms
+<span class="nv">After</span><span class="o">=</span>network.target
+
+<span class="o">[</span>Service<span class="o">]</span>
+<span class="nv">User</span><span class="o">=</span>www-data
+<span class="nv">Group</span><span class="o">=</span>www-data
+
+<span class="nv">WorkingDirectory</span><span class="o">=</span>/opt/blinkdms/blinkdms
+<span class="nv">ExecStart</span><span class="o">=</span>/usr/local/bin/uwsgi --ini app.ini
+
+<span class="o">[</span>Install<span class="o">]</span>
+<span class="nv">WantedBy</span><span class="o">=</span>multi-user.target
+</pre></div>
+</div>
+<p>Continue with uwsgi starting</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># create user if NOT exists</span>
+<span class="c1"># important: the user needs a home and a shell</span>
+<span class="c1">#    for PDF convert of command lowriter !!!</span>
+
+<span class="c1"># if www-data not exists ...</span>
+<span class="c1"># useradd -m www-data</span>
+<span class="c1"># Whats this ??? ...</span>
+<span class="c1"># sudo passwd www-data</span>
+
+<span class="c1"># IMPORTANT: nginx and uwsgi will be started later after installing the python-code ...</span>
+
+<span class="c1"># useful commands</span>
+
+systemctl restart nginx
+systemctl stop blinkdms
+systemctl start blinkdms
+systemctl restart blinkdms
+systemctl status blinkdms
+tail /var/log/daemon.log
+tail /var/log/nginx/error.log
+
+<span class="c1"># logs ..</span>
+less /var/log/nginx/error.log: checks the Nginx error logs.
+less /var/log/nginx/access.log: checks the Nginx access logs.
+<span class="c1"># checks the Nginx process logs</span>
+journalctl -u nginx
+<span class="c1"># checks your Flask app&#39;s uWSGI logs.</span>
+journalctl -u blinkdms
+</pre></div>
+</div>
+<p><strong>SSL on NGINX</strong></p>
+<p>Info from:  <a class="reference external" href="https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-nginx-in-ubuntu-18-04">https://www.digitalocean.com/community/tutorials/how-to-create-a-self-signed-ssl-certificate-for-nginx-in-ubuntu-18-04</a></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>% sudo openssl req -x509 -nodes -days <span class="m">365</span> -newkey rsa:2048
+   -keyout /etc/ssl/private/nginx-selfsigned.key
+   -out /etc/ssl/certs/nginx-selfsigned.crt
+
+Country Name <span class="o">(</span><span class="m">2</span> letter code<span class="o">)</span> <span class="o">[</span>AU<span class="o">]</span>:DE
+State or Province Name <span class="o">(</span>full name<span class="o">)</span> <span class="o">[</span>Some-State<span class="o">]</span>:Thuringia
+Locality Name <span class="o">(</span>eg, city<span class="o">)</span> <span class="o">[]</span>:Jena
+Organization Name <span class="o">(</span>eg, company<span class="o">)</span> <span class="o">[</span>Internet Widgits Pty Ltd<span class="o">]</span>:YOUR_COMPANY
+Organizational Unit Name <span class="o">(</span>eg, section<span class="o">)</span> <span class="o">[]</span>:IT
+Common Name <span class="o">(</span>e.g. server FQDN or YOUR name<span class="o">)</span> <span class="o">[]</span>:YOUR_SERVER_NAME
+Email Address <span class="o">[]</span>:your@email-address
+
+<span class="c1">#  create a strong Diffie-Hellman group,</span>
+% openssl dhparam -out /etc/nginx/dhparam.pem <span class="m">4096</span>
+
+<span class="c1"># Creating a Configuration Snippet Pointing to the SSL Key and Certificate</span>
+% sudo nano /etc/nginx/snippets/self-signed.conf
+
+<span class="c1"># Creating a Configuration Snippet with Strong Encryption Settings</span>
+% nano /etc/nginx/snippets/ssl-params.conf
+
+<span class="c1"># mod /etc/nginx/sites-available/blinkdms</span>
+
+<span class="c1"># enabled changes on NGINX</span>
+% nginx -t
+<span class="c1"># see warnings</span>
+Output
+nginx: <span class="o">[</span>warn<span class="o">]</span> <span class="s2">&quot;ssl_stapling&quot;</span> ignored, issuer certificate not found
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf <span class="nb">test</span> is successful
+
+<span class="c1"># restart</span>
+% systemctl restart nginx
+</pre></div>
+</div>
+</div>
+<div class="section" id="multiple-webservers">
+<h4>Multiple Webservers<a class="headerlink" href="#multiple-webservers" title="Permalink to this headline">¶</a></h4>
+<p>Introdution:</p>
+<ul class="simple">
+<li><p>Goal: run multiple instances of the application with different databases.</p></li>
+<li><p>blinkdms_dev runs only HTTP protocol (no SSL)</p></li>
+</ul>
+<p>Actions:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># copy /etc/nginx/sites-available/blinkdms+ to new config blinkdms_dev</span>
+<span class="c1"># modify blinkdms_dev</span>
+% ln -s /etc/nginx/sites-available/... /etc/nginx/sites-enabled
+<span class="c1"># copy the python-code from /opt/blinkdms to /opt/blinkdms_dev</span>
+<span class="c1"># change GROUP ownership of /opt/blinkdms_dev/blinkdms</span>
+chmod g+w blinkdms
+chgrp www-data blinkdms/app.sock
+chmod g+w blinkdms/app.sock
+
+<span class="c1"># modify /opt/blinkdms_dev/app.ini</span>
+<span class="c1"># create new /etc/systemd/system/blinkdms_dev.service (see example below)</span>
+<span class="c1"># modify app-config /opt/blinkdms_dev/blinkdms/conf/config.py</span>
+
+<span class="c1"># reload system configs</span>
+% systemctl daemon-reload
+<span class="c1"># restart Nginx + uWSGI</span>
+% systemctl restart nginx
+% systemctl restart blinkdms_dev
+</pre></div>
+</div>
+<p>Example for /etc/systemd/system/blinkdms_dev.service:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>Unit<span class="o">]</span>
+<span class="nv">Description</span><span class="o">=</span>uWSGI instance to serve blinkdms_dev
+<span class="nv">After</span><span class="o">=</span>network.target
+
+<span class="o">[</span>Service<span class="o">]</span>
+<span class="nv">User</span><span class="o">=</span>www-data
+<span class="nv">Group</span><span class="o">=</span>www-data
+
+<span class="nv">WorkingDirectory</span><span class="o">=</span>/opt/blinkdms_dev/blinkdms
+<span class="nv">ExecStart</span><span class="o">=</span>/usr/local/bin/uwsgi --ini app.ini
+
+<span class="o">[</span>Install<span class="o">]</span>
+<span class="nv">WantedBy</span><span class="o">=</span>multi-user.target
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="application-developed-software">
+<h2>Application developed software<a class="headerlink" href="#application-developed-software" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="install-system-code">
+<h3>Install system code<a class="headerlink" href="#install-system-code" title="Permalink to this headline">¶</a></h3>
+<p>Modify permissions for  /usr/bin/lowriter</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>chown -R www-data:www-data  /var/www
+</pre></div>
+</div>
+<p>Create data directories</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir /data/blinkdms
+mkdir /data/blinkdms/docs
+mkdir /data/blinkdms/work
+chown -R www-data:www-data /data/blinkdms
+</pre></div>
+</div>
+<p>Resource: GIT_PROJECT=TBD!</p>
+<p>copy code from [GIT_PROJECT]/blinkdms to /opt/blinkdms/blinkdms</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>chown -R www-data:www-data /opt/blinkdms/blinkdms
+</pre></div>
+</div>
+</div>
+<div class="section" id="postgres-database-schema">
+<h3>Postgres: database schema<a class="headerlink" href="#postgres-database-schema" title="Permalink to this headline">¶</a></h3>
+<p><strong>Scope:</strong> Create the magasin-database-schema</p>
+<dl class="simple">
+<dt>Resources:</dt><dd><ul class="simple">
+<li><p>[SQL_SRC_DIR]=/opt/blinkdms/blinkdms/install/sql</p></li>
+</ul>
+</dd>
+<dt>Actions:</dt><dd><ul class="simple">
+<li><p>Change the password for user blinkdms in the file /opt/blinkdms/blinkdms/install/sql/create_user.sql</p></li>
+<li><p>Now login as postgres</p></li>
+</ul>
+</dd>
+</dl>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>su -s /bin/bash postgres
+createdb dmsdb
+</pre></div>
+</div>
+<p><strong>create user, roles and schema</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>psql -d dmsdb -v <span class="nv">ON_ERROR_STOP</span><span class="o">=</span><span class="m">1</span>
+  &lt; /opt/blinkdms/blinkdms/install/sql/create_user.sql
+</pre></div>
+</div>
+<p><strong>login</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>psql -d dmsdb -U blinkdms -W
+</pre></div>
+</div>
+<p>database - features:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Indexing</p></li>
+<li><p>Trigger, Constraints</p></li>
+<li><p>Transaction (ACID)</p></li>
+<li><p>Referential Integrity</p></li>
+<li><p>Security</p></li>
+<li><p>Locking</p></li>
+</ul>
+</div></blockquote>
+<div class="section" id="import-the-database-schema">
+<h4>Import the database schema<a class="headerlink" href="#import-the-database-schema" title="Permalink to this headline">¶</a></h4>
+<p><strong>Import Dump</strong></p>
+<p>Location of the SQL-data:  /opt/blinkdms/blinkdms/install/sql/schema_dump.sql</p>
+<p>Prerequisites:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>database, user, roles, schema must exist</p></li>
+<li><p>schema must exists before</p></li>
+<li><p>dump is in plain text (SQL)</p></li>
+<li><p>the dump must NOT contain schema-table names !!!</p></li>
+<li><p><a class="reference external" href="https://www.postgresql.org/docs/8.4/backup-dump.html">https://www.postgresql.org/docs/8.4/backup-dump.html</a></p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>psql -v <span class="nv">ON_ERROR_STOP</span><span class="o">=</span><span class="m">1</span> -d dmsdb -U blinkdms
+  &lt; /opt/blinkdms/blinkdms/install/sql/schema_dump.sql
+</pre></div>
+</div>
+<p>test success …</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>psql -d dmsdb -U blinkdms
+<span class="k">select</span> * from DB_USER<span class="p">;</span>
+</pre></div>
+</div>
+<p>More tutorials for postgres + Python:
+<a class="reference external" href="https://medium.com/&#64;gitaumoses4/python-and-postgresql-without-orm-6e9d7fc9a38e">https://medium.com/&#64;gitaumoses4/python-and-postgresql-without-orm-6e9d7fc9a38e</a></p>
+</div>
+</div>
+<div class="section" id="python-code">
+<h3>Python-Code<a class="headerlink" href="#python-code" title="Permalink to this headline">¶</a></h3>
+<p>Prerequisites: the code is installed on /opt/blinkdms/blinkdms (see section “Install system code”)</p>
+<p>Resource:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>[PYTHON_SRC_DIR]=/opt/blinkdms/blinkdms</p></li>
+</ul>
+</div></blockquote>
+<div class="section" id="code-post-config">
+<h4>Code post config<a class="headerlink" href="#code-post-config" title="Permalink to this headline">¶</a></h4>
+<p>make  app.sock wriuteable for www-data</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>chgrp www-data /opt/blinkdms/blinkdms
+chmod g+w /opt/blinkdms/blinkdms
+touch /opt/blinkdms/blinkdms/app.sock
+chgrp www-data /opt/blinkdms/blinkdms/app.sock
+chmod g+w /opt/blinkdms/blinkdms/app.sock
+</pre></div>
+</div>
+<p>Link sources for Admin:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> /opt/blinkdms/blinkdms
+ln -s /opt/blinkdms/blinkdms/ADM/templates /opt/blinkdms/blinkdms/templates/ADM
+ln -s /opt/blinkdms/blinkdms/ADM/static /opt/blinkdms/blinkdms/static/ADM
+</pre></div>
+</div>
+</div>
+<div class="section" id="configuration">
+<h4>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><ul class="simple">
+<li><p>copy config.dist.py to config.py</p></li>
+<li><p>Resource: /opt/blinkdms/blinkdms/conf/config.py</p></li>
+</ul>
+</div></blockquote>
+<p>Edit the config (at least the DB password):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>superglobal<span class="o">[</span><span class="s1">&#39;db&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="o">{</span>
+   <span class="s1">&#39;main&#39;</span>:  <span class="o">{</span>
+       <span class="s1">&#39;dbname&#39;</span>:<span class="s1">&#39;dmsdb&#39;</span>,
+       <span class="s1">&#39;host&#39;</span>:<span class="s1">&#39;localhost&#39;</span>,
+       <span class="s1">&#39;user&#39;</span>:<span class="s1">&#39;blinkdms&#39;</span>,
+       <span class="s1">&#39;password&#39;</span>:<span class="s1">&#39;xxxxx&#39;</span>,
+     <span class="o">}</span>
+    <span class="o">}</span>
+</pre></div>
+</div>
+<p>Start Web server</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># start nginx</span>
+systemctl restart nginx
+
+
+systemctl daemon-reload
+
+<span class="c1"># allow start of the daemon on system start ...</span>
+systemctl <span class="nb">enable</span> blinkdms.service
+
+systemctl restart blinkdms
+</pre></div>
+</div>
+</div>
+<div class="section" id="test-a-python-script">
+<h4>Test a python script<a class="headerlink" href="#test-a-python-script" title="Permalink to this headline">¶</a></h4>
+<p>if you want to test a python script on command line you first have to do taht:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">PYTHONPATH</span><span class="o">=</span>/opt/blinkdms/
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="first-login-to-the-system">
+<h3>First login to the system<a class="headerlink" href="#first-login-to-the-system" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>go to the web browser; url: x.x.x.x:8080  (depending on your nginx config)</p></li>
+<li><p>login as root, password: nopasswd</p></li>
+<li><p>go to user settings and change the initial password !</p></li>
+<li><p>go the the Admin area</p></li>
+<li><p>run the plugin “System Check”</p></li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">blinkdms</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Install</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ots-software">OTS software</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#linux">Linux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rdbms-postgres">RDBMS Postgres</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#openoffice">OpenOffice</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#python-modules">Python + Modules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#webserver-uwsgi-nginx">Webserver uWSGI + Nginx</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#application-developed-software">Application developed software</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#install-system-code">Install system code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#postgres-database-schema">Postgres: database schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#python-code">Python-Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#first-login-to-the-system">First login to the system</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/index.html">User’s Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="postgres_maintenance.html">Postgres: maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tables.html">Database tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="technologies.html">Technologies</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to blinkdms’s documentation!</a></li>
+      <li>Next: <a href="tutorial/index.html" title="next chapter">User’s Guide</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Steffen Kube.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/install_1.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

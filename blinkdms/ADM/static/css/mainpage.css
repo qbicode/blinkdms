@@ -1,0 +1,112 @@
+/* Blink main page design */
+
+.vertical-menu1 {
+  border-radius: 5px;
+  background-color: #666;
+  padding: 5px; 
+  width: 300px;
+  position: absolute; /* fixed */
+  top: 153px; /* 120 */
+  left: 40px;
+  z-index: 2;
+}
+
+.vertical-menu {
+  color: #ccc;
+}
+
+.vertical-menu a {
+  color: #ccc;
+  display: block;
+  /* padding: 12px; */
+  text-decoration: none;
+}
+
+.vertical-menu a:hover {
+  background-color: #222;
+}
+
+.vertical-menu a.active {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.vertical-menu2 {
+  border-radius: 5px;
+  background-color: #666;
+  padding: 5px; 
+  width: 220px;
+  position: absolute;
+  top: 0px;
+  right: 50px;
+  z-index: 2;
+}
+
+
+/* <NAVBAR>  blinkapp*/
+.navbar  {
+    padding-left: 0px;
+}
+
+.navbar .dropdown-toggle, .navbar .dropdown-menu a {
+    cursor: pointer;
+}
+
+.navbar .dropdown-item.active, .navbar .dropdown-item:active {
+    color: inherit;
+    text-decoration: none;
+    background-color: inherit;
+}
+
+.navbar .dropdown-item:focus, .navbar .dropdown-item:hover {
+    color: #16181b;
+    text-decoration: none;
+    background-color: #f8f9fa;
+}
+
+
+
+.navbar .dropdown-toggle:not(.nav-link)::after {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    
+    margin-left: .5em;
+    vertical-align: 0;
+    border-bottom: .3em solid transparent;
+    border-top: .3em solid transparent;
+    border-left: .3em solid;
+}
+
+/* </NAVBAR>  blinkapp*/
+
+
+/* <MENU> */
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+  border-color: green green #fff;
+}
+.nav-tabs {
+    border-bottom: 1px solid green;
+}
+/* </MENU> */
+
+.x_btn-transparent {
+  background-color: transparent;
+}
+.x_btn-transparent:hover {
+  background-color: #e0e0e0;
+}
+
+.x-a-y-slim {
+  padding-top:2px;
+  padding-bottom:2px;
+}
+
+.x-menu-container {
+  padding-left:0px;
+}
+
+.x-whitespace-nowrap {
+  white-space: nowrap;
+}
+

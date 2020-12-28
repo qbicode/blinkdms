@@ -1,0 +1,19 @@
+TODOs
+
+- editor user:
+  * OK: define Reviewers/Releasers: create system-setting: "app.workflow.reviewer.need" : 0,1 
+    - 0 : dneed only a RELEASER
+       - ... then it will NOT show the releaser selection box in HTML
+        - TBD: change code in oVERSION_WFL.py : currently it needs REVIEW and REVIEW_REL
+    - 1 : need REVIEWER and RELEASER users
+
+- admin user:
+  * OK: can create root folder  (2020-12-20) => Only Admin !!
+  * Admin area navigation path is sometimes wrong
+
+root:
+  * should NOT edit tables with 2 PKs (e.g. CCT_COLUMN) !!
+  
+ALL:
+  * remove Blink as company ...
+  * may be a user-space for images and so on ...

@@ -1,0 +1,6 @@
+*__pycache__*
+env/*
+doc_src/build/*
+blinkdms.wpr
+blinkdms.wpu
+blinkdms.zip

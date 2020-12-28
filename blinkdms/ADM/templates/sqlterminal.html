@@ -1,0 +1,56 @@
+{#  sql terminal
+INPUT:
+meta['go']
+massdata:
+  'form'
+  'data' - list of data
+
+#}
+{% extends "ADM/b_home.html" %}
+{% block content %}
+
+    
+   
+{% from "ADM/macros/form.html" import form1 %}
+{{ form1( massdata['form'] ) }}
+
+</div>
+<div class="row">
+
+<ul>
+{% for row in massdata['text_array'] %}
+  <li>{{ row }}</li>
+{% endfor %}
+</ul>
+
+</div>
+<div class="row">
+
+<h3>Help</h3>
+<ul>
+<li>Tipp: Statements for Oracle must <em>not</em> end with a semicolon () !!!</li>
+<li>Restriction: if the user is NOT "root": only the command SELECT is allowed!</li>
+<li>CSV-format: LINEFEED "\n" will be replaced by pattern LF_pattern</li>
+<li>SQL-Example: select * from exp where exp_id < 1000</li>
+</ul> 
+
+</div>
+<div class="row">
+
+<table class="table table-bordered table-sm">
+{% for row in massdata['data'] %}
+<tr>
+{% if not loop.index0 %}
+{% for cell in row %}
+  <th>{{ cell  if cell is not none }}</th>
+{% endfor %}
+{% else %}
+{% for cell in row %}
+  <td>{{ cell  if cell is not none }}</td>
+{% endfor %}
+{% endif %}
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

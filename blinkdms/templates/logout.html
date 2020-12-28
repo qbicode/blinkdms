@@ -1,0 +1,24 @@
+{% include "macros/h_login_head.html" %}
+
+<div class="form-signin">
+  <h1 class="h3 mb-3 font-weight-normal"> {{ pageinfo['site.title'] }} - {{ pageinfo['title'] }}</h1>
+  <img class="mb-4" src="res/images/Blink_Icon_white.png" alt="" width="72" height="72">
+  <br>
+  <br>
+  
+  <div class="alert alert-success" role="alert">
+  Logged out.
+  </div>
+
+  <br>
+  <br>
+  <br>
+
+  <a href="?mod=login }}"  class="btn btn-lg btn-primary btn-block" role="button" >Sign in</a>
+   <br>
+   
+  <p class="mt-5 mb-3 text-muted">Blink AG© 2016-2019</p>
+</div>
+
+{% include "macros/h_login_foot.html" %}
+

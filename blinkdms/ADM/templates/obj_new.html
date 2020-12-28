@@ -1,0 +1,27 @@
+{# Template for single object CREATOR
+ meta  variables:
+  table
+massdata variables:
+  'main' : main_feat_out,
+  'form' : 
+     'init'
+#}
+{% extends "ADM/b_home.html" %}
+{% block content %}
+
+
+
+{% set page = {'app.space.prefix':'ADM/' } %}
+{% set dummy = meta.update ( {'editmode':'edit' } ) %}
+
+
+<form style="display:inline;" method="post" name="editform">
+<input type=hidden name="mod" value="ADM/obj_new"> 
+<input type=hidden name="t" value="{{ meta['table'] }}">
+<input type=hidden name="go" value="1">
+<input type=hidden name="proj_id" value="{{ meta['proj_id'] }}">
+
+{% include "ADM/macros/obj_one_table.html" %}
+
+</form>
+{% endblock %}

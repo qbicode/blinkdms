@@ -1,0 +1,25 @@
+{# Template for single object CREATOR
+ meta  variables:
+  table
+massdata variables:
+  'main' : main_feat_out,
+  'form' : 
+     'init'
+#}
+{% extends "ADM/b_home.html" %}
+{% block content %}
+
+ {% from "ADM/macros/form.html" import form1 %}
+
+  <div class="container">
+  {% if 'form' in massdata %}
+    {{ form1( massdata['form'] ) }}
+  {% endif %}
+</div>
+
+</form>
+{% endblock %}
+
+{% block foot_scripts %}
+<script src="res/ADM/js/x_modal.js"></script>
+{% endblock %}

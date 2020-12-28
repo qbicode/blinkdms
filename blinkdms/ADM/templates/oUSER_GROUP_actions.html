@@ -1,0 +1,30 @@
+{# Input:
+meta:
+ 'action'
+ 'obj.num'
+ 'bad_devs'
+ 
+massdata['form']
+#}
+{% extends "ADM/home.html" %}
+{% block content %}
+
+
+<div class="container">
+{# <h2>Action: {{ meta['action'] }}</h2> #}
+
+{% if 'bad_devs' in meta %}
+ Problems on Devices:<ul>
+ {% for dev_id in meta['bad_devs'] %}
+   <li>{{dev_id}}</li>
+ {% endfor %}
+ </ul>
+{% endif %}
+
+
+{% if 'form' in massdata %}
+{% from "ADM/macros/form.html" import form1 %}
+{{ form1( massdata['form'] ) }}
+{% endif %}
+</div>
+{% endblock %}

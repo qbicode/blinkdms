@@ -1,0 +1,136 @@
+{# show table for ONE object 
+INPUT: 
+   meta['editmode'] = 'edit'
+   massdata['main'] : VARDEF: obj_one_sub.py : form_seriell_STRUCT
+    list of ...
+      'col' 
+      'col.nice'
+      'type'     'select'
+      'inits': 
+      'multiple' : 0,1 => for SELECT
+      'required' : 0,1
+      
+   massdata['assoc'] : associated data
+      list of ...
+      't' : assoc table
+      'nice'
+      'cnt'
+      'action': {
+        'url'
+        'text'
+      }
+      
+   massdata['form']['init'] : some init vars
+      
+   page['app.space.prefix'] ='' or 'ADM/'
+
+#}
+{% set submit_text = 'Save' %}
+{% if 'init' in massdata['form'] %}
+  {% if 'submit.text' in massdata['form']['init'] %} 
+  {%   set submit_text = massdata['form']['init']['submit.text'] %}
+  {% endif %}
+{% endif %}
+
+<table class="table">
+  <thead>
+  <tr>
+  <th scope="col">key</th>
+  <th scope="col">val</th>
+  <th scope="col">notes</th>
+  </tr>
+  </thead>
+
+  <tbody>
+    
+{% for row in massdata['main'] %}
+    <tr>
+      <td>{{ row['col.nice'] }}</td><td>
+      {% if row['edit'] %}{# EDIT? #}
+         {% if row['type']=='text' %}
+            <input type=text name="argu[{{ row['col'] }}]" value="{{row['val']|string}}"{{ ' required' if row['required'] }}>
+         {% endif  %}
+         {% if row['type']=='textarea' %}
+            <textarea  name="argu[{{ row['col'] }}]" cols="5" style="width:100%" {{ 'required' if row['required'] }}>{{row['val']|string}}</textarea>
+          {% endif %}
+         {% if row['type']=='objlink' %}
+            <input id="xfo{{row['id']}}" type=hidden name="argu[{{ row['col'] }}]" value="{{row['val']|string}}"><input type=text disabled="disabled" id="xfo{{row['id']}}shy" value="{{row['val.nice']}}"> 
+            &nbsp; <a href="javascript:x_openwin('{{row['fk_t']}}', {{row['id']}}, '', '{{ page['app.space.prefix'] }}')" title="select from list"><svg xmlns="http://www.w3.org/2000/svg"  class="feather" data-feather="align-justify"></svg> </a>
+         {% endif  %}
+         
+          {% if  row['type']=='select' %}
+            <select class="form-control"  name="argu[{{ row['col'] }}]" {{ 'required' if row['required'] }}> 
+             <option value="">- select -</option>
+             {%  for sel_row in row['inits']  %}
+             <option value="{{ sel_row[0] }}"
+             {% if row['multiple'] %}
+             {{ ' selected' if sel_row[0] in row['val'] }}
+             {% else %}
+             {{ ' selected' if sel_row[0]==row['val'] }}
+             {% endif %}
+             >{{ sel_row[1] }}</option>
+             {% endfor %}
+            </select>
+          {% endif %}
+          
+          {% if  row['type']=='checkbox' %}
+             <div class="form-check">
+             <input type=checkbox class="form-check-input"  name="argu[{{ row['col'] }}]" value="1" {{ ' checked' if row['val'] }}> 
+             </div>
+          {% endif %}
+          
+          {% if  row['type']=='checkbox_m' %}
+             {%  for sel_row in row['inits']  %}
+             <div class="form-check">
+             <input type=checkbox class="form-check-input"  name="argu[{{ row['col'] }}][{{ sel_row[0] }}]" value="1" {{ ' checked' if sel_row[0] in row['val'] }}> 
+             <label class="form-check-label"> {{ sel_row[1] }} </label>
+             </div>
+             {% endfor %}
+            
+          {% endif %}
+         
+      {% else %}{# EDIT? #}
+      
+        {% if 'val.nice' in row %}
+          {% if row['type']=='select' %}
+          {{ row['val.nice'] }}
+          {% endif %}
+          {% if row['type']=='checkbox_m' %}
+          {{ row['val.nice'] }}
+          {% endif %}
+          {% if row['type']=='objlink' %}
+          <a href="?mod={{ page['app.space.prefix'] }}obj_one&t={{row['fk_t']}}&id={{row['val']}}">{{ row['val.nice'] }}</a>
+          {% endif %}
+          
+          {% if row['type']=='text' or row['type']=='textarea' %}
+            {{ row['val.nice'] }}
+          {% endif %}
+        {% else %}
+        {{ row['val']|string }}
+        {% endif %}
+      {% endif %}
+      </td>
+      <td></td><!-- NOTES -->
+    </tr>
+{% endfor %}
+
+<!-- associated tables Begin -->
+{% if  'assoc' in massdata %}
+{% for row in massdata['assoc'] %}
+  <tr style="background-color:#E0E0E0">
+    <td>{{ row['nice'] }}</td>
+    <td>{{ row['cnt']|string }}</td>
+    <td>{{ row['action'] }}</td>
+  </tr>
+{% endfor %}
+{% endif %}
+<!-- associated tables End -->
+
+{% if meta['editmode'] =='edit' %}
+ <tr><td></td><td>
+ <button type="submit" class="btn btn-primary">{{ submit_text }}</button>
+ </td><td></td>
+ </tr>
+{% endif %}
+    </tbody>
+</table>

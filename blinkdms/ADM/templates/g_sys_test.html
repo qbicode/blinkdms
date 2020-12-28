@@ -1,0 +1,33 @@
+{#
+INPUT:
+massdata:
+  'table'
+
+#}
+{% extends "ADM/b_home.html" %}
+{% block content %}
+
+
+<div class="container">
+
+{% if massdata['table'] %}
+  {% set table_new = [] %}
+  {% for row in massdata['table']['data'] %}
+  {%  if row[1]=='ok' %}
+  {%  set status='<span style="color:green;">ok</span>' %}
+  {%  else %}
+  {%  set status='<span style="color:red;">'+row[1]+'</span>' %}
+  {%  endif %}
+  {% set rownew = [ row[0], status, row[2], row[3], row[4] ] %}
+  {% set x = table_new.append(rownew) %}
+  {% endfor %}
+  
+  {% set chunkin = massdata['table'] %}
+  {% set x = chunkin.update( {'data':table_new, 'opt': {'safe':1 }} ) %}
+  {% include "ADM/macros/table.html" %}
+  <p></p>
+{% endif %}
+
+</div>
+{% endblock %}
+

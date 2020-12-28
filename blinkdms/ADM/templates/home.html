@@ -1,0 +1,62 @@
+{% extends "ADM/b_home.html" %}
+{% block content %}
+
+  <div class="container">
+    <!-- Example row of columns -->
+    <div class="row">
+      <div class="col-md-4">
+        <h2>Important Tables</h2>
+        <ul>
+        {% for row in meta['some_tables'] %}
+        <li><a href="?mod=ADM/obj_list&t={{row['t']}}"> {{row['nice']}}</a> </li>
+        {% endfor %}
+        </ul>
+       
+       <h2>Management Tools</h2>
+        <ul>
+         <li><a  href="?mod=ADM/obj_list&t=DOC">Change Owner of documents</a> </li>
+        
+         </ul>
+        
+      </div>
+      <div class="col-md-4">
+        <h2>Root Tools</h2>
+        <ul>
+         <li><a  href="?mod=ADM/g_sys_test">System Check</a> </li>
+         <li><a  href="?mod=ADM/tab_all">List ALL tables</a> </li>
+         <ul>
+         <li><a  href="?mod=ADM/obj_list&t=CCT_TABLE">CCT_TABLES</a> </li>
+         </ul>
+         
+         
+         <li><a  href="?mod=ADM/g_info&action=session_vars">Show Session vars</a> </li>
+         <li><a  href="?mod=ADM/g_info&action=db_cache">DB Cache vars</a> </li>
+       
+        <br>
+        
+         <li><a  href="?mod=ADM/sqlterminal">SQl-Terminal</a> </li>
+        <li><a  href="?mod=ADM/ol_import">Data import</a> </li>
+        
+         </ul>
+       
+      </div>
+      <div class="col-md-4">
+        <h2>Info</h2>
+        <a href="?mod=ADM/g_settings&action=user_glob">Set Debug level and other</a><br>
+        <br>
+        
+        <h2>All tables</h2>
+        <ul>
+        {% for row in meta['tables'] %}
+        <li><a href="?mod=ADM/obj_list&t={{row['t']}}"> {{row['nice']}} ({{row['t']}})</a> </li>
+        {% endfor %}
+        </ul>
+        
+      </div>
+    </div>
+
+    <hr>
+
+  </div> <!-- /container -->
+
+{% endblock %}

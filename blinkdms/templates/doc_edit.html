@@ -1,0 +1,99 @@
+{# myprofile
+INPUT:
+meta:
+ 'workflow.active' :0,1
+ 'workflow.buttons' : {}  -- workflow buttons
+ 'workflow.sign.state_key' : string
+ 'context.EDIT.admin.active'  : 0,1
+ 'admin.buttons'  : {}
+massdata:
+ 'form'
+ 'auditlog'
+ 'uploads'
+#}
+
+{% extends "b_main.html" %}
+{% block content %}
+
+{% from "macros/form.html" import form1 %}
+{% from "macros/table.html" import table1 %}
+{% from "macros/uploads.html" import upload_table, doc_links_table %}
+
+
+<div class="container">
+
+{% if meta['context.EDIT.admin.active'] %}
+<b>ADMIN-functions: </b> &nbsp; 
+ {% if meta['admin.buttons']['reject'] %}
+   <a class="btn btn-danger" href="?mod=doc_wf&id={{ meta['id'] }}&act=sign&state_key=REJECT">Reject</a>
+ {% endif %}
+<br>&nbsp;<br>
+{% endif %}
+
+{% if 'proj.path' in meta %}
+    <img src="res/images/o.PROJ.svg"> <a href="?mod=folder&id=0"> db: </a> / 
+    {% for proj in meta['proj.path'] %}
+        <a href="?mod=folder&id={{ proj[0]|string }}">{{ proj[1] }}</a> / 
+    {% endfor %} 
+    
+  {% if 'proj.other' in meta %}
+    <br>Other folders:
+    {% for row in meta['proj.other'] %}
+    <a href="?mod=folder&id={{row['id']}}">{{row['nice']}}</a> &nbsp;&nbsp;&nbsp;
+    {% endfor %}
+    <br>
+  {% endif %}
+  &nbsp;<br>&nbsp;<br>
+{% endif %}
+ 
+ {% if meta['workflow.buttons']['r_start'] %}
+    <a class="btn btn-primary" href="?mod=doc_wf&id={{ meta['id'] }}&act=r_start">Start Release Workflow</a>
+ {% endif %}
+ 
+ {% if meta['workflow.buttons']['sign'] %}
+   <a class="btn btn-primary" href="?mod=doc_wf&id={{ meta['id'] }}&act=sign&state_key={{ meta['workflow.sign.state_key'] }}">Review</a>
+ {% endif %}
+ {% if meta['workflow.buttons']['reject'] %}
+   <a class="btn btn-danger" href="?mod=doc_wf&id={{ meta['id'] }}&act=sign&state_key=REJECT">Reject</a>
+ {% endif %}
+ 
+ {% if meta['workflow.buttons']['v_new'] %}
+   <a class="btn btn-primary" href="?mod=doc_wf&id={{ meta['id'] }}&act=v_new">Create a new version</a>
+ {% endif %}
+ 
+ {{ form1( massdata['form'] ) }} 
+  <br><br>
+</div>
+
+<div class="container">
+ {{ upload_table( massdata['uploads'] )   }}
+</div>
+<div class="container">
+ <br>
+</div>
+<div class="container">
+ {{ doc_links_table( massdata['doc_links'] )   }}
+</div>
+
+<div class="container">
+
+ 
+ {% set reviewers = massdata['reviewer'] %}
+  {% if meta['workflow.buttons']['reviewer_edit'] %}
+    {% set x = reviewers['header'].update( { 'other_cont': 
+        '<a class="btn btn-primary" href="?mod=doc_reved&id=' + meta['id']|string + '&act=edit">Edit Reviewers</a>' } ) 
+    %}
+    
+ {% endif %}
+ 
+ {{ table1( reviewers )   }}
+    
+</div>
+
+<div class="container">
+
+  {{ table1( massdata['auditlog'] ) }}   
+    
+</div>
+
+{% endblock %}
