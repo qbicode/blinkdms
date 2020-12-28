@@ -30,10 +30,10 @@ Demo
 A demo is available at http://159.89.25.138:8080
 
 Following initial users are available:
-    testW: jajsxB8738  (normal editor, reviewer)
-    testX: kskxny537WtqtzwP$s  (normal editor, reviewer)
-    testY: aPllqwbxnfhfzre52Ms (normal editor, reviewer)
-    testZ: ldlMmsh62Ds9ahUiu+dx (can only VIEW)
+  * testW: jajsxB8738  (normal editor, reviewer)
+  * testX: kskxny537WtqtzwP$s  (normal editor, reviewer)
+  * testY: aPllqwbxnfhfzre52Ms (normal editor, reviewer)
+  * testZ: ldlMmsh62Ds9ahUiu+dx (can only VIEW)
 
 User Tutorial
 -------------
