@@ -13,6 +13,14 @@ from ..obj_mod import Obj_assoc_mod
 
 from blinkdms.code.lib.oDOC import oDOC_VERS
 
+KEY_DEPENDS  = 1   # (M depends on C)
+KEY_IS_PARENT= 2 # (M is parent of C)
+
+KEYs_NICE= {
+    1:  'depends on',
+    2: 'is parent of'
+}
+
 
 class Mainobj:
     
@@ -43,19 +51,27 @@ class Mainobj:
         return features
 
     def get_links(self, db_obj):
+        '''
+        get ALL links
+        :return [{KEY:VAL}]
+        '''
 
         sql_cmd = "C_DOC_ID, KEY from D_LINK where M_DOC_ID=" + str(self.__id) + ' order by C_DOC_ID'
         db_obj.select_dict(sql_cmd)
         all_data = []
         while db_obj.ReadRow():
             all_data.append(db_obj.RowData)
+            
         return all_data
     
     def get_links_nice(self, db_obj):
         '''
-        get also:
-        'VERSION_ID']
+        get 
+        'C_DOC_ID'
+        'KEY'
+        'VERSION_ID'
         'c.name_all'
+        'l.type'     : link type nice
         '''
         context = session['sesssec']['my.context']
         doc_lib1 = oDOC_VERS.Table(context)
@@ -65,21 +81,36 @@ class Mainobj:
 
         table_lib = table_cls(usetable)
 
+        output = []
         i = 0
         for row in links:
+            
             ch_id = row['C_DOC_ID']
+            key_l = row['KEY']
+            key_nice = KEYs_NICE.get(key_l,'?')
             
             self.obj.set_objid(ch_id)
             vers_info = table_lib.element_get(db_obj,  {'DOC_ID':ch_id}, ['C_ID', 'VERSION_ID', 'NAME'])
+            if vers_info==None:
+                continue # no valid VERSION for this link found
+              
+            new_row  = row  
             fullname = vers_info['C_ID'] + ' ' + vers_info['NAME']
-            links[i]['VERSION_ID'] = vers_info['VERSION_ID']
-            links[i]['c.name_all'] = fullname
+            new_row['VERSION_ID'] = vers_info['VERSION_ID']
+            new_row['c.name_all'] = fullname
+            new_row['l.type'] = key_nice  
+            
+            output.append(new_row)
             i = i + 1
-        return links
+            
+        return output
 
 class Modify_obj(Obj_assoc_mod):
     """
     modify an object
+    KEY: 
+       DEPENDS   (M depends on C)
+       IS_PARENT (M is parent of C)
     """
 
     
@@ -92,6 +123,8 @@ class Modify_obj(Obj_assoc_mod):
 
         if args['C_DOC_ID'] == self.objid:
             raise BlinkError(1, 'Link to itself is not allowed.')
+        if args.get('KEY','') == '':
+            raise BlinkError(1, 'Input:KEY missing.')        
 
         pks = self.pk_cols
         debug.printx(__name__, "pks:" + str(pks))

@@ -43,7 +43,7 @@ class plug_XPL(gPlugin):
         except:
             self.objid = 0        
 
-        self.infoarr['title']  = 'view document ARCHIVE'
+        self.infoarr['title']  = 'ARCHIVE document version'
         self.infoarr['layout'] = 'doc_view'
         self.infoarr['objtype'] = 'VERSION'
 
@@ -72,8 +72,8 @@ class plug_XPL(gPlugin):
                 raise BlinkError(1, 'Input: pos missing.') 
             
             doc_type = self._req_data.get('type', '')
-            gui_lib = oVERSION_show.Parts(db_obj, self.objid, doc_type)
-            gui_cont_file = gui_lib.download(db_obj, pos)
+            gui_lib = oVERSION_show.Parts(db_obj, self._html, self.objid)
+            gui_cont_file = gui_lib.download(db_obj, pos, doc_type)
             
             self.infoarr['gui'] = -1  # for download
             self.infoarr['gui.cont.type'] ='file'
@@ -90,7 +90,7 @@ class plug_XPL(gPlugin):
         doc_id = gui_lib.get_doc_id()
         self._html.add_meta('doc_id', doc_id)
 
-        gui_lib.show_all(db_obj)
+        gui_lib.show_all(db_obj, 'ARCHIVE')
         
         self.massdata = gui_lib.get_mass_data()
         

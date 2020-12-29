@@ -82,8 +82,8 @@ class plug_XPL(gPlugin):
         
         # check if doc already exists
         already_exists = doc_lib.file_exists_in_uploads(db_obj, file_short)
-        if len(already_exists):
-            raise BlinkError(2, 'This filename already exists on your uploads..')
+        if already_exists:
+            raise BlinkError(2, 'This filename "'+file_short+'" already exists on your uploads.')
 
 
         modlib = oUPLOADS.Modify_obj(db_obj, self.objid)

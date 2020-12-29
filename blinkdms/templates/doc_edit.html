@@ -6,10 +6,12 @@ meta:
  'workflow.sign.state_key' : string
  'context.EDIT.admin.active'  : 0,1
  'admin.buttons'  : {}
+ 'doc_id'
 massdata:
  'form'
  'auditlog'
  'uploads'
+  doc_links
 #}
 
 {% extends "b_main.html" %}
@@ -91,9 +93,12 @@ massdata:
 </div>
 
 <div class="container">
-
   {{ table1( massdata['auditlog'] ) }}   
-    
+</div>
+
+<div class="container">
+  <h3>Version Archive</h3>  
+  <a href="?mod=doc_vw_v&d_id={{ meta['doc_id'] }}">Show Version Archive</a>
 </div>
 
 {% endblock %}

@@ -24,6 +24,7 @@ class plug_XPL(gPlugin):
        'id' : VERSION-ID
        'go' : 0,1  
        'ch' : Child Doc ID on update
+       'key' : KEY
        'act':
          'new' need 'code'
          'del' delete
@@ -50,7 +51,7 @@ class plug_XPL(gPlugin):
         self.infoarr['role.need'] = [oROLE.ROLE_KEY_EDIT]
         self.infoarr['context.allow'] = ['EDIT']        
 
-    def _do_new(self, db_obj, code):
+    def _do_new(self, db_obj, code, keyx):
     
         table_lib = table_cls('DOC')
         ch_id = table_lib.element_get_rcol(db_obj, {'C_ID': code}, 'DOC_ID')
@@ -60,7 +61,8 @@ class plug_XPL(gPlugin):
         modlib = oD_LINK.Modify_obj(db_obj, self.doc_id)
 
         params_use = {
-            'C_DOC_ID': ch_id
+            'C_DOC_ID': ch_id,
+            'KEY': keyx
         }
         dummy = modlib.new(db_obj, params_use)
         self.setMessage('OK', 'Link created.')
@@ -125,8 +127,16 @@ class plug_XPL(gPlugin):
             code = self._req_data.get('code', '').strip()
             if code == '':
                 raise BlinkError(1, 'Please give a Doc-ID.')
-
-            self._do_new(db_obj, code)
+            
+            keyx = self._req_data.get('key', '').strip()
+            if keyx=='':
+                raise BlinkError(1, 'Please give a KEY.') 
+            try: 
+                keyx = int(keyx)
+            except:
+                raise BlinkError(1, 'KEY must be a number.') 
+            
+            self._do_new(db_obj, code, keyx)
 
             self._html.setMessage('OK', 'ok')
             req_data = {

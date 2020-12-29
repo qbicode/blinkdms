@@ -17,6 +17,7 @@ from blinkdms.code.lib.oVERSION import oVERSION_WFL
 from blinkdms.code.lib.gui.form import form
 from blinkdms.code.lib.oVERSION import oUPLOADS
 from blinkdms.code.lib.oPROJ import oPROJ
+from blinkdms.code.lib.oDOC import oD_LINK
 
 class Parts:
     
@@ -91,12 +92,21 @@ class Parts:
                 meta_info_tmp = proj_lib.get_proj_arr_names(db_obj, proj_answer['proj_arr'])
                 self._html.add_meta('proj.other',  meta_info_tmp  )      
         
-    def _uploads_info(self, db_obj):
+    def _uploads_info(self, db_obj, sub_context):
+        '''
+        :param sub_context: string 
+            'ACTIVE'  : the ACTIVE version
+            'ARCHIVE' : archive version
+        '''
 
         upload_lib  = oUPLOADS.Mainobj(self.objid)
         upload_list = upload_lib.get_uploads(db_obj)
+        
+        context='ACTIVE'
+        if sub_context=='ARCHIVE':
+            context='ARCHIVE'
 
-        upload_infos = {'title': 'Attached files', 'data': [], 'version_id': self.objid, 'edit': 0, 'context':'ACTIVE'}
+        upload_infos = {'title': 'Attached files', 'data': [], 'version_id': self.objid, 'edit': 0, 'context':context}
         
         for row in upload_list:
             
@@ -151,17 +161,36 @@ class Parts:
         
         self.massdata['auditlog'] = wfl_data_table
         
-     
+    def _links_info(self, db_obj):
+        '''
+        get DOC links 'doc_links'
+        '''
+        link_lib  = oD_LINK.Mainobj(self.doc_id)
+        link_list = link_lib.get_links_nice(db_obj)
         
-    def show_all(self, db_obj):
+        new_keys = oD_LINK.KEYs_NICE
+        
+        link_infos = {'title': 'Linked docs', 'data': [], 'version_id': self.objid, 'edit': 0, 'new_keys':new_keys}
+        
+        for row in link_list:
+            link_infos['data'].append({'v_id': row['VERSION_ID'], 'ch_d_id':row['C_DOC_ID'], 'nice':row['c.name_all'], 'l.type':row['l.type'] })
+
+        self.massdata['doc_links']= link_infos    
+        
+    def show_all(self, db_obj, sub_context):
+        '''
+        :param sub_context: 'ACTIVE, 'ARCHIVE'
+        '''
         
         self.projects_get(db_obj)
         
         self.form(self.features)
         
-        self._uploads_info(db_obj)
+        self._uploads_info(db_obj, sub_context)
         
         self.audit_log(db_obj)
+        
+        self._links_info(db_obj)
 
     def get_mass_data(self):
         return self.massdata

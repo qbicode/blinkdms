@@ -76,10 +76,11 @@ INPUT: data
 </table>
 {% endmacro %}
 
+
 {# only VIEW the table, no edit allowed ... 
  INPUT:  data
    'edit' : 0,1
-   'context' :'EDIT, 'ACTIVE'
+   'context' :'EDIT, 'ACTIVE', 'ARCHIVE'
    'title' :
    'data': list of {
       'pos':
@@ -92,6 +93,13 @@ INPUT: data
 {% macro upload_view_table(data) %}
 
 {% set doc_down_url='doc_up' if data['context']=='EDIT' else 'doc_view' %}
+{% if data['context']=='ACTIVE' %}
+  {% set doc_down_url='doc_view' %}
+{% endif %}
+{% if data['context']=='ARCHIVE' %}
+  {% set doc_down_url='doc_view_a' %}
+{% endif %}
+
 
 <h3>{{ data['title'] }}</h3>
 
@@ -122,8 +130,13 @@ INPUT: data
 
 {% macro doc_links_table(data) %} 
 {# 
+DOC LINKS
+'version_id':
+'edit' : 
+'new_keys' : {key:val}
 'header'
-'data'
+'data':
+   l.type
 #}
 <script>
 function x_form5_modi(ch) {
@@ -148,10 +161,21 @@ function x_form5_modi(ch) {
         </button>
       </div>
       <div class="modal-body">
+      
        <div class="custom-text mb-3">
-        <input type="text" class="custom-text-input" id="customLinkText" name="code">
-        <label class="custom-text-label" for="customLinkText">Choose Link</label>
+        <select class="custom-text-input" id="customKeyText" name="key" required> 
+             {%  for l_key, l_val in data['new_keys'].items()  %}
+               <option value="{{l_key|string}}">{{ l_val }}</option>
+             {% endfor %}
+         </select>
+        <label class="custom-text-label" for="customKeyText"> Relation</label>
        </div>
+       
+       <div class="custom-text mb-3">
+        <input type="text" class="custom-text-input" id="customLinkText" name="code" required>
+        <label class="custom-text-label" for="customLinkText"> Choose Doc-ID</label>
+       </div>
+       
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -210,6 +234,7 @@ function x_form5_modi(ch) {
    <a class="btn btn-danger" data-toggle="modal" href="#" data-target="#DelLinkDialog" onClick="x_form5_modi( {{ row['ch_d_id']|string }} )">Delete</a>
   {% endif %}
   </td>
+  <td>{{ row['l.type'] }}</td>
   <td><a href="?mod=doc_edit&id={{ row['v_id']|string }}"><img src="res/images/o.DOC.svg"> {{ row['nice'] }}</a></td>
 </tr>
 {% endfor %}

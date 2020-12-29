@@ -109,8 +109,8 @@ class plug_XPL(gPlugin):
                 raise BlinkError(1, 'Input: pos missing.') 
             
             doc_type = self._req_data.get('type', '')
-            gui_lib = oVERSION_show.Parts(db_obj, self.objid, doc_type)
-            gui_cont_file = gui_lib.download(db_obj, pos)
+            gui_lib = oVERSION_show.Parts(db_obj, self._html, self.objid)
+            gui_cont_file = gui_lib.download(db_obj, pos, doc_type)
             
             self.infoarr['gui'] = -1  # for download
             self.infoarr['gui.cont.type'] ='file'
@@ -125,7 +125,7 @@ class plug_XPL(gPlugin):
         
         gui_lib = oVERSION_show.Parts(db_obj, self._html, self.objid)
 
-        gui_lib.show_all(db_obj)
+        gui_lib.show_all(db_obj, 'ACTIVE')
         
         self.massdata = gui_lib.get_mass_data()
         

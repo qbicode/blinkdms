@@ -11,6 +11,7 @@ INPUT:
   'form'
   'auditlog'
   'uploads'
+  'doc_links'
 
 #}
 
@@ -20,14 +21,14 @@ INPUT:
 
 {% from "macros/form.html" import form1 %}
 {% from "macros/table.html" import table1 %}
-{% from "macros/uploads.html" import upload_view_table %}
+{% from "macros/uploads.html" import upload_view_table, doc_links_table %}
 
 {% if meta['is_arch_view'] %}
 
  <div class="alert alert-warning"> 
    <strong>WARNING:</strong>
    This is the ARCHIVE view! This document version could be a not-released version.<br>
-   <a href="?mod=doc_vw_v&d_id={{ meta['doc_id'] }}"></a>
+   <a href="?mod=doc_vw_v&d_id={{ meta['doc_id'] }}">==> All Versions</a>
  </div>
  <br>
  
@@ -63,7 +64,9 @@ INPUT:
     
 </div>
 
-
+<div class="container">
+ {{ doc_links_table( massdata['doc_links'] )   }}
+</div>
 
 <div class="container">
 

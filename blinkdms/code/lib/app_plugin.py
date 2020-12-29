@@ -399,7 +399,79 @@ class gPlugin:
         # an severe error occurred, set the ERROR page
         self.infoarr['layout'] = 'error'
 
-   
+    def _type_OBJECT(self, locrow_auto, prefix):
+        '''
+        SINGLE object
+        '''
+        
+        table_nice = self.infoarr['table.nice']
+        tablename  = self.infoarr['objtype'] 
+        context    = self._context
+        objid = self.objid
+        
+        if not objid:
+            self.infoarr['title']  = 'table: '+ table_nice
+            raise BlinkError(5, 'No ID for object given.')
+        
+        
+        self.objlib = obj_abs(tablename, objid)  
+        
+        if not self.objlib.obj_exists(self._db_obj1):
+            raise BlinkError(6, 'Object with ID: '+str(objid)+' does not exist.')
+
+        self._html.add_meta('id', objid )  
+        obj_nice  = self.objlib.obj_nice_name(self._db_obj1)
+
+        self.infoarr['obj.nice'] = obj_nice
+        
+        
+        self._obj_data = None
+
+        if not self._mod_is_adm_space:
+            
+            if tablename == 'VERSION':
+                doc_id   = self.objlib.main_feat_val(self._db_obj1, 'DOC_ID')
+                doc_lib  = obj_abs('DOC', doc_id)
+                doc_code = doc_lib.main_feat_val(self._db_obj1, 'C_ID')
+                self.infoarr['title'] = self.infoarr['title'] + ' [' + doc_code + ']'
+                
+            if tablename == 'DOC':
+                doc_id   = objid
+                doc_lib  = obj_abs('DOC', doc_id)
+                doc_code = doc_lib.main_feat_val(self._db_obj1, 'C_ID')
+                self.infoarr['title'] = self.infoarr['title'] + ' [' + doc_code + ']'            
+    
+            if self.infoarr.get('locrow.show_mo', 0):
+                if context == 'EDIT':
+                    doc_link = 'doc_edit'
+                if context == 'ACTIVE':
+                    doc_link = 'doc_view'
+
+                self.infoarr['locrow'].append({'url': doc_link + '&id=' + str(objid), 'text': 'document'})
+        
+        if locrow_auto>0:  
+            
+            if self.infoarr.get('obj.list.table','') != '':
+                pass
+                # alternative table for list view
+                #tablename_list  = self.infoarr['obj.list.table']
+                #tablist_lib      = table_cls(tablename_list)
+                #table_list_nice = tablist_lib.nice_name()
+            else:
+                #tablename_list = tablename
+                #table_list_nice = table_nice
+                pass
+                
+            self.infoarr['locrow'].append( {'url': prefix+'obj_list&t='+tablename, 'text':  'list of '+ table_nice } )
+        
+        if self._mod=='ADM/obj_one' or self._mod=='obj_one':
+            self.infoarr['title'] = obj_nice
+            self.infoarr['title2']   = '[ID:'+str(objid)+']' + ' - single object of type: ' + table_nice                    
+            
+            pass
+        else:  
+            if locrow_auto>0:   
+                self.infoarr['locrow'].append( {'url': prefix + 'obj_one' + '&t=' + tablename + '&id=' + str(objid), 'text': obj_nice} )
     
     '''
      * check initial settings like self.infoarr
@@ -417,6 +489,8 @@ class gPlugin:
 
         context = self._session['sesssec'].get('my.context', '')
         locrow_auto = self.infoarr.get('locrow.use', 0)
+        
+        self._context = context
             
         prefix=''
         if self._mod_is_adm_space:
@@ -436,13 +510,11 @@ class gPlugin:
            
             tablename  = self.infoarr['objtype'] 
             tablib     = table_cls(tablename)
-            table_is_real = 1
+            # table_is_real = 1
             
             table_nice = tablib.nice_name()
             self.infoarr['table.nice'] = table_nice
-            
 
-            
             self._html.add_meta('table', tablename )
                        
             
@@ -472,67 +544,7 @@ class gPlugin:
                 #
                 # single object 
                 #
-
-                if not objid:
-                    self.infoarr['title']  = 'table: '+ table_nice
-                    raise BlinkError(5, 'No ID for object given.')
-                
-                
-                self.objlib = obj_abs(tablename, objid)  
-                
-                if not self.objlib.obj_exists(self._db_obj1):
-                    raise BlinkError(6, 'Object with ID: '+str(objid)+' does not exist.')
-                
-                # if this is a business object ...
-                # SECURITY: check access rights only for the HUBE application ...   
-
-
-
-                self._html.add_meta('id', objid )  
-                obj_nice  = self.objlib.obj_nice_name(self._db_obj1)
-
-                self.infoarr['obj.nice'] = obj_nice
-                
-                
-                self._obj_data = None
-
-                if not self._mod_is_adm_space and tablename == 'VERSION':
-
-                    doc_id = self.objlib.main_feat_val(self._db_obj1, 'DOC_ID')
-                    doc_lib = obj_abs('DOC', doc_id)
-                    doc_code = doc_lib.main_feat_val(self._db_obj1, 'C_ID')
-                    self.infoarr['title'] = self.infoarr['title'] + ' [' + doc_code + ']'
-
-                    if self.infoarr.get('locrow.show_mo', 0):
-                        if context == 'EDIT':
-                            doc_link = 'doc_edit'
-                        if context == 'ACTIVE':
-                            doc_link = 'doc_view'
-
-                        self.infoarr['locrow'].append({'url': doc_link + '&id=' + str(objid), 'text': 'document'})
-                
-                if locrow_auto>0:  
-                    
-                    if self.infoarr.get('obj.list.table','') != '':
-                        # alternative table for list view
-                        tablename_list  = self.infoarr['obj.list.table']
-                        #tablist_lib      = table_cls(tablename_list)
-                        #table_list_nice = tablist_lib.nice_name()
-                    else:
-                        tablename_list = tablename
-                        #table_list_nice = table_nice
-                        
-                    self.infoarr['locrow'].append( {'url': prefix+'obj_list&t='+tablename, 'text':  'list of '+ table_nice } )
-                
-                if self._mod=='ADM/obj_one' or self._mod=='obj_one':
-                    self.infoarr['title'] = obj_nice
-                    self.infoarr['title2']   = '[ID:'+str(objid)+']' + ' - single object of type: ' + table_nice                    
-                    
-                    pass
-                else:  
-                    if locrow_auto>0:   
-                        self.infoarr['locrow'].append( {'url': prefix + 'obj_one' + '&t=' + tablename + '&id=' + str(objid), 'text': obj_nice} )
-                                  
+                self._type_OBJECT( locrow_auto, prefix )
 
 
             if self.infoarr.get('viewtype','') == 'list' :

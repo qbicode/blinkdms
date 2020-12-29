@@ -234,13 +234,16 @@ class plug_XPL(gPlugin):
     def _links_info(self, db_obj):
         '''
         get DOC links
-        '''
-        link_lib = oD_LINK.Mainobj(self.doc_id)
+        ''' 
+        link_lib  = oD_LINK.Mainobj(self.doc_id)
         link_list = link_lib.get_links_nice(db_obj)
-        link_infos = {'title': 'Linked docs', 'data': [], 'version_id': self.objid, 'edit': self.form_edit_flag}
+        
+        new_keys = oD_LINK.KEYs_NICE
+        
+        link_infos = {'title': 'Linked docs', 'data': [], 'version_id': self.objid, 'edit': self.form_edit_flag, 'new_keys':new_keys}
         
         for row in link_list:
-            link_infos['data'].append({'v_id': row['VERSION_ID'], 'ch_d_id':row['C_DOC_ID'], 'nice':row['c.name_all']})
+            link_infos['data'].append({'v_id': row['VERSION_ID'], 'ch_d_id':row['C_DOC_ID'], 'nice':row['c.name_all'], 'l.type':row['l.type'] })
 
         self.massdata['doc_links']= link_infos
 
@@ -272,6 +275,7 @@ class plug_XPL(gPlugin):
         if 'edit' not in session['sesssec']['roles']:
             raise BlinkError(1, 'This document-tool is only available for users with the "Editor"-Role.')
 
+        self._html.add_meta('doc_id', self.doc_id)
 
         # admin area
         admin_area_active = 0

@@ -15,6 +15,8 @@ from blinkdms.code.lib.app_plugin import gPlugin
 from blinkdms.code.lib.oVERSION import oVERSION
 from blinkdms.code.lib.oDOC import oDOC
 from blinkdms.code.lib import oROLE
+from blinkdms.code.lib.oDOC import oDOC_VERS
+from blinkdms.code.lib.oVERSION import oVERSION_edit
 
 
 
@@ -47,7 +49,8 @@ class plug_XPL(gPlugin):
         self.infoarr['id'] = self.objid
         self.infoarr['obj.id_check'] = 1
         self.infoarr['role.need'] = [oROLE.ROLE_KEY_EDIT]
-        self.infoarr['context.allow'] = ['EDIT']        
+        self.infoarr['context.allow'] = ['EDIT']  
+        self.infoarr['locrow'] =   [ {'url':'doc_edit&d_id='+ str(self.objid), 'text':'current version'} ]
 
    
 
@@ -59,9 +62,27 @@ class plug_XPL(gPlugin):
 
         self._html.add_meta('doc_id', self.objid)
 
-        objlib = oDOC.Mainobj(self.objid)
-        version_ids = objlib.all_versions(db_obj)
+        objlib   = oDOC.Mainobj(self.objid)
         
+        doc_vers_lib = oDOC_VERS.Table('EDIT')
+        v_id = doc_vers_lib.get_version_id(db_obj, self.objid)        
+        
+        edit_lib = oVERSION_edit.Mainobj(db_obj, v_id)
+        vers_features = edit_lib.features(db_obj)
+        tmp_poi = vers_features['vals']
+        DOC_TYPE_ID = tmp_poi['DOC_TYPE_ID']
+        
+        
+        
+        doc_feat_list=[]
+        doc_feat_list.append( [ 'title', tmp_poi['NAME'] ] )
+        
+        
+        self.massdata['doc_features'] = doc_feat_list
+        
+        
+        version_ids = objlib.all_versions(db_obj)
+
         out_list = []
         
         for v_id in version_ids:
@@ -69,15 +90,14 @@ class plug_XPL(gPlugin):
             v_lib   = oVERSION.Mainobj(v_id)
             v_feats = v_lib.features(db_obj)
       
-            row = {'v_id':v_id, 'title':v_feats['vals']['NAME'], 
-                   'v':v_feats['vals']['VERSION'], 'valid_date':v_feats['vals']['VALID_DATE'] }
+            row = [ v_id, v_feats['vals']['VERSION'], v_feats['vals']['VALID_DATE'] ]
             out_list.append(row)
         
         data_table = {}
-        data_table = {'header': {'title': 'Audit log'}, 'data': [], 'cols': []}
+        data_table = {'header': {'title': 'All versions'}, 'data': [], 'cols': []}
         data_table['opt'] = {
           'col_t': [
-            {'type':'but_link', 'icon':'download', 'url': '?mod=doc_view_a&id='  }
+            {'type':'but_link', 'icon':'play', 'url': '?mod=doc_view_a&id='  }
             ]
         }
         data_table['cols'] = ['#','Version', 'Valid_date']     

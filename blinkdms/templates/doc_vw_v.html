@@ -1,13 +1,12 @@
 {# 
-
 - view ALL versins
-
 
 INPUT:
  meta:
    'doc_id'
  massdata:
   'vers_list'
+  'doc_features'
 
 #}
 
@@ -15,6 +14,17 @@ INPUT:
 {% block content %}
 
 {% from "macros/table.html" import table1 %}
+
+{% set feature_tab = {
+   'header': {
+       'title' : 'Doc features',
+    },
+    'data' : massdata['doc_features']
+} %}
+
+<div class="container">
+  {{ table1( feature_tab ) }}   
+</div>
 
 <div class="container">
   {{ table1( massdata['vers_list'] ) }}   
