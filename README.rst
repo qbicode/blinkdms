@@ -1,17 +1,18 @@
 BlinkDMS
 ========
 
-BlinkDMS is a lightweight DMS for small companies (~500 employees) or other organizations. 
+BlinkDMS is a lightweight DMS (Document Management System) for small companies (~500 employees) or other organizations. 
 It is focused on version management and a controlled release process.
 
 
 Features:
-  * target industrial area: production
-  * max number of documents or versions: just limited by the memory volume, designed for millions
-  * typical number of users: 100, but theoretically unlimited
-  * area of usage: cooperation, workflow, regulated doc archiving
-  * regulated (medical) industries under e.g. ISO13485, FDA CFR820, ready for software validation (not included in the documentation)
+  * target area: industrial research, development, production
+  * max number of documents or versions: just limited by the memory volume, designed for millions of docs
+  * typical number of users: 100, but theoretically unlimited (some GUI elements will be improved for larger numbers in the future)
+  * area of usage: cooperation, workflow, regulated doc archiving, need for released documents
+  * special scope: regulated (medical) industries under e.g. ISO13485, FDA CFR820, ready for software validation (not included in the documentation)
   * electronic signature support, if configured: password validation required in the approval process
+  * each document has an unique, configurable document ID
   * optional automatic conversion from word to PDF, including document-ID, title and approval data injection
   * separate working areas for released and unreleased documents, no hassle with retrieving unreleased docs
   * possible to integrate with other systems
@@ -19,6 +20,12 @@ Features:
   * mobile support
   * work offline: NO
   * multi language support: currently NO, TODO
+  
+Difference to other DMS systems:
+  * designed for the usage in a (medical) regulated environment (ISO13485, FDA CFR820)
+  * documents are organized in a flexible folder system, so people find documents in an intuitive way
+  * strict separation of the working area of released documents and documents under construction
+
 
 Future features:
   * Edit workflow
@@ -26,6 +33,7 @@ Future features:
   * make GUI ready for unlimited number of users
   
 Demo
+----
 
 A demo is available at http://159.89.25.138:8080
 
@@ -41,8 +49,3 @@ Links
  * Tutorial https://qbicode.github.io/blinkdms/
  * Install https://qbicode.github.io/blinkdms/
 
-
-  
-  
-  
-  

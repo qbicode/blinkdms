@@ -1,7 +1,12 @@
-{# view a version, edit not allowed here
+{# 
+
+- view a version, 
+- edit not allowed here
+
 INPUT:
  meta:
-  'workflow.active' :0,1
+   'is_arch_view' : 0,1
+   'doc_id'
  massdata:
   'form'
   'auditlog'
@@ -17,6 +22,16 @@ INPUT:
 {% from "macros/table.html" import table1 %}
 {% from "macros/uploads.html" import upload_view_table %}
 
+{% if meta['is_arch_view'] %}
+
+ <div class="alert alert-warning"> 
+   <strong>WARNING:</strong>
+   This is the ARCHIVE view! This document version could be a not-released version.<br>
+   <a href="?mod=doc_vw_v&d_id={{ meta['doc_id'] }}"></a>
+ </div>
+ <br>
+ 
+{% endif %}
 
 {% if 'proj.path' in meta %}
  <div class="container">

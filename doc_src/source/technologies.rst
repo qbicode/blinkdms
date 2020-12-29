@@ -17,6 +17,10 @@ Process:
 * produce a final PDF file (set UPLOADS.HAS_PDF=1 for this upload)
 * save PDF as oDOC.{VERSION}.{POS}.pdf
 
+Example document template:
+
+  * see [GIT-PROJ]/doc_src/examples/Template_SOP_v1.docx
+
 Relevant code modules:
 
 * lib/oVERSION/docfile_convert.py (converts a version attachment)

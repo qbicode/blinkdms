@@ -111,7 +111,7 @@ Useful activities:
 
 **System Configuration**
 
-some important config in conf/config.py:
+some important config variables in conf/config.py:
   * workflow.sign.password.need : 0 or 1 : defines if the user must give the password on an approval workflow (electronic signature support)
     this is required by FDA CFR820 Part11
   * email.send.allow : 0 or 1 : defines, if the system should send emails to the users, mainly in the workflow process
@@ -142,6 +142,6 @@ Actions:
 Convert Word documents to PDF
 `````````````````````````````
 What to keep in mind:
-  * there is an example for a proper WOrd template: see [GIT-PROJ]/doc/examples/Template_SOP_v1.docx
+  * there is an example for a proper Word template: see [GIT-PROJ]/doc_src/examples/Template_SOP_v1.docx
   * the PDF conversions takes places at the end of the release process
   * a VIEWER can only retrieve the PDF version, not the Word-version

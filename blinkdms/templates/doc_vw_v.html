@@ -1,0 +1,23 @@
+{# 
+
+- view ALL versins
+
+
+INPUT:
+ meta:
+   'doc_id'
+ massdata:
+  'vers_list'
+
+#}
+
+{% extends "b_main.html" %}
+{% block content %}
+
+{% from "macros/table.html" import table1 %}
+
+<div class="container">
+  {{ table1( massdata['vers_list'] ) }}   
+</div>
+
+{% endblock %}
