@@ -195,6 +195,18 @@ class Modify_obj(Obj_assoc_mod):
         
         full_path_dst = self._mainobj.file_path(self.pos)
         shutil.copyfile(filepath_in, full_path_dst)
+    
+    def file_updated(self, db_obj):   
+        '''
+        FUTURE: set a log, if file was updated
+        '''
+        
+        if not self.objid:
+            raise BlinkError(1, 'Class not initialized.')
+        if not self.pos:
+            raise BlinkError(1, 'POS not initialized.')
+        
+        pass
         
         
     def set_pdf_flag(self, db_obj, pdf_flag):

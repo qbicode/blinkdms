@@ -16,7 +16,30 @@
   </div>
   <br><br>
 {% endif %}
-               
+
+{% with warn_mess = get_flashed_messages(category_filter=["warning"]) %}
+{% if warn_mess %}
+ {% for msg in warn_mess %}
+  <div class="alert alert-warning">
+    <strong>WARNING:</strong> {{ msg }}</li>
+  </div>
+  <br><br>
+ {% endfor -%}
+{% endif %}
+{% endwith %}
+
+{% with info_mess = get_flashed_messages(category_filter=["info"]) %}
+{% if info_mess %}
+ {% for msg in info_mess %}
+  <div class="alert alert-success">
+    <strong>OK:</strong> {{ msg }}</li>
+  </div>
+  <br><br>
+ {% endfor -%}
+{% endif %}
+{% endwith %}
+  
+{# TBD: remove this old code ... #}             
 {% if 'ok.mess' in pageinfo %}
  {% if pageinfo['ok.mess']['warn']>0 %}
    <div class="alert alert-warning"> 

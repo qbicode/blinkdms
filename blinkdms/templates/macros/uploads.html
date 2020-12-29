@@ -14,6 +14,12 @@ INPUT: data
 #}
 {% macro upload_table(data) %}
 
+<script>
+function x_formUp_modi(pos) {
+    document.formUp.elements['pos'].value = pos;
+}
+</script>
+
 <!-- <NewDocument> Modal -->
 <div class="modal fade" id="NewDocDialog" tabindex="-1" role="dialog" aria-labelledby="NewDocLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -46,9 +52,42 @@ INPUT: data
 </div>
 <!-- </NewDocument> Modal -->
 
+<!-- <UpDocument> Modal -->
+<div class="modal fade" id="UpDocDialog" tabindex="-1" role="dialog" aria-labelledby="UpDocLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form style="display:inline;" method="post" name="formUp" enctype="multipart/form-data" action="" >
+        <input type=hidden name="mod" value="doc_up">
+        <input type=hidden name="go" value="1">
+        <input type=hidden name="pos" value="">
+        <input type=hidden name="act" value="upload">
+        <input type=hidden name="id" value="{{ data['version_id'] }}">
+        
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="UpDocLabel">Re-Upload document</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <div class="custom-file mb-3">
+        <input type="file" class="custom-file-input" id="customFile" name="y.file">
+        <label class="custom-file-label" for="customFile">Choose file</label>
+       </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Upload document</button>
+      </div>
+    </div>
+        </form>
+  </div>
+</div>
+<!-- </UpDocument> Modal -->
+
 <h3>{{ data['title'] }}
  {% if data['edit'] %}
-    &nbsp; <a class="btn btn-primary"data-toggle="modal" href="#" data-target="#NewDocDialog">Upload a new file</a>
+    &nbsp; <a class="btn btn-primary" data-toggle="modal" href="#" data-target="#NewDocDialog">Upload a new file</a>
  {% endif %}
 </h3>
 
@@ -59,7 +98,10 @@ INPUT: data
 <tr>  
   <td>
   {% if data['edit'] %}
-   <a class="btn btn-default" href="?mod=doc_up&act=upload&id={{ data['version_id']|string }}&pos={{ row['pos']|string }}">Upload</a>
+   <a class="btn btn-primary"data-toggle="modal" href="#" onClick="javascript:x_formUp_modi({{ row['pos']|string }})" data-target="#UpDocDialog">Upload</a>
+  {# OLD
+  <a class="btn btn-default" href="?mod=doc_up&act=upload&id={{ data['version_id']|string }}&pos={{ row['pos']|string }}">Upload</a> 
+  #}
    <a class="btn btn-danger"  href="?mod=doc_up&act=del&id={{ data['version_id']|string }}&pos={{ row['pos']|string }}">Delete</a>
   {% endif %}
   </td>
@@ -218,6 +260,8 @@ function x_form5_modi(ch) {
   </div>
 </div>
 <!-- </DelLinkument> Modal -->
+
+
 
 <h3>{{ data['title'] }}
  {% if data['edit'] %}

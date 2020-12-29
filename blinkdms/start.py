@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+__docformat__ = "restructuredtext en"
+
+"""
+start script for FLASK
+File:           start.py
+Copyright:      Blink AG   
+Author:         Steffen Kube <steffen@blink-dx.com>
+"""
+
 import os, sys
 import traceback
 import time

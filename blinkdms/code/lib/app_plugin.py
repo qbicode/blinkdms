@@ -10,7 +10,7 @@ Author:         Steffen Kube <steffen@blink-dx.com>
 import os, sys
 import traceback
 import html
-from   flask import render_template, session
+from   flask import render_template, session, flash
 import logging
 
 from blinkdms.conf import config
@@ -164,12 +164,12 @@ class html_cls(content_IF):
             else: stack_str=''
             
             self.infoarr['err.mess'] = {'key':mess_key, 'text':message, 'stack_str':stack_str}
-            
-        if mess_key=='OK' or mess_key=='WARN':
-            warnflag = 0
-            if mess_key=='WARN': warnflag = 1
-            self.infoarr['ok.mess'] = {'text':message, 'warn': warnflag}    
 
+        if mess_key=='OK' :
+            #OLD: self.infoarr['ok.mess'] = {'text':message, 'warn': warnflag}
+            flash(message, 'info')            
+        if mess_key=='WARN':
+            flash(message, 'warning')        
 
     def stop_forward(self, flag):
         self._stop_forward = flag
@@ -860,11 +860,12 @@ class gPlugin:
             log_info = self.log_err( message, err_num, err_stack )
             self.infoarr['err.mess'] = {'key':mess_key, 'text':message, 'stack_str': log_info['stack_str'], 'num':err_num }
             
-        if mess_key=='OK' or mess_key=='WARN':
-            warnflag = 0
-            if mess_key=='WARN': warnflag = 1
-            self.infoarr['ok.mess'] = {'text':message, 'warn': warnflag}
-            
+        if mess_key=='OK' :
+            #OLD: self.infoarr['ok.mess'] = {'text':message, 'warn': warnflag}
+            flash(message, 'info')            
+        if mess_key=='WARN':
+            flash(message, 'warning')
+        
     def getErrMessage(self):
         # get last Error message: DICT
         if 'err.mess' in self.infoarr:

@@ -62,7 +62,7 @@ class plug_XPL(gPlugin):
         
         self.infoarr['context.allow'] = ['EDIT']        
 
-    def _do_upload(self, db_obj, file_obj):
+    def _do_new(self, db_obj, file_obj):
         '''
         create NEW upload entry
         '''
@@ -101,6 +101,36 @@ class plug_XPL(gPlugin):
         self.setMessage('OK', 'Doc Uploaded Pos:' + str(pos))
         
         return pos
+    
+    def _do_upload(self, db_obj, file_obj, pos):
+        '''
+        REUPLOAD file
+        '''
+        
+        file_short  = secure_filename(file_obj.filename)
+        #objlib      = obj_abs('DOC', self.doc_id)
+
+        doc_lib      = oUPLOADS.Mainobj(self.objid)
+        upload_feats = doc_lib.features(db_obj, pos)
+       
+        ori_name = upload_feats['NAME']
+        
+        # check if doc already exists
+        if ori_name!=file_short:
+            raise BlinkError(2, 'Filename "'+ori_name+'" is expected for upload.')
+
+
+        modlib = oUPLOADS.Modify_obj(db_obj, self.objid)
+        modlib.set_pos( pos)
+        
+        dest_file_path = modlib.file_path()
+        file_obj.save(dest_file_path)
+        
+        modlib.file_updated(db_obj)
+            
+        self.setMessage('OK', 'Doc "'+file_short+'" uploaded again.')
+        
+        return pos    
     
     def _download(self, db_obj):
 
@@ -213,10 +243,23 @@ class plug_XPL(gPlugin):
             if not self.pos:
                 raise BlinkError(7, 'Input: pos missing.')              
             
-            # TBD
-            self.setMessage('WARN', 'Upload method not yet implemented.')
+            if '__FILES__' not in self._req_data:
+                raise BlinkError(10, 'Please select a file.')
+            
+            if 'y.file' not in self._req_data['__FILES__']:
+                raise BlinkError(11, 'Please select a file.')            
+                
+            file_obj   = self._req_data['__FILES__']['y.file']
+
             if go > 0:      
-                return
+                self._do_upload(db_obj, file_obj, self.pos)
+                
+                req_data = {
+                    'mod': 'doc_edit',
+                    'id': self.objid
+                     }
+                self.forward_internal_set(req_data)                
+                
             else:
                 pass        
 
@@ -232,7 +275,7 @@ class plug_XPL(gPlugin):
                 
             file_obj   = self._req_data['__FILES__']['y.file']
 
-            self._do_upload(db_obj, file_obj)
+            self._do_new(db_obj, file_obj)
 
             self._html.setMessage('OK', 'ok')
             req_data = {
