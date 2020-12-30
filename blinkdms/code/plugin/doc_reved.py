@@ -168,7 +168,7 @@ class plug_XPL(gPlugin):
 
         self.vers_objlib = oVERSION_edit.Mainobj(db_obj, self.objid)
        
-        if not self.vers_objlib.get_current_versid(db_obj):
+        if not self.vers_objlib.is_current_versid(db_obj):
             raise BlinkError(1, 'This version is not valid for Edit!')
         
         if self.vers_objlib.workflow_is_active(db_obj):

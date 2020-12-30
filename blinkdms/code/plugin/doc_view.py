@@ -11,7 +11,8 @@ Author:         Steffen Kube <steffen@blink-dx.com>
 
 from blinkdms.code.lib.main_imports import *
 from blinkdms.code.lib.app_plugin import gPlugin
-from blinkdms.code.lib.oVERSION import oVERSION_edit
+from blinkdms.code.lib.oVERSION import oVERSION
+from blinkdms.code.lib.oVERSION import oVERSION_active
 from blinkdms.code.lib.oDOC import oDOC_VERS
 from blinkdms.code.lib import oROLE
 
@@ -96,13 +97,14 @@ class plug_XPL(gPlugin):
             nicename = doc_obj.obj_nice_name(db_obj)
             raise BlinkError(2, 'Document "' + nicename + '" has no valid version.')            
 
+        active_lib = oVERSION_active.Mainobj(self.objid)
+        if not active_lib.version_exists(db_obj):
+            raise BlinkError(1, 'This version is not an ACTIVE version!')
 
-        objlib = oVERSION_edit.Mainobj(db_obj, self.objid)
-        self.doc_id = objlib.doc_id
+        objlib      = oVERSION.Mainobj(self.objid)
+        features    = objlib.features(db_obj)
+        self.doc_id = features['vals']['DOC_ID']
 
-        if not objlib.get_current_versid(db_obj):
-            raise BlinkError(1, 'This version is not valid for Edit!')
-        
         
         if action == 'down':
             if not pos:
@@ -120,8 +122,8 @@ class plug_XPL(gPlugin):
         
         #### general section
         
-        if objlib.is_released(db_obj):
-            self.is_released = 1        
+        #if objlib.is_released(db_obj):
+        #    self.is_released = 1        
         
         gui_lib = oVERSION_show.Parts(db_obj, self._html, self.objid)
 

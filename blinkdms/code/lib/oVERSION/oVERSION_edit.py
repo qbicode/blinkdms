@@ -50,12 +50,23 @@ class Mainobj:
         return {'vals': sum_features}
 
     def get_current_versid(self, db_obj):
+        # return VERSION_ID
         
         sql_cmd = 'VERSION_ID from ' + self.view_table + ' where DOC_ID=' + str(self.v_features['DOC_ID'])
         db_obj.select_tuple(sql_cmd)
         db_obj.ReadRow()
         got_id = db_obj.RowData[0]
         return got_id
+    
+    def is_current_versid(self, db_obj):
+        # return 0 or 1
+        
+        flag=0
+        curr_id = self.get_current_versid(db_obj)
+        if curr_id==self.__id:
+            flag=1
+            
+        return flag    
 
     def edit_allowed(self, db_obj):
         return 1
@@ -81,11 +92,19 @@ class Mainobj:
     def is_released(self, db_obj):
         '''
         this VERSION is RELEASED and ACTIVE? 
+        FUTURE: use static method from oVERSION.py
         '''
+        
         answer = 0
         if self.v_features['RELEASE_DATE'] is not None:
             if self.v_features['RELEASE_DATE'] != '':
                 answer = 1
+        
+        if not self.v_features['IS_ACTIVE']:
+            answer = 0
+                
+        debug.printx(__name__, '(85): VERSION_ID: '+str(self.__id)+'  RESULT:'+str(answer))
+        
         return answer
     
     

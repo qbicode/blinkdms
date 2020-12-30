@@ -204,7 +204,7 @@ class plug_XPL(gPlugin):
         if action not in ['new', 'upload', 'del', 'down']:
             raise BlinkError(1, 'Action '+action+' unknown.')        
        
-        if not objlib.get_current_versid(db_obj):
+        if not objlib.is_current_versid(db_obj):
             raise BlinkError(2, 'This version is not valid for Edit-Mode!')
 
         if action in ['new', 'upload', 'del']:

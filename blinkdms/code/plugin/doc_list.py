@@ -23,7 +23,7 @@ class plug_XPL(gPlugin):
     '''
 
     def register(self) :
-        self.infoarr['title']	 = 'Search'
+        self.infoarr['title']	 = 'Document list'
         self.infoarr['layout'] = 'obj_list'
         self.infoarr['viewtype'] = 'tool'
 

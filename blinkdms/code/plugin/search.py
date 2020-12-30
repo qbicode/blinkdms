@@ -64,13 +64,36 @@ class plug_XPL(gPlugin) :
             db_obj.ReadRow()
             objcnt_sel = db_obj.RowData[0]
 
-            sql_build_lib.save_session()  # finally ...
+                     
             
+            if objcnt_sel==1:
+                
+                # forward to the single document
+                
+                sql_cmd = "x.VERSION_ID from " + sql_from
+                db_obj.select_tuple(sql_cmd)
+                db_obj.ReadRow()
+                v_id = db_obj.RowData[0]                
+                
+                doc_link = 'doc_view'
+                if context=='EDIT':
+                    doc_link = 'doc_edit'
+                    
+                req_data = {
+                    'mod': doc_link,
+                    'id': str(v_id)
+                }                
+            
+            else:
+                
+                sql_build_lib.save_session()  # save QUERY in session
+            
+                # do an interrnal forward to plugin "obj_list" which is showing the search
+                req_data = {
+                    'mod': 'doc_list',
+                }               
 
-            # do an interrnal forward to plugin "obj_list" which is doing the search
-            req_data = {
-                'mod': 'doc_list',
-            }
+            
             self._req_data_new = req_data
             self._forward = 1
     

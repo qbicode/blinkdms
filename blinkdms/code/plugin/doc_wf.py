@@ -112,10 +112,10 @@ class plug_XPL(gPlugin):
         features = objlib.features(db_obj)
         action = self._req_data.get('act', '')
 
-        if not objlib.get_current_versid(db_obj):
+        if not objlib.is_current_versid(db_obj):
             raise BlinkError(1, 'This version is not valid for Edit!')
             
-        debug.printx(__name__, "(89): start")
+        
 
         worflow_obj = oVERSION_WFL.Modify_obj(db_obj, self.objid)
         self.states_by_key = oSTATE.STATE_info.get_all_by_key(db_obj)
@@ -124,6 +124,7 @@ class plug_XPL(gPlugin):
 
         if action == 'r_start':
 
+           
             if objlib.workflow_is_active(db_obj):
                 raise BlinkError(2, 'Workflow already active.')
 
@@ -160,8 +161,12 @@ class plug_XPL(gPlugin):
                 self.form_sign(parx)
 
         if action == 'v_new':
-
-            if not objlib.is_released(db_obj):
+            
+            #TBD: test, if version already started ...
+            if objlib.is_released(db_obj):
+                debug.printx(__name__, '(167): is released.')
+        
+            else:
                 raise BlinkError(1, 'This old Version is not released.')
 
             version_lib = oVERSION.Modify_obj(db_obj)

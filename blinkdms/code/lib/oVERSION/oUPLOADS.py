@@ -103,6 +103,20 @@ class Mainobj:
     def time_UNX2HUM(timstamp):
         output = datetime.utcfromtimestamp(timstamp).strftime('%Y-%m-%d %H:%M:%S') 
         return output
+    
+    def get_uploads_RAW(self, db_obj):
+        '''
+        get upload features RAW, without any other info ...
+        '''
+        sql_cmd = "* from UPLOADS where VERSION_ID=" + str(self.__id) + ' order by POS'
+        db_obj.select_dict(sql_cmd)
+        
+        all_data = []
+        while db_obj.ReadRow():
+            features = db_obj.RowData 
+            all_data.append(features)
+            
+        return all_data            
 
     def get_uploads(self, db_obj):
         '''

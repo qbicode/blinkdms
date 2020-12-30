@@ -94,7 +94,7 @@ class plug_XPL(gPlugin):
         action = self._req_data.get('act', '')
         self.massdata = {'action': action}
        
-        if not objlib.get_current_versid(db_obj):
+        if not objlib.is_current_versid(db_obj):
             raise BlinkError(1, 'This version is not valid for Edit-Mode!')
 
         if objlib.workflow_is_active(db_obj):

@@ -89,7 +89,7 @@ class plug_XPL(gPlugin):
         self.vers_lib = oVERSION_edit.Mainobj(db_obj, self.objid)
         self.doc_id = self.vers_lib.doc_id
 
-        if not self.vers_lib.get_current_versid(db_obj):
+        if not self.vers_lib.is_current_versid(db_obj):
             raise BlinkError(1, 'This version is not valid for Edit!')
 
         self._projects_get(db_obj)

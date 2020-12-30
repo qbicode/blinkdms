@@ -98,10 +98,7 @@ function x_formUp_modi(pos) {
 <tr>  
   <td>
   {% if data['edit'] %}
-   <a class="btn btn-primary"data-toggle="modal" href="#" onClick="javascript:x_formUp_modi({{ row['pos']|string }})" data-target="#UpDocDialog">Upload</a>
-  {# OLD
-  <a class="btn btn-default" href="?mod=doc_up&act=upload&id={{ data['version_id']|string }}&pos={{ row['pos']|string }}">Upload</a> 
-  #}
+   <a class="btn btn-default"data-toggle="modal" href="#" onClick="javascript:x_formUp_modi({{ row['pos']|string }})" data-target="#UpDocDialog">Upload</a>
    <a class="btn btn-danger"  href="?mod=doc_up&act=del&id={{ data['version_id']|string }}&pos={{ row['pos']|string }}">Delete</a>
   {% endif %}
   </td>

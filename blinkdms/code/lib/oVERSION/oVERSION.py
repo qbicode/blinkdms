@@ -37,6 +37,24 @@ class Mainobj:
         sum_features = {**v_features, **d_features}
         return {'vals': sum_features}        
 
+    def is_released(self, db_obj):
+        '''
+        this VERSION is RELEASED and ACTIVE? 
+        '''
+        
+        v_features = self.features(db_obj)
+        
+        answer = 0
+        if v_features['RELEASE_DATE'] is not None:
+            if v_features['RELEASE_DATE'] != '':
+                answer = 1
+        
+        if not v_features['IS_ACTIVE']:
+            answer = 0
+                
+        debug.printx(__name__, '(55): VERSION_ID: '+str(self.__id)+'  RESULT:'+str(answer))
+        
+        return answer    
 
 class Modify_obj(Obj_mod):
     """
@@ -104,7 +122,7 @@ class Modify_obj(Obj_mod):
         # copy uploads ....
         # get OLD data
         upload_lib = oUPLOADS.Mainobj(old_vers_id)
-        upload_data_old = upload_lib.get_uploads(db_obj)
+        upload_data_old = upload_lib.get_uploads_RAW(db_obj)
 
         # copy to NEW version
         upload_mod_lib = oUPLOADS.Modify_obj(db_obj, v_id)
