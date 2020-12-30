@@ -12,6 +12,13 @@ massdata
 
 {% set doc_link='doc_edit' %}
 
+{% if not massdata['data'] %}
+
+  <div class="alert alert-warning">
+    <strong>WARNING:</strong> No tasks found.</li>
+  </div>
+
+{% else %}
 
 
 <table class="table table-striped table-sm">
@@ -42,5 +49,7 @@ massdata
       {% endfor %}
   </tbody>
   </table>
+  
+{% endif %}
 
 {% endblock %}

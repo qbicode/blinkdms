@@ -31,7 +31,7 @@ class plug_XPL(gPlugin):
           'sign'
           'reject'  : do a singel reject
           'v_new' : new version
-        'parx' : for 'sign'
+        'parx' : for 'sign' and 'r_start'
         'state_key' : key of state
     '''
   
@@ -55,9 +55,10 @@ class plug_XPL(gPlugin):
         self.infoarr['role.need'] = [oROLE.ROLE_KEY_EDIT]
         self.infoarr['context.allow'] = ['EDIT']        
 
-    def form_sign(self, data):
+    def form_sign(self, data, act):
         '''
-        opt: H_STATE_ID:  review, reject
+        :param act: 'sign', 
+         opt: H_STATE_ID:  review, reject
         '''
 
         state_id = int(data.get('STATE_ID', '0'))
@@ -70,7 +71,7 @@ class plug_XPL(gPlugin):
             row = self.states_by_key[state_key]
             state_id = row['STATE_ID']
 
-        if state_key != 'REJECT':
+        if act=='sign' and state_key != 'REJECT':
             self.massdata['reject.button.show'] = 1
 
         fields = [
@@ -83,7 +84,7 @@ class plug_XPL(gPlugin):
         
         hidden = {
             "mod": 'doc_wf',
-            "act": 'sign',
+            "act": act,
             'id': self.objid,
             'parx[STATE_ID]': '',
         }
@@ -124,14 +125,30 @@ class plug_XPL(gPlugin):
 
         if action == 'r_start':
 
+            parx = self._req_data.get('parx', {})
            
             if objlib.workflow_is_active(db_obj):
                 raise BlinkError(2, 'Workflow already active.')
+            
+            if int(self._req_data.get('go', '0')) > 0:
+                
+                if self.do_check_pw:
+                    
+                    session_dummy= {}
+                    login_obj = login.login(session_dummy)
+                    login_obj.check_verify(db_obj, session['sesssec']['user'], parx['password'])
+                    del(parx['password']) # not allowed on audit log            
 
-            worflow_obj.start_r_wfl(db_obj)
-
-            self._html.setMessage('OK', 'Workflow started.')
-            do_forward = 1
+                worflow_obj.start_r_wfl(db_obj)
+    
+                self._html.setMessage('OK', 'Workflow started.')
+                do_forward = 1
+                
+            else:
+                state_key = 'REL_START'
+                state_id_tmp = self.states_by_key[state_key]['STATE_ID']
+                parx['STATE_ID'] = state_id_tmp
+                self.form_sign(parx, action)            
 
         if action == 'sign':
     
@@ -158,7 +175,7 @@ class plug_XPL(gPlugin):
                     state_key = self._req_data.get('state_key', '')
                     state_id_tmp = self.states_by_key[state_key]['STATE_ID']
                     parx['STATE_ID'] = state_id_tmp
-                self.form_sign(parx)
+                self.form_sign(parx, action)
 
         if action == 'v_new':
             

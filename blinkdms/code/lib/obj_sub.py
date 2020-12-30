@@ -130,15 +130,38 @@ class table_cls:
         return db_obj.ReadRow()         
 
    
-    def element_exists(self, db_obj, where_dict ):
+    def element_exists(self, db_obj, where_dict, where_not={} ):
         '''
-        object exists ?
+        - object exists ?
+        - OPTIONAL: except condition where_not
+        :param where_not: {} where NOT where_not KEY!=VAL
         :return: 0 or 1
         '''        
         exists = 0
         
         out_cols = where_dict.keys()
-        values = db_obj.one_row_get( self.tablename , where_dict, out_cols )
+        
+        if len(where_not):
+            
+            where_list = []
+            for col,val in where_dict.items():
+                where_list.append( col + "=" + db_obj.addQuotes(val) )
+                
+            where_not_list = []
+            for col,val in where_not.items():
+                where_not_list.append( col + "!=" + db_obj.addQuotes(val) )            
+                
+     
+            sqlstate = ",".join(out_cols) + ' from '+ self.tablename + " where " + " and ".join(where_list) + \
+                " and " + " and ".join(where_not_list)
+            db_obj.select_dict( sqlstate )
+            values = None
+            if db_obj.ReadRow():
+                # analyse one row       
+                values = db_obj.RowData         
+        
+        else:
+            values = db_obj.one_row_get( self.tablename , where_dict, out_cols )
        
         if values is not None:
             exists = 1

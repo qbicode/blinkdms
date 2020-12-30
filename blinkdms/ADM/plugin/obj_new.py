@@ -162,7 +162,14 @@ class plug_XPL(gPlugin) :
             
             objid = self.act_new(db_obj, values_new, new_opt )                
             
-            self._html.forward( '?mod=ADM/obj_one&t='+self.table+'&id=' + str(objid) , 'go to object')           
+            req_data = {
+                'mod': 'ADM/obj_one',
+                't':self.table,
+                'id': objid
+            }
+            self.forward_internal_set(req_data)
+            
+            # self._html.forward( '?mod=ADM/obj_one&t='+self.table+'&id=' + str(objid) , 'go to object')           
         
     
     def mainframe(self):

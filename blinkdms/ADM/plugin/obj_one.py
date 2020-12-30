@@ -9,7 +9,7 @@ Copyright:      Blink AG
 Author:         Steffen Kube <steffen@blink-dx.com>
 """
 import os
-import importlib
+import traceback
 
 from blinkdms.code.lib.main_imports import *
 from blinkdms.code.lib.obj.obj_info import Obj_info_lev2
@@ -209,15 +209,24 @@ class plug_XPL(gPlugin) :
                 self.setMessage('WARN', 'No arguments given for update.') 
                 return
 
-            self.obj_ext_lib.update_pre(db_obj)  # pre update action
-            debug.printx(__name__, 'STD2: self._req_data[argu]:' + str(self._req_data['argu']))
-            self.act_update(db_obj, self._req_data.get('argu', {} ) )  
-
-            self._req_data['go'] = '0'  # for restart ...
-            self._req_data['action'] = 'view'
-            self.restart = 1
-            return
-
+            try:
+                
+                self.obj_ext_lib.update_pre(db_obj)  # pre update action
+                debug.printx(__name__, 'STD2: self._req_data[argu]:' + str(self._req_data['argu']))
+                self.act_update(db_obj, self._req_data.get('argu', {} ) )  
+    
+                self._req_data['go'] = '0'  # for restart ...
+                self._req_data['action'] = 'view'
+                self.restart = 1
+                return
+            
+            except:
+                exc_type, exc_value, exc_traceback = sys.exc_info()     
+                message = str(exc_value)                 
+                err_stack = traceback.extract_tb(exc_traceback)
+                self.setMessage('ERROR', message, err_num=1, err_stack=err_stack)
+                # continue ....              
+                
         
         
         proj_answer = self.objlib.search_projects(db_obj)

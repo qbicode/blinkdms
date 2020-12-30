@@ -76,7 +76,29 @@ class extend_obj(obj_one_IF):
                 ind=ind+1
 
 
-        return columns_show     
+        return columns_show  
+    
+    def _element_exists(self,db_obj, key, val):
+        '''
+        exists in OTHER object ?
+        '''
+        
+        exists = 0
+        qstr = '%"'+key+'": "'+val+'"%'
+        sqlstate = "DOC_TYPE_ID  from DOC_TYPE where METADATA  like "+ db_obj.addQuotes(qstr) + ' and DOC_TYPE_ID != ' + str(self.objid)
+        debug.printx(__name__, '(86) sqlstate:' + sqlstate, 0)
+        
+        db_obj.select_tuple( sqlstate )
+        DOC_TYPE_ID = 0
+        if db_obj.ReadRow():
+            # analyse one row       
+            DOC_TYPE_ID = db_obj.RowData[0]
+            
+        if DOC_TYPE_ID >0:
+            exists = 1
+            
+        return exists        
+        
         
     def update_pre(self, db_obj):
         # can be used to update "y" columns
@@ -91,6 +113,10 @@ class extend_obj(obj_one_IF):
         argu['y.NUM_DIGITS'] = argu['y.NUM_DIGITS'] .strip()
         if argu['y.NUM_DIGITS'] == '':
             raise BlinkError(1, 'no NUM_DIGITS')
+        
+        # check exists
+        if self._element_exists(db_obj, 'DOC_CODE', argu['y.DOC_CODE']):
+            raise BlinkError(1, 'DOC_CODE already exists.')
         
         argu['y.WORD_CONVERT'] = int(argu.get('y.WORD_CONVERT','0'))
                

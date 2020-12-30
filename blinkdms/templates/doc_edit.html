@@ -47,10 +47,22 @@ massdata:
   {% endif %}
   &nbsp;<br>&nbsp;<br>
 {% endif %}
+
+ {% if meta['workflow.buttons']['v_new'] %}
+   <a class="btn btn-primary" href="?mod=doc_wf&id={{ meta['id'] }}&act=v_new">Create a new version</a>
+ {% endif %}
+ {% if meta['workflow.buttons']['v_new.inact'] %}
+   <a class="btn btn-primary disabled" href="#">Create a new version</a>
+ {% endif %}
  
  {% if meta['workflow.buttons']['r_start'] %}
-    <a class="btn btn-primary" href="?mod=doc_wf&id={{ meta['id'] }}&act=r_start">Start Release Workflow</a>
+    <a class="btn btn-secondary" href="?mod=doc_wf&id={{ meta['id'] }}&act=r_start">Start Release Workflow</a>
  {% endif %}
+ {% if meta['workflow.buttons']['r_start.inact'] %}
+   <a class="btn btn-secondary disabled" href="#">Start Release Workflow</a>
+ {% endif %}
+ 
+
  
  {% if meta['workflow.buttons']['sign'] %}
    <a class="btn btn-primary" href="?mod=doc_wf&id={{ meta['id'] }}&act=sign&state_key={{ meta['workflow.sign.state_key'] }}">Review</a>
@@ -59,9 +71,8 @@ massdata:
    <a class="btn btn-danger" href="?mod=doc_wf&id={{ meta['id'] }}&act=sign&state_key=REJECT">Reject</a>
  {% endif %}
  
- {% if meta['workflow.buttons']['v_new'] %}
-   <a class="btn btn-primary" href="?mod=doc_wf&id={{ meta['id'] }}&act=v_new">Create a new version</a>
- {% endif %}
+ 
+ 
  
  {{ form1( massdata['form'] ) }} 
   <br><br>
