@@ -44,6 +44,7 @@ class plug_XPL(gPlugin) :
             'DB_USER',
             'USER_GROUP',
             'DOC_TYPE',
+            'SYS_A_LOG'
             #'DOC_VERS_ACTIVE',
             #'DOC_VERS_EDIT',
             #'VERSION'

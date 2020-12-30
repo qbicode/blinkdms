@@ -294,6 +294,7 @@ class plug_XPL(gPlugin):
             'r_start': 0,
             'r_start.inact': 0,
             'e_start': 0,
+            'w_start': 0, # withdraw
             'sign': 0,
             'reject': 0,
             'v_new': 0,
@@ -317,10 +318,12 @@ class plug_XPL(gPlugin):
                 wfl_buttons['reject'] = 1
         else:
             if not self.is_released:
+                
                 if self.vers_lib.is_owner(db_obj):
                     wfl_buttons['v_new.inact'] = 1
                     wfl_buttons['r_start'] = 1
                     wfl_buttons['e_start'] = 1
+                    wfl_buttons['w_start'] = 1
                     wfl_buttons['reviewer_edit'] = 1
                     wfl_buttons['upload_docs'] = 1
                     self.form_edit_flag = 1
@@ -328,6 +331,7 @@ class plug_XPL(gPlugin):
                 if self.vers_lib.is_owner(db_obj):
                     wfl_buttons['r_start.inact'] = 1
                     wfl_buttons['v_new'] = 1
+                    wfl_buttons['w_start'] = 1
    
         self._html.add_meta('workflow.buttons', wfl_buttons)
         

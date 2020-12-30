@@ -24,3 +24,22 @@ Example document template:
 Relevant code modules:
 
 * lib/oVERSION/docfile_convert.py (converts a version attachment)
+
+Workflows
+---------
+
+Release
+~~~~~~~
+
+Prerequisites:
+  * version must contain at least one upload
+  * version must contain all needed reviewers
+
+Withdraw
+~~~~~~~~
+
+Prerequisites:
+  * a version must exist, rleased or unreleased
+  
+Start:
+ 

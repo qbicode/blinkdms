@@ -62,7 +62,9 @@ massdata:
    <a class="btn btn-secondary disabled" href="#">Start Release Workflow</a>
  {% endif %}
  
-
+ {% if meta['workflow.buttons']['w_start'] %}
+    <a class="btn btn-danger" href="?mod=doc_wf&id={{ meta['id'] }}&act=w_start">Start Withdraw Workflow</a>
+ {% endif %}
  
  {% if meta['workflow.buttons']['sign'] %}
    <a class="btn btn-primary" href="?mod=doc_wf&id={{ meta['id'] }}&act=sign&state_key={{ meta['workflow.sign.state_key'] }}">Review</a>

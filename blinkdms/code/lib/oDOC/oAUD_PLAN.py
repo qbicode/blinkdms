@@ -25,6 +25,7 @@ from blinkdms.code.lib.oSTATE import oSTATE
 
 REV_TYPE_REVIEW ='REVIEW'
 REV_TYPE_RELEASE='RELEASE' #last part of the release workflow
+REV_TYPE_WITHDRAW ='WITHDRAW'
 REV_TYPE_EDIT   ='EDIT' # EDIT workflow
 
 class Table:
@@ -41,7 +42,9 @@ class Table:
         if rev_type==REV_TYPE_REVIEW:
             state_key='REVIEW'
         if rev_type==REV_TYPE_RELEASE:
-            state_key='REVIEW_REL'        
+            state_key='REVIEW_REL' 
+        if rev_type==REV_TYPE_WITHDRAW:
+            state_key='REVIEW_WD'     
 
         state_id = oSTATE.STATE_info.get_stateid_by_key(db_obj, state_key)
         return state_id
@@ -98,8 +101,9 @@ class Modify_obj(Obj_mod):
         - send emails !
         :param rev_type: string 
            REVIEW,  - first part of the release workflow;
-                      if no REVIEW planned, switch immediatly to RELEASE
+                      if no REVIEW planned, switch immediatly to RELEASE/WITHDRAW
            RELEASE, - last part of the release workflow
+           WITHDRAW - last part of the withdraw workflow
            EDIT     - edit workflow
            ALL      - update all !
         :param status: int 
@@ -178,3 +182,25 @@ class Modify_obj(Obj_mod):
         status = 2
         args = {'DONE': status}
         db_obj.update_row('AUD_PLAN', {'DOC_ID': self.objid, 'POS': pos}, args)
+        
+    def replace_plan_states(self, db_obj, old_state_id, new_state_id):
+        '''
+        REPLACE old_state_id ==> new_state_id
+        '''
+        
+        plan_pos_arr=[]
+        sql_cmd = 'POS, STATE_ID from AUD_PLAN where DOC_ID=' + str(self.objid) + \
+            ' and STATE_ID=' + str(old_state_id) + ' order by POS'
+        db_obj.select_tuple(sql_cmd)
+        while db_obj.ReadRow():
+            pos = db_obj.RowData[0]
+            plan_pos_arr.append(pos)
+            
+        
+        if not len(plan_pos_arr):
+            return
+        
+        # update the relevant entries (the relevant STATE_ID)
+        for pos in plan_pos_arr:
+            args = {'STATE_ID': new_state_id}
+            db_obj.update_row('AUD_PLAN', {'DOC_ID': self.objid, 'POS': pos}, args)

@@ -13,6 +13,10 @@ from blinkdms.code.lib.f_utilities import BlinkError
 # major keys
 REVIEW ='REVIEW'
 RELEASE='REVIEW_REL'
+REL_END='REL_END'     # final release state
+WD_START='WD_START'
+WD_END  ='WD_END'
+REVIEW_WD='REVIEW_WD'
 
 class STATE_info:
     '''
@@ -24,6 +28,9 @@ class STATE_info:
        'WF_END' : workflow end (e.g. rejected)
        'REVIEW' : reviewed
        'REVIEW_REL' : release reviewed
+       'WD_START' Withdraw start
+       'WD_END'   Withdraw end
+       'REVIEW_WD' : Review for withdraw 
     '''
     all_entries_by_key = None
     all_entries_by_id = None

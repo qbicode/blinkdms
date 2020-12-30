@@ -37,6 +37,7 @@ class Mainobj:
     __id   = None
     obj    = None # lib obj_abs()
     doc_id = None
+    rw_type = None # REV_TYPE_WITHDRAW or REV_TYPE_RELEASE
     
     def __init__(self, db_obj, idx):
         self.__id = idx
@@ -44,6 +45,10 @@ class Mainobj:
         self.doc_id = self.obj.main_feat_val(db_obj, 'DOC_ID')
         
         #self.state_lib = oSTATE.STATE_info()
+    
+    def set_REL_WD_type(self, rw_type):
+        # REV_TYPE_WITHDRAW or REV_TYPE_RELEASE
+        self.rw_type = rw_type
         
     def features(self, db_obj):
         return self.obj.main_feat_all(db_obj)
@@ -87,15 +92,19 @@ class Mainobj:
 
         return all_data
 
-    def get_aud_pos_last_release(self, db_obj):
+    def get_aud_pos_last_STATE(self, db_obj, start_id):
 
-        release_start_id =  oSTATE.STATE_info.get_stateid_by_key(db_obj, 'REL_START')
-        sql_cmd = "max(POS) from AUD_LOG where VERSION_ID=" + str(self.__id) + " and STATE_ID=" + str(release_start_id)
+        sql_cmd = "max(POS) from AUD_LOG where VERSION_ID=" + str(self.__id) + " and STATE_ID=" + str(start_id)
         db_obj.select_tuple(sql_cmd)
         db_obj.ReadRow()
         pos = db_obj.RowData[0]
 
         return pos
+
+    def get_aud_pos_last_release(self, db_obj):
+
+        start_id =  oSTATE.STATE_info.get_stateid_by_key(db_obj, 'REL_START')
+        return self.get_aud_pos_last_STATE(db_obj, start_id)
     
     def get_aud_log_last_release(self, db_obj):
         '''
@@ -107,15 +116,15 @@ class Mainobj:
             #raise BlinkError(1, "No Release-Start found.")
             return []
 
-        sql_cmd = "* from AUD_LOG where VERSION_ID=" + str(self.__id) + " and POS>=" + str(start_pos) + " order by POS"
-        db_obj.select_dict(sql_cmd)
-        
         allow_states = [
             oSTATE.STATE_info.get_stateid_by_key(db_obj, 'REVIEW'),
             oSTATE.STATE_info.get_stateid_by_key(db_obj, 'REVIEW_REL'),
             oSTATE.STATE_info.get_stateid_by_key(db_obj, 'REL_END'),
         ]
-            
+
+        sql_cmd = "* from AUD_LOG where VERSION_ID=" + str(self.__id) + " and POS>=" + str(start_pos) + " order by POS"
+        db_obj.select_dict(sql_cmd)
+  
         all_data = []
         while db_obj.ReadRow():
             loop_state_id = db_obj.RowData['STATE_ID']
@@ -124,6 +133,33 @@ class Mainobj:
 
         return all_data
     
+    def get_aud_log_last_withdraw(self, db_obj):
+        '''
+        get all entries of last WD(START): only REVIEW + APPROVE + REVIEW_WD + WD; No rejects
+        '''
+
+        start_id =  oSTATE.STATE_info.get_stateid_by_key(db_obj, 'WD_START')
+        start_pos = self.get_aud_pos_last_STATE(db_obj, start_id)
+        if not start_pos:
+            #raise BlinkError(1, "No WD-Start found.")
+            return []
+
+        allow_states = [
+            oSTATE.STATE_info.get_stateid_by_key(db_obj, 'REVIEW'),
+            oSTATE.STATE_info.get_stateid_by_key(db_obj, 'REVIEW_WD'),
+            oSTATE.STATE_info.get_stateid_by_key(db_obj, 'WD_END'),
+        ]
+
+        sql_cmd = "* from AUD_LOG where VERSION_ID=" + str(self.__id) + " and POS>=" + str(start_pos) + " order by POS"
+        db_obj.select_dict(sql_cmd)
+  
+        all_data = []
+        while db_obj.ReadRow():
+            loop_state_id = db_obj.RowData['STATE_ID']
+            if loop_state_id in allow_states:
+                all_data.append(db_obj.RowData)
+
+        return all_data    
 
     def check_start_r_wfl(self, db_obj):
         a = Check_Wfl_Start(self.__id)
@@ -172,7 +208,10 @@ class Mainobj:
             #raise BlinkError(1, 'No Planned Users found.')
             return []
 
-        log_arr = self.get_aud_log_last_release(db_obj)
+        if self.rw_type == oAUD_PLAN.REV_TYPE_WITHDRAW:
+            log_arr = self.get_aud_log_last_withdraw(db_obj)
+        else:
+            log_arr = self.get_aud_log_last_release(db_obj)
 
         out_list = []
         for row in planned_users:
@@ -316,7 +355,7 @@ class Modify_obj(Obj_assoc_mod):
         self.states_by_key = oSTATE.STATE_info.get_all_by_key(db_obj)
         self.states_by_id = oSTATE.STATE_info.get_all_by_id(db_obj)
 
-    def _start_wfl_action(self, db_obj):
+    def _start_wfl_action(self, db_obj, rev_type):
         '''
         start additional action for a workflow start
         '''
@@ -328,7 +367,11 @@ class Modify_obj(Obj_assoc_mod):
         if wfl_type == oWFL.KEY_REL_ONLY:
             # no REVIEW needed ...
             # start with RELEASE .....
-            start_with_status = oAUD_PLAN.REV_TYPE_RELEASE
+            if rev_type == oAUD_PLAN.REV_TYPE_WITHDRAW:
+                start_with_status = oAUD_PLAN.REV_TYPE_RELEASE
+                
+            if rev_type == oAUD_PLAN.REV_TYPE_RELEASE:
+                start_with_status = oAUD_PLAN.REV_TYPE_RELEASE
         
         audplan_lib.review_start(db_obj, start_with_status, 1)
 
@@ -441,7 +484,43 @@ class Modify_obj(Obj_assoc_mod):
 
         # already done ...
         #audplan_lib = oAUD_PLAN.Modify_obj(db_obj, self.doc_id)
-        #audplan_lib.user_did_review(db_obj, arg_state_id)        
+        #audplan_lib.user_did_review(db_obj, arg_state_id)  
+        
+    def _intern_withdraw_actions(self, db_obj):
+        '''
+        WITHDRAWN has been done, post actions
+        '''
+        
+        #  add a final release LOG entry + activate this version
+        state_key = 'WD_END'
+        arg_state_id = self.mainlib.get_state_id_from_key(db_obj, state_key)
+        log_args = {
+            'STATE_ID':arg_state_id
+        }
+        self._add_audit_log(db_obj, log_args)
+        
+
+        # do WITHDRAW things ...
+        
+        # v_features = self.mainlib.features(db_obj)
+
+        args = {
+            'WFL_ACTIVE': 0,
+            'IS_ACTIVE': 1
+        }
+
+        v_mod_obj = Obj_mod(db_obj, 'VERSION', self.objid)
+        v_mod_obj.update_simple(db_obj, {'VERSION_ID': self.objid}, args)
+
+        doc_id = self.doc_id
+
+        args = {
+            'ACT_VERS_ID':None,
+        }
+        d_mod_obj = Obj_mod(db_obj, 'DOC', doc_id)
+        d_mod_obj.update_simple(db_obj, {'DOC_ID': doc_id}, args)
+        
+        self._end_wfl_action_all(db_obj)
 
     def sign(self, db_obj, args):
 
@@ -456,12 +535,15 @@ class Modify_obj(Obj_assoc_mod):
             if state_key == 'REL_END':
                 raise BlinkError(1, 'State "' + state_key + '" not allowed here.')
                 # break
+            if state_key == 'WD_END':
+                raise BlinkError(2, 'State "' + state_key + '" not allowed here.')
+                # break            
 
             if state_key == 'REJECT':
 
                 tmp_notes = args.get('NOTES', None)
                 if tmp_notes == None or tmp_notes == '':
-                    raise BlinkError(2, 'Please give comments on reject.')
+                    raise BlinkError(5, 'Please give comments on reject.')
 
                 # here the log is added .....
                 self._add_audit_log(db_obj, args)
@@ -496,19 +578,30 @@ class Modify_obj(Obj_assoc_mod):
         audplan_lib.user_did_review(db_obj, arg_state_id)
 
         # post actions ...
-        if state_key == 'REVIEW' or state_key == 'REVIEW_REL':
-    
+        
+        while 1:
+            
             # do review ...
             # check, if this is the last review/release for this document
             if state_key == 'REVIEW':
                 is_last_review = self.mainlib.log_is_last_meta_review(db_obj, state_key)
                 if is_last_review:
                     self._intern_review_log(db_obj) # TBD
+                break
             
             if state_key == 'REVIEW_REL':     
                 is_last_review = self.mainlib.log_is_last_meta_review(db_obj, state_key)
                 if is_last_review:
                     self._intern_release_actions(db_obj)
+                break 
+            
+            if state_key == 'REVIEW_WD':     
+                is_last_review = self.mainlib.log_is_last_meta_review(db_obj, state_key)
+                if is_last_review:
+                    self._intern_withdraw_actions(db_obj)
+                break             
+            
+            break # finally ...
 
     def simple_log_add(self, db_obj, args):
         self._add_audit_log(db_obj, args)
@@ -532,7 +625,32 @@ class Modify_obj(Obj_assoc_mod):
         v_mod_obj = Obj_mod(db_obj, 'VERSION', self.objid)
         v_mod_obj.update_simple(db_obj, {'VERSION_ID': self.objid}, args)
         
-        self._start_wfl_action(db_obj)
+        self._start_wfl_action(db_obj, oAUD_PLAN.REV_TYPE_RELEASE)
+        
+    def start_w_wfl(self, db_obj):
+        '''
+        start WITHDRAW Workflow
+        - update WFL_ACTIVE
+        '''
+
+
+        obj_ed_lib = oVERSION_edit.Mainobj(db_obj, self.objid)
+        if obj_ed_lib.workflow_is_active(db_obj):
+            raise BlinkError(1, 'Workflow already active')
+        
+        a = Check_Wfl_Start(self.objid)
+        a.check_mod_wd(db_obj)        
+        
+        key = oSTATE.WD_START
+        args = {}
+        args['STATE_ID'] = self.states_by_key[key]['STATE_ID']
+        self._add_audit_log(db_obj, args)
+        
+        args = {'WFL_ACTIVE': 2}
+        v_mod_obj = Obj_mod(db_obj, 'VERSION', self.objid)
+        v_mod_obj.update_simple(db_obj, {'VERSION_ID': self.objid}, args)
+        
+        self._start_wfl_action(db_obj, oAUD_PLAN.REV_TYPE_WITHDRAW )    
         
 class Check_Wfl_Start:
     
@@ -587,3 +705,23 @@ class Check_Wfl_Start:
                 return (-4, message)
                 
         return (1,'ok')
+    
+    def check_mod_wd(self, db_obj):
+        '''
+        check version for WITHDRAW workflow
+        - change STATE for releasers => REVIEW_WD, because the standard workflow PLAN has REVIEW_REL
+        '''
+        mainlib = Mainobj(db_obj, self.__id)
+        doc_id  = mainlib.doc_id
+        
+        obj_ed_lib = oVERSION_edit.Mainobj(db_obj, self.__id)
+        users = obj_ed_lib.get_review_users(db_obj)
+        if not len(users):
+            raise BlinkError(1, 'No review users.')
+        
+        audplan_lib = oAUD_PLAN.Modify_obj(db_obj, doc_id)
+        
+        old_state_id = oSTATE.STATE_info.get_stateid_by_key(db_obj, oSTATE.RELEASE)
+        new_state_id = oSTATE.STATE_info.get_stateid_by_key(db_obj, oSTATE.REVIEW_WD)
+        
+        audplan_lib.replace_plan_states(db_obj, old_state_id, new_state_id)

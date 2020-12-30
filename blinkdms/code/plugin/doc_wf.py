@@ -27,9 +27,10 @@ class plug_XPL(gPlugin):
        'id' : VERSION-ID
        'act' 
           'r_start' : release workflow start
-          'e_start' : edit workflow start
+          'w_start' : start withdraw
+          'e_start' : FUTURE: edit workflow start
           'sign'
-          'reject'  : do a singel reject
+          
           'v_new' : new version
         'parx' : for 'sign' and 'r_start'
         'state_key' : key of state
@@ -122,79 +123,118 @@ class plug_XPL(gPlugin):
         self.states_by_key = oSTATE.STATE_info.get_all_by_key(db_obj)
         self.states_by_id = oSTATE.STATE_info.get_all_by_id(db_obj)
         do_forward = 0
-
-        if action == 'r_start':
-
-            parx = self._req_data.get('parx', {})
-           
-            if objlib.workflow_is_active(db_obj):
-                raise BlinkError(2, 'Workflow already active.')
+        
+        while 1:
             
-            if int(self._req_data.get('go', '0')) > 0:
+
+            if action == 'r_start':
+    
+                parx = self._req_data.get('parx', {})
+               
+                if objlib.workflow_is_active(db_obj):
+                    raise BlinkError(2, 'Workflow already active.')
                 
-                if self.do_check_pw:
+                if int(self._req_data.get('go', '0')) > 0:
                     
-                    session_dummy= {}
-                    login_obj = login.login(session_dummy)
-                    login_obj.check_verify(db_obj, session['sesssec']['user'], parx['password'])
-                    del(parx['password']) # not allowed on audit log            
-
-                worflow_obj.start_r_wfl(db_obj)
+                    if self.do_check_pw:
+                        
+                        session_dummy= {}
+                        login_obj = login.login(session_dummy)
+                        login_obj.check_verify(db_obj, session['sesssec']['user'], parx['password'])
+                        del(parx['password']) # not allowed on audit log            
     
-                self._html.setMessage('OK', 'Workflow started.')
-                do_forward = 1
-                
-            else:
-                state_key = 'REL_START'
-                state_id_tmp = self.states_by_key[state_key]['STATE_ID']
-                parx['STATE_ID'] = state_id_tmp
-                self.form_sign(parx, action)            
-
-        if action == 'sign':
-    
-            if not objlib.workflow_is_active(db_obj):
-                raise BlinkError(3, 'Workflow not active.')
-
-            parx = self._req_data.get('parx', {})
-
-            if int(self._req_data.get('go', '0')) > 0:
-                
-                if self.do_check_pw:
+                    worflow_obj.start_r_wfl(db_obj)
+        
+                    self._html.setMessage('OK', 'Workflow started.')
+                    do_forward = 1
                     
-                    session_dummy= {}
-                    login_obj = login.login(session_dummy)
-                    login_obj.check_verify(db_obj, session['sesssec']['user'], parx['password'])
-                    del(parx['password']) # not allowed on audit log
-                
-                worflow_obj.sign(db_obj, parx)
-    
-                self._html.setMessage('OK', 'Signed.')
-                do_forward = 1
-            else:
-                if self._req_data.get('state_key', '') != '':
-                    state_key = self._req_data.get('state_key', '')
+                else:
+                    state_key = 'REL_START'
                     state_id_tmp = self.states_by_key[state_key]['STATE_ID']
                     parx['STATE_ID'] = state_id_tmp
-                self.form_sign(parx, action)
-
-        if action == 'v_new':
-            
-            #TBD: test, if version already started ...
-            if objlib.is_released(db_obj):
-                debug.printx(__name__, '(167): is released.')
+                    self.form_sign(parx, action)   
+                break
+    
+            if action == 'w_start':
+    
+                parx = self._req_data.get('parx', {})
+               
+                if objlib.workflow_is_active(db_obj):
+                    raise BlinkError(3, 'Workflow already active.')
+                
+                if int(self._req_data.get('go', '0')) > 0:
+                    
+                    if self.do_check_pw:
+                        
+                        session_dummy= {}
+                        login_obj = login.login(session_dummy)
+                        login_obj.check_verify(db_obj, session['sesssec']['user'], parx['password'])
+                        del(parx['password']) # not allowed on audit log            
+    
+                    worflow_obj.start_w_wfl(db_obj)
         
-            else:
-                raise BlinkError(1, 'This old Version is not released.')
-
-            version_lib = oVERSION.Modify_obj(db_obj)
-            new_vers_id = version_lib.new_successor(db_obj, self.objid)
-
-            self._html.setMessage('OK', 'New Version created.')
-            req_data = {
-                'mod': 'doc_edit',
-                'id': new_vers_id
-            }
-            self.forward_internal_set(req_data)
+                    self._html.setMessage('OK', 'Workflow started.')
+                    do_forward = 1
+                    
+                else:
+                    state_key = oSTATE.WD_START
+                    state_id_tmp = self.states_by_key[state_key]['STATE_ID']
+                    parx['STATE_ID'] = state_id_tmp
+                    self.form_sign(parx, action)   
+                break            
+    
+            if action == 'sign':
+        
+                if not objlib.workflow_is_active(db_obj):
+                    raise BlinkError(4, 'Workflow not active.')
+    
+                parx = self._req_data.get('parx', {})
+    
+                if int(self._req_data.get('go', '0')) > 0:
+                    
+                    if self.do_check_pw:
+                        
+                        session_dummy= {}
+                        login_obj = login.login(session_dummy)
+                        login_obj.check_verify(db_obj, session['sesssec']['user'], parx['password'])
+                        del(parx['password']) # not allowed on audit log
+                    
+                    worflow_obj.sign(db_obj, parx)
+        
+                    self._html.setMessage('OK', 'Signed.')
+                    do_forward = 1
+                else:
+                    if self._req_data.get('state_key', '') != '':
+                        state_key = self._req_data.get('state_key', '')
+                        state_id_tmp = self.states_by_key[state_key]['STATE_ID']
+                        parx['STATE_ID'] = state_id_tmp
+                    self.form_sign(parx, action)
+                    
+                break
+    
+            if action == 'v_new':
+                
+                #TBD: test, if version already started ...
+                if objlib.is_released(db_obj):
+                    debug.printx(__name__, '(167): is released.')
+            
+                else:
+                    raise BlinkError(6, 'This old Version is not released.')
+    
+                version_lib = oVERSION.Modify_obj(db_obj)
+                new_vers_id = version_lib.new_successor(db_obj, self.objid)
+    
+                self._html.setMessage('OK', 'New Version created.')
+                req_data = {
+                    'mod': 'doc_edit',
+                    'id': new_vers_id
+                }
+                self.forward_internal_set(req_data)
+                break
+            
+            
+            raise BlinkError(10, 'Action "'+action+'" unknown.')
+            # break # FINAL break !
 
         if do_forward:
             req_data = {

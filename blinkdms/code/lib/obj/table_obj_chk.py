@@ -19,6 +19,8 @@ ADMIN_OK_TABLES = [
     {'t': 'DOC_VERS_ACTIVE', 'rights': {'read': 1, 'write': 0, 'insert': 0}},
     {'t': 'DOC_VERS_EDIT', 'rights':   {'read': 1, 'write': 0, 'insert': 0}},
     {'t': 'WFL', 'rights':   {'read': 1, 'write': 0, 'insert': 0}},
+    {'t': 'SYS_A_LOG', 'rights':   {'read': 1, 'write': 0, 'insert': 0}},
+    
 
 ]
 
