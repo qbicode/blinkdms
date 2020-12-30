@@ -41,6 +41,7 @@ class plug_XPL(gPlugin) :
        editmode    : "view" | "edit" : show edit form?
        action :
          ['view']
+         'update'
           'copy'
        view.tab.type: [home], meta
        tab : 
@@ -194,6 +195,8 @@ class plug_XPL(gPlugin) :
         while 1:
             if action=='view':
                 break # default 
+            if action=='update':
+                break # default             
             if action=='copy':
                 self.act_copy(db_obj)
                 break

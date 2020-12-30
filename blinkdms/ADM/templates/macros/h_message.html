@@ -19,17 +19,31 @@
   </div>
   <div class="row d-flex mb-5">
 {% endif %}
-               
-{% if 'ok.mess' in pageinfo %}
+   
+{% with warn_mess = get_flashed_messages(category_filter=["warning"]) %}
+{% if warn_mess %}
   </div>
- {% if pageinfo['ok.mess']['warn']>0 %}
-   <div class="alert alert-warning"> 
-   <strong>WARNING:</strong>
- {% else %}
-   <div class="alert alert-success"> 
-   <strong>OK:</strong>
- {% endif %}
- {{ pageinfo['ok.mess']['text'] }}	
-   </div>
+ {% for msg in warn_mess %}
+  <div class="alert alert-warning">
+    <strong>WARNING:</strong> {{ msg }}</li>
+  </div>
+  <br><br>
+   
+ {% endfor %}
  <div class="row d-flex mb-5">
 {% endif %}
+{% endwith %}
+
+{% with info_mess = get_flashed_messages(category_filter=["info"]) %}
+{% if info_mess %}
+ </div>
+ {% for msg in info_mess %}
+  <div class="alert alert-success">
+    <strong>OK:</strong> {{ msg }}</li>
+  </div>
+  <br><br>
+ {% endfor %}
+ <div class="row d-flex mb-5">
+{% endif %}
+{% endwith %}
+ 

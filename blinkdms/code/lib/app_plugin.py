@@ -205,7 +205,7 @@ class gPlugin:
                         [2]  - reduced locrow (set title automatically)
          'locrow.show_mo' :0,1 : show mother? if 'viewtype'='object'
          'err.mess'   : {'key':mess_key, 'text':message, 'stack_str':stack_str, 'num': num of error }
-         'ok.mess'    : { 'text':message, 'warn':0,1}
+         'ok.mess'    : DEPRECATED: { 'text':message, 'warn':0,1}
          'admin.only' : 0,1 allow only access for admin; see also 'admin.is'
          
          'session.need' : [OPTIONAL] module needs an active session ?

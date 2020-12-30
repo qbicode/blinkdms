@@ -23,7 +23,7 @@
   <div class="alert alert-warning">
     <strong>WARNING:</strong> {{ msg }}</li>
   </div>
-  <br><br>
+ 
  {% endfor -%}
 {% endif %}
 {% endwith %}
@@ -34,20 +34,8 @@
   <div class="alert alert-success">
     <strong>OK:</strong> {{ msg }}</li>
   </div>
-  <br><br>
+ 
  {% endfor -%}
 {% endif %}
 {% endwith %}
   
-{# TBD: remove this old code ... #}             
-{% if 'ok.mess' in pageinfo %}
- {% if pageinfo['ok.mess']['warn']>0 %}
-   <div class="alert alert-warning"> 
-   <strong>WARNING:</strong>
- {% else %}
-   <div class="alert alert-success"> 
-   <strong>OK:</strong>
- {% endif %}
- {{ pageinfo['ok.mess']['text'] }}	
- </div>
-{% endif %}
