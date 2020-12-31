@@ -3,6 +3,7 @@ CHANGE-Log
 1.01 2020-12-28
 - new tables s_vario, s_vario_desc
 - new data for CCT_COLUMN, STATE
+- new column DOC.WF_PLAN
 
 
 1.0 2020-12-21

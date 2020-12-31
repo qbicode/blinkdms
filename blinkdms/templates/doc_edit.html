@@ -32,6 +32,12 @@ massdata:
 <br>&nbsp;<br>
 {% endif %}
 
+{% if meta['workflow.buttons']['is_withdrawn'] %}
+ <div class="alert alert-warning">
+    <strong>INFO:</strong> This document has been withdrawn.</li>
+  </div>
+{% endif %}
+
 {% if 'proj.path' in meta %}
     <img src="res/images/o.PROJ.svg"> <a href="?mod=folder&id=0"> db: </a> / 
     {% for proj in meta['proj.path'] %}
@@ -48,31 +54,43 @@ massdata:
   &nbsp;<br>&nbsp;<br>
 {% endif %}
 
- {% if meta['workflow.buttons']['v_new'] %}
-   <a class="btn btn-primary" href="?mod=doc_wf&id={{ meta['id'] }}&act=v_new">Create a new version</a>
- {% endif %}
- {% if meta['workflow.buttons']['v_new.inact'] %}
-   <a class="btn btn-primary disabled" href="#">Create a new version</a>
- {% endif %}
+ <div class="x_div_parent">
+  <div class="x_div_child">
+  {% if meta['workflow.buttons']['v_new'] %}
+    <a class="btn btn-primary" href="?mod=doc_wf&id={{ meta['id'] }}&act=v_new">Create a new version</a>
+  {% endif %}
+  {% if meta['workflow.buttons']['v_new.inact'] %}
+    <a class="btn btn-primary disabled" href="#">Create a new version</a>
+  {% endif %}
+  
+  {% if meta['workflow.buttons']['r_start'] %}
+     <a class="btn btn-secondary" href="?mod=doc_wf&id={{ meta['id'] }}&act=r_start">Start Release Workflow</a>
+  {% endif %}
+  {% if meta['workflow.buttons']['r_start.inact'] %}
+    <a class="btn btn-secondary disabled" href="#">Start Release Workflow</a>
+  {% endif %}
+  
  
- {% if meta['workflow.buttons']['r_start'] %}
-    <a class="btn btn-secondary" href="?mod=doc_wf&id={{ meta['id'] }}&act=r_start">Start Release Workflow</a>
- {% endif %}
- {% if meta['workflow.buttons']['r_start.inact'] %}
-   <a class="btn btn-secondary disabled" href="#">Start Release Workflow</a>
- {% endif %}
- 
- {% if meta['workflow.buttons']['w_start'] %}
-    <a class="btn btn-danger" href="?mod=doc_wf&id={{ meta['id'] }}&act=w_start">Start Withdraw Workflow</a>
- {% endif %}
- 
- {% if meta['workflow.buttons']['sign'] %}
-   <a class="btn btn-primary" href="?mod=doc_wf&id={{ meta['id'] }}&act=sign&state_key={{ meta['workflow.sign.state_key'] }}">Review</a>
- {% endif %}
- {% if meta['workflow.buttons']['reject'] %}
-   <a class="btn btn-danger" href="?mod=doc_wf&id={{ meta['id'] }}&act=sign&state_key=REJECT">Reject</a>
- {% endif %}
- 
+  
+  {% if meta['workflow.buttons']['sign'] %}
+    <a class="btn btn-primary" href="?mod=doc_wf&id={{ meta['id'] }}&act=sign&state_key={{ meta['workflow.sign.state_key'] }}">Review</a>
+  {% endif %}
+  {% if meta['workflow.buttons']['reject'] %}
+    <a class="btn btn-danger" href="?mod=doc_wf&id={{ meta['id'] }}&act=sign&state_key=REJECT">Reject</a>
+  {% endif %}
+  </div>
+
+  <div class="dropdown x_div_child">
+    <button type="button" class="btn btn-light dropdown-toggle" data-toggle="dropdown">
+      ... more
+    </button>
+    <div class="dropdown-menu">
+      <a class="dropdown-item {{ 'disabled' if not meta['workflow.buttons']['w_start'] }}" 
+        href="{{ '?mod=doc_wf&id='|safe + meta['id']|string + '&act=w_start'|safe if meta['workflow.buttons']['w_start'] else '#' }}">Start Withdraw Workflow</a>
+    </div>
+  </div> 
+  
+ </div>
  
  
  

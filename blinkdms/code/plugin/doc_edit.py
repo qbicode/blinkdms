@@ -300,14 +300,19 @@ class plug_XPL(gPlugin):
             'v_new': 0,
             'v_new.inact': 0,
             'reviewer_edit': 0,
-            'upload_docs': 0
+            'upload_docs':  0,
+            'is_withdrawn': 0
         }
         
+        if self.features2['vals']['IS_ACTIVE']==None:
+            self.features2['vals']['IS_ACTIVE'] = 0
+            
         if self.features2['vals']['IS_ACTIVE']<0:
             # version is WITHDRAWN ...
             # TBD: show message : is WITHDRAWN ....
             self.form_edit_flag = 0
             wfl_buttons['v_new.inact'] = 1
+            wfl_buttons['is_withdrawn'] = 1
             
         else:
             

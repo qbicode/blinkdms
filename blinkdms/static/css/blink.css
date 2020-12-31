@@ -78,3 +78,9 @@ select[multiple] {
     overflow-y: auto;
 }
 
+/* for horizontal divs*/*/
+.x_div_parent {
+}
+.x_div_child {
+  display:inline-block;
+}
