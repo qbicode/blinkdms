@@ -1,7 +1,7 @@
 --
 -- PostgreSQL database dump
--- VERSION: 2020-12-22
---
+-- VERSION: 2020-12-31
+-- CHANGES: 2020-12-31: new data for CCT_COLUMN, STATE, new col DOC.WF_PLAN
 
 -- Dumped from database version 11.7 (Debian 11.7-0+deb10u1)
 -- Dumped by pg_dump version 11.7 (Debian 11.7-0+deb10u1)
@@ -559,7 +559,7 @@ CREATE TABLE doc (
     act_vers_id bigint,
     db_user_id bigint,
     user_group_id bigint,
-    wf_plan int,
+    wf_plan int
 );
 
 
@@ -1382,8 +1382,6 @@ COMMENT ON COLUMN s_vario_desc.exim IS E'deny export flag';
 COMMENT ON COLUMN s_vario_desc.key IS E'key';
 
 
-ALTER TABLE s_vario_desc ADD CONSTRAINT fk_cct_table2s_vario_desc FOREIGN KEY (table_name) REFERENCES cct_table(table_name) ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;
-ALTER TABLE s_vario ADD CONSTRAINT fk_cct_table2s_vario FOREIGN KEY (table_name) REFERENCES cct_table(table_name) ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;
 
 
 --
@@ -1459,13 +1457,12 @@ COPY aud_plan (doc_id, pos, db_user_id, state_id, done, parallel, last_email_dat
 
 
 COPY globals (name, value, notes) FROM stdin;
-db.version	1.0 2020-12-22	Version of DB
+db.version	1.01 2020-12-28	Version of DB
 \.
 
 --
 -- Data for Name: cct_column; Type: TABLE DATA; Schema: blinkdms_tab; Owner: -
 --
-
 COPY cct_column (table_name, column_name, app_data_type, cct_table_name, primary_key, most_imp_col, visible, editable, pos, unique_col, not_null, nice_name, id_col, flags, notes) FROM stdin;
 AUD_PLAN	DOC_ID	ID	\N	1	0	1	1	1	0	1	doc_id	\N	\N	\N
 AUD_PLAN	POS	ID	\N	2	0	1	1	2	0	1	pos	\N	\N	\N
@@ -1473,7 +1470,6 @@ DOC	DOC_ID	ID	\N	1	0	1	1	1	0	1	doc_id	\N	\N	\N
 PROJ	PROJ_ID	ID	\N	1	0	1	1	1	0	1	proj_id	\N	\N	\N
 PROJ_HAS_ELEM	PROJ_ID	ID	\N	1	0	1	1	1	0	1	proj_id	\N	\N	\N
 PROJ_HAS_ELEM	DOC_ID	ID	\N	2	0	1	1	2	0	1	doc_id	\N	\N	\N
-STATE	STATE_ID	ID	\N	1	0	1	1	1	0	1	state_id	\N	\N	\N
 UPLOADS	VERSION_ID	ID	\N	1	0	1	1	1	0	1	version_id	\N	\N	\N
 UPLOADS	POS	ID	\N	2	0	1	1	2	0	1	pos	\N	\N	\N
 VERSION	VERSION_ID	ID	\N	1	0	1	1	1	0	1	version_id	\N	\N	\N
@@ -1506,18 +1502,11 @@ USER_GROUP	INACTIVE	INT	\N	0	0	1	1	7	0	0	INACTIVE	\N	\N	\N
 USER_GROUP	TYPEX	INT	\N	0	0	1	1	8	0	0	TYPEX	\N	\N	\N
 DB_USER_IN_GROUP	USER_GROUP_ID	ID	USER_GROUP	1	1	1	1	1	0	1	group ID	\N	\N	\N
 DB_USER_IN_GROUP	DB_USER_ID	ID	DB_USER	2	0	1	1	2	0	1	user id	\N	\N	\N
-STATE	NAME	NAME	\N	0	1	1	1	2	1	1	Key	\N	\N	\N
-STATE	NICE	NAME	\N	0	0	1	1	3	0	1	nice name	\N	\N	\N
-STATE	ACTION_STR	NAME	\N	0	0	1	1	4	0	0	action string	\N	\N	\N
 D_LINK	C_DOC_ID	ID	DOC	2	0	1	1	2	0	1	child doc_id	\N	\N	\N
 D_LINK	M_DOC_ID	ID	DOC	1	0	1	1	1	0	1	mother doc_id	\N	\N	\N
 DOC	DB_USER_ID	ID	DB_USER	0	0	1	1	4.5	0	0	owner	\N	\N	\N
 DOC	USER_GROUP_ID	ID	USER_GROUP	0	0	1	1	4.59999999999999964	0	0	owner group	\N	\N	\N
 CCT_TABLE	NOTES	NOTES	\N	0	0	1	1	15	0	0	notes	\N	\N	\N
-DOC_TYPE	DOC_TYPE_ID	ID	\N	1	0	1	1	1	0	1	doc_type_id	\N	\N	\N
-DOC_TYPE	METADATA	STRING	\N	0	0	1	3	3	0	0	meta data	\N	\N	JSON data
-DOC_TYPE	NAME	NAME	\N	0	1	1	1	2	1	1	name	\N	\N	name of type
-DOC_TYPE	NOTES	NOTES	\N	0	0	0	1	4	0	1	notes	\N	\N	\N
 CCT_TABLE	TABLE_NAME	NAME	\N	1	1	1	1	1	1	1	\N	\N	\N	\N
 CCT_TABLE	NICE_NAME	NAME	\N	0	0	1	1	2	1	1	\N	\N	\N	\N
 CCT_TABLE	CCT_TABLE_NAME	NAME	CCT_TABLE	0	0	1	1	3	0	0	mother table	\N	\N	\N
@@ -1536,6 +1525,9 @@ CCT_COLUMN	POS	FLOAT	\N	0	0	1	1	12	0	0	\N	\N	\N	\N
 AUD_PLAN	DB_USER_ID	ID	DB_USER	0	0	1	1	3	0	1	DB_USER_ID	\N	\N	\N
 AUD_PLAN	STATE_ID	ID	STATE	0	0	1	1	4	0	0	STATE_ID	\N	\N	\N
 AUD_PLAN	DONE	INT	\N	0	0	1	1	5	0	0	DONE	\N	\N	\N
+DOC_TYPE	NAME	NAME	\N	0	1	1	1	2	1	1	name	\N	\N	name of type
+DOC_TYPE	METADATA	STRING	\N	0	0	0	0	3	0	0	meta data	\N	\N	JSON data
+DOC_TYPE	NOTES	NOTES	\N	0	0	0	1	4	0	1	notes	\N	\N	\N
 AUD_PLAN	PARALLEL	INT	\N	0	0	1	1	6	0	0	PARALLEL	\N	\N	\N
 AUD_PLAN	LAST_EMAIL_DATE	DATE	\N	0	0	1	1	7	0	0	LAST_EMAIL_DATE	\N	\N	\N
 AUD_PLAN	DAYS_WARN	INT	\N	0	0	1	1	8	0	0	DAYS_WARN	\N	\N	\N
@@ -1556,9 +1548,25 @@ WFL	NAME	NAME	\N	0	1	1	1	2	0	1	name	\N	\N	\N
 WFL	KEYX	NAME	\N	0	0	1	1	3	0	0	KEYX	\N	\N	\N
 WFL	METADATA	NOTES	\N	0	0	1	0	4	0	0	METADATA	\N	\N	\N
 WFL	NOTES	NOTES	\N	0	0	1	1	5	0	0	NOTES	\N	\N	\N
-DOC_TYPE	WFL_ID	ID	WFL	0	0	1	1	3	0	1	\N	\N	\N	\N
 DB_USER	IS_ACTIVE	BOOLEAN	\N	0	0	1	1	16	0	0	user is active	\N	\N	user is active?
+S_VARIO_DESC	TABLE_NAME	NAME	CCT_TABLE	1	0	1	1	1	0	1	table name	\N	\N	\N
+S_VARIO_DESC	KEY	NAME	\N	2	1	1	1	2	0	1	key	\N	\N	\N
+S_VARIO_DESC	NICE	NAME	\N	0	0	1	1	3	0	1	nice name	\N	\N	\N
+S_VARIO_DESC	EXIM	BOOLEAN	\N	0	0	1	1	4	0	0	exim	\N	\N	\N
+S_VARIO_DESC	EDITABLE	BOOLEAN	\N	0	0	1	1	5	0	0	editable?	\N	\N	\N
+S_VARIO_DESC	NOTES	NOTES	\N	0	0	1	1	6	0	0	notes	\N	\N	\N
+S_VARIO	TABLE_NAME	NAME	CCT_TABLE	1	0	1	1	1	0	1	table name	\N	\N	\N
+S_VARIO	OBJ_ID	ID	\N	2	0	1	1	2	0	1	onject ID	\N	\N	\N
+S_VARIO	KEY	NAME	\N	3	1	1	1	3	0	1	key	\N	\N	\N
+S_VARIO	VALUE	NOTES	\N	0	0	1	1	4	0	1	value	\N	\N	\N
+DOC_TYPE	DOC_TYPE_ID	ID	\N	1	0	1	1	1	0	1	doc_type_id	\N	\N	\N
+DOC_TYPE	WFL_ID	ID	WFL	0	0	1	1	3	0	1	\N	\N	\N	\N
+STATE	STATE_ID	ID	\N	1	0	1	1	1	0	1	state_id	\N	\N	\N
+STATE	NAME	NAME	\N	0	1	1	1	2	1	1	Key	\N	\N	\N
+STATE	NICE	NAME	\N	0	0	1	1	3	0	1	nice name	\N	\N	\N
+STATE	ACTION_STR	NAME	\N	0	0	1	1	4	0	0	action string	\N	\N	\N
 \.
+
 
 
 --
@@ -1585,7 +1593,10 @@ DOC_TYPE	\N	document type	SYS	0	\N
 SYS_A_LOG	\N	system alert log	SYS	0	\N
 CCT_COLUMN	CCT_TABLE	CCT_COLUMN	SYS	0	\N
 WFL	\N	workflow type	SYS	1	workflow type
+S_VARIO_DESC	\N	vario column descr	SYS	1	vario column description
+S_VARIO	\N	vario data	SYS	1	vario data
 \.
+
 
 
 
@@ -1640,8 +1651,10 @@ COPY state (state_id, name, nice, action_str) FROM stdin;
 4	CREATED	Created	Create
 5	REVIEW	Reviewed	Review
 6	REVIEW_REL	Reviewed for release	Review for release
+7	WD_START	Withdraw Started	Start Withdraw Workflow
+8	WD_END	Withdrawn	Withdraw
+9	REVIEW_WD	Reviewed for withdraw	Review for withdraw
 \.
-
 
 
 
@@ -2135,6 +2148,10 @@ ALTER TABLE ONLY uploads
 
 ALTER TABLE ONLY doc_type
     ADD CONSTRAINT fk_wfl2doc_type FOREIGN KEY (wfl_id) REFERENCES wfl(wfl_id);
+
+
+ALTER TABLE s_vario_desc ADD CONSTRAINT fk_cct_table2s_vario_desc FOREIGN KEY (table_name) REFERENCES cct_table(table_name) ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;
+ALTER TABLE s_vario ADD CONSTRAINT fk_cct_table2s_vario FOREIGN KEY (table_name) REFERENCES cct_table(table_name) ON DELETE NO ACTION NOT DEFERRABLE INITIALLY IMMEDIATE;
 
 
 --
