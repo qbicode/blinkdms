@@ -157,7 +157,7 @@ by the database data, like title, Document-ID, version and so on</p></li>
 </dl>
 <p><strong>System Configuration</strong></p>
 <dl class="simple">
-<dt>some important config in conf/config.py:</dt><dd><ul class="simple">
+<dt>some important config variables in conf/config.py:</dt><dd><ul class="simple">
 <li><p>workflow.sign.password.need : 0 or 1 : defines if the user must give the password on an approval workflow (electronic signature support)
 this is required by FDA CFR820 Part11</p></li>
 <li><p>email.send.allow : 0 or 1 : defines, if the system should send emails to the users, mainly in the workflow process</p></li>
@@ -165,6 +165,35 @@ this is required by FDA CFR820 Part11</p></li>
 </dd>
 </dl>
 </div>
+</div>
+<div class="section" id="document-and-version-features">
+<h2>Document and Version features<a class="headerlink" href="#document-and-version-features" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="uploads">
+<h3>Uploads<a class="headerlink" href="#uploads" title="Permalink to this headline">¶</a></h3>
+<p>A document contains one or more uploaded files.
+If the document type flags “Covert Word document to PDF”, tahn the document can only contain one Word document.</p>
+</div>
+<div class="section" id="reviewers">
+<h3>Reviewers<a class="headerlink" href="#reviewers" title="Permalink to this headline">¶</a></h3>
+<p>The document type defines the number of reviewers or releasers.
+These users will review/release the version during the approval process.</p>
+</div>
+<div class="section" id="links-to-other-documents">
+<h3>Links to other documents<a class="headerlink" href="#links-to-other-documents" title="Permalink to this headline">¶</a></h3>
+<p>A document can link to other documents as “parent” or “depends on”.
+The links can be set from the document itself or other documents can link to this document.</p>
+</div>
+<div class="section" id="audit-log">
+<h3>Audit log<a class="headerlink" href="#audit-log" title="Permalink to this headline">¶</a></h3>
+<p>This list shows the important past actions related to the document version.</p>
+</div>
+</div>
+<div class="section" id="folders">
+<h2>Folders<a class="headerlink" href="#folders" title="Permalink to this headline">¶</a></h2>
+<p>Documents are managed in folders. If you are used to a common Computer File explorer software, than you get easily used to it.
+You can create, cut, rename folders.
+You can copy document links to one or more folders.</p>
+<p>Important: folders are not a feature of the Document. It is just an optional info detail.</p>
 </div>
 <div class="section" id="scenarios">
 <h2>Scenarios<a class="headerlink" href="#scenarios" title="Permalink to this headline">¶</a></h2>
@@ -194,7 +223,7 @@ this is required by FDA CFR820 Part11</p></li>
 <h3>Convert Word documents to PDF<a class="headerlink" href="#convert-word-documents-to-pdf" title="Permalink to this headline">¶</a></h3>
 <dl class="simple">
 <dt>What to keep in mind:</dt><dd><ul class="simple">
-<li><p>there is an example for a proper WOrd template: see [GIT-PROJ]/doc/examples/Template_SOP_v1.docx</p></li>
+<li><p>there is an example for a proper Word template: see [GIT-PROJ]/doc_src/examples/Template_SOP_v1.docx</p></li>
 <li><p>the PDF conversions takes places at the end of the release process</p></li>
 <li><p>a VIEWER can only retrieve the PDF version, not the Word-version</p></li>
 </ul>
@@ -238,6 +267,14 @@ this is required by FDA CFR820 Part11</p></li>
 <li class="toctree-l3"><a class="reference internal" href="#admin-area">Admin area</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#document-and-version-features">Document and Version features</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#uploads">Uploads</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reviewers">Reviewers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#links-to-other-documents">Links to other documents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#audit-log">Audit log</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#folders">Folders</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#scenarios">Scenarios</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#start-approval-workflow-a04">Start Approval-Workflow (A04)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#convert-word-documents-to-pdf">Convert Word documents to PDF</a></li>
@@ -246,7 +283,7 @@ this is required by FDA CFR820 Part11</p></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../postgres_maintenance.html">Postgres: maintenance</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../tables.html">Database tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../db_model/index.html">Database model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../technologies.html">Technologies</a></li>
 </ul>
 

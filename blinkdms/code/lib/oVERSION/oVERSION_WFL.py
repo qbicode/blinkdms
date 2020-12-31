@@ -374,7 +374,7 @@ class Modify_obj(Obj_assoc_mod):
             # no REVIEW needed ...
             # start with RELEASE .....
             if rev_type == oAUD_PLAN.REV_TYPE_WITHDRAW:
-                start_with_status = oAUD_PLAN.REV_TYPE_RELEASE
+                start_with_status = oAUD_PLAN.REV_TYPE_WITHDRAW
                 
             if rev_type == oAUD_PLAN.REV_TYPE_RELEASE:
                 start_with_status = oAUD_PLAN.REV_TYPE_RELEASE

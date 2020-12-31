@@ -166,14 +166,16 @@ class Parts:
         get DOC links 'doc_links'
         '''
         link_lib  = oD_LINK.Mainobj(self.doc_id)
-        link_list = link_lib.get_links_nice(db_obj)
+        link_list = link_lib.get_links_ALL_nice(db_obj)
         
         new_keys = oD_LINK.KEYs_NICE
         
-        link_infos = {'title': 'Linked docs', 'data': [], 'version_id': self.objid, 'edit': 0, 'new_keys':new_keys}
+        link_infos = {'title': 'Linked docs', 'context':'ACTIVE', 'data': [], 'version_id': self.objid, 'edit': 0, 'new_keys':new_keys}
         
-        for row in link_list:
-            link_infos['data'].append({'v_id': row['VERSION_ID'], 'ch_d_id':row['C_DOC_ID'], 'nice':row['c.name_all'], 'l.type':row['l.type'] })
+        new_list = sorted(link_list, key = lambda i: i['KEY']) # sort by KEY
+        
+        for row in new_list:
+            link_infos['data'].append({'v_id': row['VERSION_ID'], 'ch_d_id':row['DOC_ID'], 'nice':row['c.name_all'], 'l.type':row['l.type'] })
 
         self.massdata['doc_links']= link_infos    
         

@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Database tables &#8212; blinkdms  documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="database-tables">
+<h1>Database tables<a class="headerlink" href="#database-tables" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="tables-content-at-install">
+<h2>Tables content at install<a class="headerlink" href="#tables-content-at-install" title="Permalink to this headline">¶</a></h2>
+<dl class="simple">
+<dt>What data is need at initial DUMP import:</dt><dd><ul class="simple">
+<li><p>GLOBALS</p></li>
+<li><p>CCT_TABLE</p></li>
+<li><p>CCT_COLUMN</p></li>
+<li><p>WFL     (the default workflows)</p></li>
+<li><p>DB_USER (at least account for root)</p></li>
+<li><p>STATE</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="version-document-version">
+<h2>VERSION (document version)<a class="headerlink" href="#version-document-version" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="hints-for-related-plugins">
+<h3>Hints for related plugins<a class="headerlink" href="#hints-for-related-plugins" title="Permalink to this headline">¶</a></h3>
+<p>Typical checks:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">vers_objlib</span> <span class="o">=</span> <span class="n">oVERSION_edit</span><span class="o">.</span><span class="n">Mainobj</span><span class="p">(</span><span class="n">db_obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">objid</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">vers_objlib</span><span class="o">.</span><span class="n">is_current_versid</span><span class="p">(</span><span class="n">db_obj</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="n">BlinkError</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;This version is not valid for Edit!&#39;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vers_objlib</span><span class="o">.</span><span class="n">workflow_is_active</span><span class="p">(</span><span class="n">db_obj</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="n">BlinkError</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Workflow already active.&#39;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">vers_objlib</span><span class="o">.</span><span class="n">is_released</span><span class="p">(</span><span class="n">db_obj</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="n">BlinkError</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;version already released.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="wfl-workflow-type">
+<h2>WFL (workflow type)<a class="headerlink" href="#wfl-workflow-type" title="Permalink to this headline">¶</a></h2>
+<p>Scope: define the type of workflow, is linked to a document type</p>
+<dl class="simple">
+<dt>Types:</dt><dd><ul class="simple">
+<li><p>NO_WFL  :no workflow needed</p></li>
+<li><p>REL_ONLY : only release</p></li>
+<li><p>REV_REL : REVIEW + RELEASE</p></li>
+</ul>
+</dd>
+<dt>Type==REL_ONLY :</dt><dd><ul class="simple">
+<li><p>the document needs only users for RELEASE</p></li>
+</ul>
+</dd>
+<dt>Type==REV_REL :</dt><dd><ul class="simple">
+<li><p>the document needs users for REVIEW + RELEASE</p></li>
+</ul>
+</dd>
+<dt>Type==NO_WFL :</dt><dd><ul class="simple">
+<li><p>the document needs no reviewers</p></li>
+<li><p>the document will be released on workflow start</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">blinkdms</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install_1.html">Install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">User’s Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../postgres_maintenance.html">Postgres: maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Database model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../technologies.html">Technologies</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Steffen Kube.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/db_model/tables.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

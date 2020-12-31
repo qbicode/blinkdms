@@ -49,10 +49,39 @@
 <li><p>produce a final PDF file (set UPLOADS.HAS_PDF=1 for this upload)</p></li>
 <li><p>save PDF as oDOC.{VERSION}.{POS}.pdf</p></li>
 </ul>
+<p>Example document template:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>see [GIT-PROJ]/doc_src/examples/Template_SOP_v1.docx</p></li>
+</ul>
+</div></blockquote>
 <p>Relevant code modules:</p>
 <ul class="simple">
 <li><p>lib/oVERSION/docfile_convert.py (converts a version attachment)</p></li>
 </ul>
+</div>
+<div class="section" id="workflows">
+<h2>Workflows<a class="headerlink" href="#workflows" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="release">
+<h3>Release<a class="headerlink" href="#release" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>Prerequisites:</dt><dd><ul class="simple">
+<li><p>version must contain at least one upload</p></li>
+<li><p>version must contain all needed reviewers</p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="withdraw">
+<h3>Withdraw<a class="headerlink" href="#withdraw" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>Prerequisites:</dt><dd><ul class="simple">
+<li><p>a version must exist, rleased or unreleased</p></li>
+</ul>
+</dd>
+</dl>
+<p>Start:</p>
+</div>
 </div>
 </div>
 
@@ -81,6 +110,11 @@
 <li class="toctree-l1"><a class="reference internal" href="tables.html">Database tables</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Technologies</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#convert-word-2-pdf">Convert Word 2 PDF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#workflows">Workflows</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#release">Release</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#withdraw">Withdraw</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

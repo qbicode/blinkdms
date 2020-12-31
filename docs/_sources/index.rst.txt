@@ -11,7 +11,7 @@ Welcome to blinkdms's documentation!
    install_1
    tutorial/index
    postgres_maintenance
-   tables
+   db_model/index
    technologies 
 
 Indices and tables

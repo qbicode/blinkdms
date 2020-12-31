@@ -173,13 +173,16 @@ class plug_XPL(gPlugin):
         
         if self.vers_objlib.workflow_is_active(db_obj):
             raise BlinkError(2, 'Workflow already active.')
+        
+        if self.vers_objlib.is_released(db_obj):
+            raise BlinkError(3, 'version already released.')
 
         # available REVIEW users
         v_features = self.vers_objlib.features(db_obj)
         
         d_type_id = v_features['vals'].get('DOC_TYPE_ID', 0)
         if not d_type_id:
-            raise BlinkError(3, 'This document has no doc_type!')
+            raise BlinkError(4, 'This document has no doc_type!')
         
         doc_type_lib = oDOC_TYPE.Mainobj(d_type_id)
         self.wfl_key = doc_type_lib.get_wfl_type_key(db_obj)

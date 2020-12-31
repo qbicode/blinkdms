@@ -9,6 +9,7 @@ INPUT:
       'inits': 
       'multiple' : 0,1 => for SELECT
       'required' : 0,1
+      'notes'
       
    massdata['assoc'] : associated data
       list of ...
@@ -110,7 +111,7 @@ INPUT:
         {% endif %}
       {% endif %}
       </td>
-      <td></td><!-- NOTES -->
+      <td>{{ row['notes']  if row['notes'] is not none }}</td><!-- NOTES -->
     </tr>
 {% endfor %}
 

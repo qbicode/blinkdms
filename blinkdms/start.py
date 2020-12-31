@@ -410,6 +410,8 @@ def start():
     
 
     debug.printx( __name__, 'Session_active?' + str( session.get('loggedin',0) ) )
+    #debug.printx( __name__, '(415) app.DB_CONF_KEY: ' + app.config.get('DB_CONF_KEY','') )
+    
     #debug.printx( __name__, 'Session-var: (count)' + str( len(session) ) )
     #debug.printx( __name__, 'Session-SID:' + str( session.sid ) )
     # cooksess = request.cookies.get('session')

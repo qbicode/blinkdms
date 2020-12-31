@@ -4,3 +4,4 @@ doc_src/build/*
 blinkdms.wpr
 blinkdms.wpu
 blinkdms.zip
+blinkdms/conf/conf_unittest.py

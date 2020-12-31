@@ -3,6 +3,9 @@ __docformat__ = "restructuredtext en"
 
 """
 REST interface
+- OUTPUT:
+  self.page_lib.rest_data or self.page_lib.massdata
+  
 File:           rest.py
 Copyright:      Blink AG   
 Author:         Steffen Kube <steffen@blink-dx.com>
@@ -114,7 +117,14 @@ class MainObj:
             self.page_lib._check_inits() 
             self.page_lib.startMain()
             self.page_lib.mainframe()
-            result_api['data'] = self.page_lib.rest_data
+            
+            result_api['data'] = None
+            
+            if self.page_lib.rest_data is not None:
+                result_api['data'] = self.page_lib.rest_data
+            else:
+                if hasattr(self.page_lib, 'massdata'):
+                    result_api['data'] = self.page_lib.massdata
 
         except:
             exc_type, exc_value, exc_traceback = sys.exc_info()     

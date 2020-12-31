@@ -12,6 +12,26 @@ What data is need at initial DUMP import:
   * DB_USER (at least account for root)
   * STATE
 
+VERSION (document version)
+**************************
+
+Hints for related plugins
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Typical checks:
+
+.. code-block:: python   
+
+  self.vers_objlib = oVERSION_edit.Mainobj(db_obj, self.objid)
+         
+  if not self.vers_objlib.is_current_versid(db_obj):
+      raise BlinkError(1, 'This version is not valid for Edit!')
+  
+  if self.vers_objlib.workflow_is_active(db_obj):
+      raise BlinkError(2, 'Workflow already active.')
+  
+  if self.vers_objlib.is_released(db_obj):
+      raise BlinkError(3, 'version already released.')
 
 
 WFL (workflow type)

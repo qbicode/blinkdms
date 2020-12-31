@@ -25,20 +25,23 @@ from blinkdms.code.lib.oSTATE import oSTATE
 
 REV_TYPE_REVIEW ='REVIEW'
 REV_TYPE_RELEASE='RELEASE' #last part of the release workflow
-REV_TYPE_WITHDRAW ='WITHDRAW'
+REV_TYPE_WITHDRAW ='WITHDRAW' # withdraw document
 REV_TYPE_EDIT   ='EDIT' # EDIT workflow
+REV_TYPE_RE_REVIEW  ='RE_REVIEW' # RE-Review a document; e.g. after 2 years
 
 REV_PLAN_DICT={
     REV_TYPE_RELEASE:1,
     REV_TYPE_WITHDRAW:2,
-    REV_TYPE_EDIT:3
+    REV_TYPE_EDIT:3,
+    REV_TYPE_RE_REVIEW:4
 }
 
 # reverse
 REV_PLAN_REV_DICT={
     1:REV_TYPE_RELEASE,
     2:REV_TYPE_WITHDRAW,
-    3:REV_TYPE_EDIT
+    3:REV_TYPE_EDIT,
+    4:REV_TYPE_RE_REVIEW
 }
 
 class Table:

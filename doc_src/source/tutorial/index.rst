@@ -115,6 +115,41 @@ some important config variables in conf/config.py:
   * workflow.sign.password.need : 0 or 1 : defines if the user must give the password on an approval workflow (electronic signature support)
     this is required by FDA CFR820 Part11
   * email.send.allow : 0 or 1 : defines, if the system should send emails to the users, mainly in the workflow process
+ 
+Document and Version features
+-----------------------------
+
+Uploads
+```````
+
+A document contains one or more uploaded files.
+If the document type flags "Covert Word document to PDF", tahn the document can only contain one Word document. 
+
+Reviewers
+`````````
+
+The document type defines the number of reviewers or releasers.
+These users will review/release the version during the approval process.
+
+Links to other documents
+````````````````````````
+
+A document can link to other documents as "parent" or "depends on".
+The links can be set from the document itself or other documents can link to this document.
+
+Audit log
+`````````
+
+This list shows the important past actions related to the document version.
+
+Folders
+-------
+
+Documents are managed in folders. If you are used to a common Computer File explorer software, than you get easily used to it.
+You can create, cut, rename folders.
+You can copy document links to one or more folders.
+
+Important: folders are not a feature of the Document. It is just an optional info detail.
   
 Scenarios
 ---------

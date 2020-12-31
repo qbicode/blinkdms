@@ -237,13 +237,17 @@ class plug_XPL(gPlugin):
         ''' 
         link_lib  = oD_LINK.Mainobj(self.doc_id)
         link_list = link_lib.get_links_nice(db_obj)
+        link_other_list = link_lib.get_links_other_nice(db_obj)
         
         new_keys = oD_LINK.KEYs_NICE
         
-        link_infos = {'title': 'Linked docs', 'data': [], 'version_id': self.objid, 'edit': self.form_edit_flag, 'new_keys':new_keys}
+        link_infos = {'title': 'Linked docs', 'data': [], 'context':'EDIT', 'version_id': self.objid, 'edit': self.form_edit_flag, 'new_keys':new_keys}
         
         for row in link_list:
-            link_infos['data'].append({'v_id': row['VERSION_ID'], 'ch_d_id':row['C_DOC_ID'], 'nice':row['c.name_all'], 'l.type':row['l.type'] })
+            link_infos['data'].append({'v_id': row['VERSION_ID'], 'ch_d_id':row['DOC_ID'], 'nice':row['c.name_all'], 'l.type':row['l.type'], 'edit':1 })
+
+        for row in link_other_list:
+            link_infos['data'].append({'v_id': row['VERSION_ID'], 'ch_d_id':row['DOC_ID'], 'nice':row['c.name_all'], 'l.type':row['l.type'], 'edit':0 })
 
         self.massdata['doc_links']= link_infos
 

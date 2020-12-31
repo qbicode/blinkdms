@@ -28,6 +28,7 @@ class Mainobj:
          'multiple' : 0,1 => for SELECT
          'fk_t': foreign table
          'required' : 0,1
+         'notes' : [OPT]
         }
         
     ]
@@ -224,7 +225,8 @@ class Mainobj:
                     'col.nice':col_def['NICE_NAME'],
                     'val' : val_out,
                     'edit': editallow,
-                    'type': 'text'
+                    'type': 'text',
+                    'notes': col_def['NOTES'],
                 }
                 
                 if col_def.get('NOT_NULL',0)> 0:

@@ -1,55 +1,49 @@
-# REST calls
-
-#import requests
+#
+import requests
 import json
 from requests import Request, Session
 import hashlib
 import base64
+from requests import Request, Session
 
 from blinkdms.conf import conf_unittest
 from test._test_subs import utilities
 
-class Rest_help:
+class Jsonrpc_help:
     '''
     
     :example:
     
-    rest_lib = rest.Rest_help()
-    rest_lib.crea_empty_session()
+    jsonrpc_lib = jsonrpc.Jsonrpc_help('hube')
+    jsonrpc_lib.crea_empty_session()
     argu={}
     user='test'
-    rest_lib.login(argu, user)
-   
+    jsonrpc_lib.login(argu, user)
+    # --- or
+    device='BOX2'
+    jsonrpc_lib.login_dev(argu, device)
     '''
     
     cooki_x=None
     
-    def __init__(self):
+    def __init__(self, app_type):
 
-        self.post_url   = conf_unittest.ut_conf['test.url'] + '/api/rest'
+        self.post_url   = conf_unittest.ut_conf['test.url'][app_type] + '/api/json'
         self.ssl_verify = conf_unittest.ut_conf['test.ssl_verify']
         
-        utilities.print_debug('REST_URL:'+self.post_url)
+        utilities.print_debug('JSONRPC_URL:'+self.post_url)
     
     def crea_empty_session(self):
         self.sess_obj = Session()
         self.cooki_x  = None
-        
-    def get_full_url(self, method, argu):
-        post_url = self.post_url + '?mod='+method
-        for key,val in argu.items():
-            post_url = post_url + '&'+key+'='+str(val)
-            
-        return post_url
     
     def send_it(self,  method, argu ):
         '''
         :return : {'data': ...}
         '''
         
-        get_url = self.get_full_url(method, argu)
-         
-        req = Request('GET', get_url, cookies = self.cooki_x)
+        get_info_payload = {"jsonrpc": "2.0", "params":  [argu,], "id": "3", "method": method}    
+        req = Request('POST', self.post_url, json=get_info_payload, cookies = self.cooki_x)
         prepped = req.prepare()
         resp = self.sess_obj.send(prepped, verify=self.ssl_verify)
         #print ("RESP:" + resp.text)  
@@ -60,21 +54,22 @@ class Rest_help:
         res_dict = json.loads(resp.text)
         return res_dict
     
-    def send_crea_cookie(self,  method, argu ):
+    def send_crea_cookie(self,  method, argu, userpass ):
         '''
         sub method
         '''
+        rpc_auth = "Basic %s" % base64.b64encode(userpass.encode("ascii")).decode("utf-8")
+        auth_headers = {'Content-Type': 'application/json', 'Authorization': rpc_auth}
         
-        auth_headers = {'Content-Type': 'application/json'}
-
-        get_url = self.get_full_url(method, argu)
+        get_info_payload = {"jsonrpc": "2.0", "params": [argu,] , "id": "2", "method": method}
         
         self.sess_obj = Session()
-        req = Request('GET', get_url, headers=auth_headers)
+        req = Request('POST', self.post_url, json=get_info_payload, headers=auth_headers)
         prepped = req.prepare()
         resp = self.sess_obj.send(prepped, verify=self.ssl_verify)
         self.cooki_x = self.sess_obj.cookies
-        
+        #print ("RESP: " + resp.text) 
+        #print ("COOK: " + str(self.cooki_x) )   
         
         res_dict = json.loads(resp.text)
         return res_dict
@@ -87,21 +82,16 @@ class Rest_help:
         username = conf_unittest.ut_conf['users'][user_key]['user']
         if pw=='':
             pw = conf_unittest.ut_conf['users'][username]['pw']
-
-        argu['go']   = 1
-        argu['user'] = username
-        argu['password'] = pw   
         
+        userpass = username +":"+ pw
         utilities.print_debug('Login (user): User:'+username )
-        answer = self.send_crea_cookie('login', argu)   
+        answer = self.send_crea_cookie('login', argu, userpass)   
         
-        if 'error' in answer:
-            raise ValueError('Login error: '+ str(answer['error'] ) )
-        
-        if 'data' not in answer:
+        if 'result' not in answer:
             raise ValueError('General JSONRPC error' )        
         
-       
+        if 'error' in answer['result']:
+            raise ValueError('Login error: '+ str(answer['result']['error'] ) )
         
         return answer
     
@@ -109,3 +99,4 @@ class Rest_help:
         argu={}
         self.send_it('logout', argu )
     
+   

@@ -170,6 +170,7 @@ function x_formUp_modi(pos) {
 {% macro doc_links_table(data) %} 
 {# 
 DOC LINKS
+'context': 'EDIT', 'ACTIVE'
 'version_id':
 'edit' : 
 'new_keys' : {key:val}
@@ -183,15 +184,18 @@ function x_form5_modi(ch) {
 }
 </script>
 
+{% set doc_link='doc_edit' if data['context']=='EDIT' else 'doc_view' %}
+
 <!-- <NewLinkument> Modal -->
 <div class="modal fade" id="NewLinkDialog" tabindex="-1" role="dialog" aria-labelledby="NewLinkLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
+    {% if data['edit'] %}
     <form style="display:inline;" method="post" name="editform4" enctype="multipart/form-data" action="" >
         <input type=hidden name="mod" value="doc_link">
         <input type=hidden name="go" value="1">
         <input type=hidden name="act" value="new">
         <input type=hidden name="id" value="{{ data['version_id'] }}">
-        
+    {% endif %}    
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="NewLinkLabel">Create new link</h5>
@@ -221,7 +225,9 @@ function x_form5_modi(ch) {
         <button type="submit" class="btn btn-primary">Create link</button>
       </div>
     </div>
+    {% if data['edit'] %}
         </form>
+    {% endif %}
   </div>
 </div>
 <!-- </NewLinkument> Modal -->
@@ -271,12 +277,12 @@ function x_form5_modi(ch) {
 {% for row in data['data'] %}
 <tr>  
   <td>
-  {% if data['edit'] %}
+  {% if data['edit'] and row['edit'] %}
    <a class="btn btn-danger" data-toggle="modal" href="#" data-target="#DelLinkDialog" onClick="x_form5_modi( {{ row['ch_d_id']|string }} )">Delete</a>
   {% endif %}
   </td>
   <td>{{ row['l.type'] }}</td>
-  <td><a href="?mod=doc_edit&id={{ row['v_id']|string }}"><img src="res/images/o.DOC.svg"> {{ row['nice'] }}</a></td>
+  <td><a href="?mod={{doc_link}}&id={{ row['v_id']|string }}"><img src="res/images/o.DOC.svg"> {{ row['nice'] }}</a></td>
 </tr>
 {% endfor %}
 
