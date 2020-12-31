@@ -46,9 +46,7 @@ class Mainobj:
         
         #self.state_lib = oSTATE.STATE_info()
     
-    def set_REL_WD_type(self, rw_type):
-        # REV_TYPE_WITHDRAW or REV_TYPE_RELEASE
-        self.rw_type = rw_type
+    
         
     def features(self, db_obj):
         return self.obj.main_feat_all(db_obj)
@@ -195,6 +193,11 @@ class Mainobj:
             
 
         return raw_data
+    
+    def get_wf_plan(self, db_obj):
+        doc_obj  = obj_abs('DOC', self.doc_id)
+        wf_plan = doc_obj.main_feat_val(db_obj, 'WF_PLAN')
+        return wf_plan
 
     def log_get_plan_versus_is(self, db_obj):
         '''
@@ -208,7 +211,10 @@ class Mainobj:
             #raise BlinkError(1, 'No Planned Users found.')
             return []
 
-        if self.rw_type == oAUD_PLAN.REV_TYPE_WITHDRAW:
+        wf_plan = self.get_wf_plan(db_obj)
+        rw_type = oAUD_PLAN.REV_PLAN_REV_DICT.get(wf_plan,'')
+
+        if rw_type == oAUD_PLAN.REV_TYPE_WITHDRAW:
             log_arr = self.get_aud_log_last_withdraw(db_obj)
         else:
             log_arr = self.get_aud_log_last_release(db_obj)
@@ -410,13 +416,15 @@ class Modify_obj(Obj_assoc_mod):
     
     def _intern_review_log(self, db_obj):
         '''
-        REVIEW has been finished, start release process ...
+        REVIEW has been finished, start release/withdraw process ...
         '''
         audplan_lib = oAUD_PLAN.Modify_obj(db_obj, self.doc_id)
         audplan_lib.review_stop(db_obj, 'REVIEW')
     
-        # release wfl start
-        audplan_lib.review_start(db_obj, oAUD_PLAN.REV_TYPE_RELEASE, 1)                  
+        # review start of release/withdraw process
+        wf_plan = self.mainlib.get_wf_plan(db_obj)
+        rw_type = oAUD_PLAN.REV_PLAN_REV_DICT[wf_plan]
+        audplan_lib.review_start(db_obj, rw_type, 1)                  
                
     def _doc2pdf_decide(self, db_obj):
         '''
@@ -470,6 +478,7 @@ class Modify_obj(Obj_assoc_mod):
 
         args = {
             'ACT_VERS_ID':self.objid,
+            'WF_PLAN' : 0
         }
         d_mod_obj = Obj_mod(db_obj, 'DOC', doc_id)
         d_mod_obj.update_simple(db_obj, {'DOC_ID': doc_id}, args)
@@ -506,7 +515,7 @@ class Modify_obj(Obj_assoc_mod):
 
         args = {
             'WFL_ACTIVE': 0,
-            'IS_ACTIVE': 1
+            'IS_ACTIVE' : -1 # withdrawn
         }
 
         v_mod_obj = Obj_mod(db_obj, 'VERSION', self.objid)
@@ -516,6 +525,7 @@ class Modify_obj(Obj_assoc_mod):
 
         args = {
             'ACT_VERS_ID':None,
+            'WF_PLAN' : 0
         }
         d_mod_obj = Obj_mod(db_obj, 'DOC', doc_id)
         d_mod_obj.update_simple(db_obj, {'DOC_ID': doc_id}, args)
@@ -586,7 +596,7 @@ class Modify_obj(Obj_assoc_mod):
             if state_key == 'REVIEW':
                 is_last_review = self.mainlib.log_is_last_meta_review(db_obj, state_key)
                 if is_last_review:
-                    self._intern_review_log(db_obj) # TBD
+                    self._intern_review_log(db_obj) 
                 break
             
             if state_key == 'REVIEW_REL':     
@@ -605,6 +615,18 @@ class Modify_obj(Obj_assoc_mod):
 
     def simple_log_add(self, db_obj, args):
         self._add_audit_log(db_obj, args)
+    
+    def _start_wfl(self, db_obj, rev_type):
+        
+        args = {'WFL_ACTIVE': 2}
+        v_mod_obj = Obj_mod(db_obj, 'VERSION', self.objid)
+        v_mod_obj.update_simple(db_obj, {'VERSION_ID': self.objid}, args)
+        
+        args = {'WF_PLAN': oAUD_PLAN.REV_PLAN_DICT[rev_type] }
+        v_mod_obj = Obj_mod(db_obj, 'DOC', self.doc_id)
+        v_mod_obj.update_simple(db_obj, {'DOC_ID': self.doc_id}, args)        
+        
+        self._start_wfl_action(db_obj, rev_type)        
         
     def start_r_wfl(self, db_obj):
         '''
@@ -621,11 +643,8 @@ class Modify_obj(Obj_assoc_mod):
         args['STATE_ID'] = self.states_by_key['REL_START']['STATE_ID']
         self._add_audit_log(db_obj, args)
         
-        args = {'WFL_ACTIVE': 2}
-        v_mod_obj = Obj_mod(db_obj, 'VERSION', self.objid)
-        v_mod_obj.update_simple(db_obj, {'VERSION_ID': self.objid}, args)
-        
-        self._start_wfl_action(db_obj, oAUD_PLAN.REV_TYPE_RELEASE)
+        rev_type = oAUD_PLAN.REV_TYPE_RELEASE
+        self._start_wfl(db_obj, rev_type)
         
     def start_w_wfl(self, db_obj):
         '''
@@ -646,11 +665,8 @@ class Modify_obj(Obj_assoc_mod):
         args['STATE_ID'] = self.states_by_key[key]['STATE_ID']
         self._add_audit_log(db_obj, args)
         
-        args = {'WFL_ACTIVE': 2}
-        v_mod_obj = Obj_mod(db_obj, 'VERSION', self.objid)
-        v_mod_obj.update_simple(db_obj, {'VERSION_ID': self.objid}, args)
-        
-        self._start_wfl_action(db_obj, oAUD_PLAN.REV_TYPE_WITHDRAW )    
+        rev_type = oAUD_PLAN.REV_TYPE_WITHDRAW
+        self._start_wfl(db_obj, rev_type)            
         
 class Check_Wfl_Start:
     

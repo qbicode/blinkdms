@@ -302,36 +302,45 @@ class plug_XPL(gPlugin):
             'reviewer_edit': 0,
             'upload_docs': 0
         }
-
-        if wfl_active:
-            # workflow is active ...
+        
+        if self.features2['vals']['IS_ACTIVE']<0:
+            # version is WITHDRAWN ...
+            # TBD: show message : is WITHDRAWN ....
             self.form_edit_flag = 0
+            wfl_buttons['v_new.inact'] = 1
             
-            plan_dict = self.workflow_lib.user_is_planned_act_reviewer(db_obj) 
-            if plan_dict != None:
-                wfl_buttons['sign'] = 1
-                plan_state_id  = plan_dict['STATE_ID']
-                plan_state_key = oSTATE.STATE_info.get_statekey_by_id(db_obj, plan_state_id)
-                self._html.add_meta('workflow.sign.state_key', plan_state_key)
-                
-            if self.vers_lib.is_owner(db_obj):
-                wfl_buttons['reject'] = 1
         else:
-            if not self.is_released:
+            
+
+            if wfl_active:
+                # workflow is active ...
+                self.form_edit_flag = 0
                 
+                plan_dict = self.workflow_lib.user_is_planned_act_reviewer(db_obj) 
+                if plan_dict != None:
+                    wfl_buttons['sign'] = 1
+                    plan_state_id  = plan_dict['STATE_ID']
+                    plan_state_key = oSTATE.STATE_info.get_statekey_by_id(db_obj, plan_state_id)
+                    self._html.add_meta('workflow.sign.state_key', plan_state_key)
+                    
                 if self.vers_lib.is_owner(db_obj):
-                    wfl_buttons['v_new.inact'] = 1
-                    wfl_buttons['r_start'] = 1
-                    wfl_buttons['e_start'] = 1
-                    wfl_buttons['w_start'] = 1
-                    wfl_buttons['reviewer_edit'] = 1
-                    wfl_buttons['upload_docs'] = 1
-                    self.form_edit_flag = 1
+                    wfl_buttons['reject'] = 1
             else:
-                if self.vers_lib.is_owner(db_obj):
-                    wfl_buttons['r_start.inact'] = 1
-                    wfl_buttons['v_new'] = 1
-                    wfl_buttons['w_start'] = 1
+                if not self.is_released:
+                    
+                    if self.vers_lib.is_owner(db_obj):
+                        wfl_buttons['v_new.inact'] = 1
+                        wfl_buttons['r_start'] = 1
+                        wfl_buttons['e_start'] = 1
+                        wfl_buttons['w_start'] = 1
+                        wfl_buttons['reviewer_edit'] = 1
+                        wfl_buttons['upload_docs'] = 1
+                        self.form_edit_flag = 1
+                else:
+                    if self.vers_lib.is_owner(db_obj):
+                        wfl_buttons['r_start.inact'] = 1
+                        wfl_buttons['v_new'] = 1
+                        wfl_buttons['w_start'] = 1
    
         self._html.add_meta('workflow.buttons', wfl_buttons)
         

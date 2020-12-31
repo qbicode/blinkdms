@@ -558,7 +558,8 @@ CREATE TABLE doc (
     notes character varying(4000),
     act_vers_id bigint,
     db_user_id bigint,
-    user_group_id bigint
+    user_group_id bigint,
+    wf_plan int,
 );
 
 
@@ -616,6 +617,8 @@ COMMENT ON COLUMN doc.db_user_id IS 'owner of doc';
 --
 
 COMMENT ON COLUMN doc.user_group_id IS 'owner group of doc';
+
+COMMENT ON COLUMN doc.wf_plan IS 'workflow plan: 1:RELEASE, 2:WITHDRAW, 3:EDIT';
 
 
 --

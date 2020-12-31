@@ -28,6 +28,19 @@ REV_TYPE_RELEASE='RELEASE' #last part of the release workflow
 REV_TYPE_WITHDRAW ='WITHDRAW'
 REV_TYPE_EDIT   ='EDIT' # EDIT workflow
 
+REV_PLAN_DICT={
+    REV_TYPE_RELEASE:1,
+    REV_TYPE_WITHDRAW:2,
+    REV_TYPE_EDIT:3
+}
+
+# reverse
+REV_PLAN_REV_DICT={
+    1:REV_TYPE_RELEASE,
+    2:REV_TYPE_WITHDRAW,
+    3:REV_TYPE_EDIT
+}
+
 class Table:
     """
     general table methods, static ?
