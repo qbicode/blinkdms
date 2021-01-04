@@ -35,7 +35,7 @@ Future features:
 Demo
 ----
 
-A demo is available at http://159.89.25.138:8080
+A demo is available at http://www.blinkdms.org:8080/
 
 Following initial users are available:
   * testW: jajsxB8738  (normal editor, reviewer)
@@ -46,6 +46,13 @@ Following initial users are available:
 Links
 -----
 
- * Tutorial https://qbicode.github.io/blinkdms/
- * Install https://qbicode.github.io/blinkdms/
+ * Website:  http://www.blinkdms.org
+ * Tutorial: https://qbicode.github.io/blinkdms/
+ * Install:  https://qbicode.github.io/blinkdms/
+ * Demo: http://www.blinkdms.org:8080/
+ 
+ Support
+ -------
+ 
+ This project is supported by   `Bling AG <https://www.blink-dx.com>`_ .
 
