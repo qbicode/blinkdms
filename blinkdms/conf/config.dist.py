@@ -31,8 +31,15 @@ superglobal['db'] = {
        'host':'localhost',
        'user':'blinkdms',
        'password':'XXX',
-     }   
-    }
+     },
+   
+   'dev':  {
+       'dbname':'dmsdb',
+       'host':'localhost',
+       'user':'blk_dev',
+       'password':'XXX',
+     }    
+}
 superglobal['db.std_config_id'] = 'main' # standard index for superglobal['db']
 
 superglobal['work_path']   = "/data/blinkdms/work"

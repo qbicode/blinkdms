@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Import the database schema &#8212; blinkdms  documentation</title>
+    <title>&lt;no title&gt; &#8212; blinkdms  documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -34,65 +34,43 @@
   <p><strong>Scope:</strong> Create the magasin-database-schema</p>
 <dl class="simple">
 <dt>Resources:</dt><dd><ul class="simple">
+<li><p>/opt/blinkdms/blinkdms/conf/config.py</p></li>
 <li><p>[SQL_SRC_DIR]=/opt/blinkdms/blinkdms/install/sql</p></li>
 </ul>
 </dd>
-<dt>Actions:</dt><dd><ul class="simple">
-<li><p>Change the password for user blinkdms in the file /opt/blinkdms/blinkdms/install/sql/create_user.sql</p></li>
-<li><p>Now login as postgres</p></li>
-</ul>
-</dd>
 </dl>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>su -s /bin/bash postgres
+<p>Actions:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># login as database root and create database</span>
+su -s /bin/bash postgres
 createdb dmsdb
+<span class="nb">exit</span>
+
+<span class="c1"># now you are root again</span>
 </pre></div>
 </div>
-<p><strong>create user, roles and schema</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>psql -d dmsdb -v <span class="nv">ON_ERROR_STOP</span><span class="o">=</span><span class="m">1</span>
-  &lt; /opt/blinkdms/blinkdms/install/sql/create_user.sql
+<p><strong>create user, tablespace, schema and initial data</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>check, if config_entry [db”][“main”]  exists in /opt/blinkdms/blinkdms/conf/config.py</p></li>
+<li><p>give a password for option –app_root_pw</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 /opt/blinkdms/blinkdms/install/scripts/db_manage.py --create
+      --config_entry <span class="s2">&quot;main&quot;</span> --app_root_pw <span class="s2">&quot;XXX&quot;</span>
+</pre></div>
+</div>
+<p>Just in case you have to delete this complete database schema + user: call this command line</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 /opt/blinkdms/blinkdms/install/scripts/db_manage.py --delete --dbuser <span class="s2">&quot;blinkdms&quot;</span>
 </pre></div>
 </div>
 <p><strong>login</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>psql -d dmsdb -U blinkdms -W
-</pre></div>
-</div>
-<p>database - features:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>Indexing</p></li>
-<li><p>Trigger, Constraints</p></li>
-<li><p>Transaction (ACID)</p></li>
-<li><p>Referential Integrity</p></li>
-<li><p>Security</p></li>
-<li><p>Locking</p></li>
-</ul>
-</div></blockquote>
-<div class="section" id="import-the-database-schema">
-<h1>Import the database schema<a class="headerlink" href="#import-the-database-schema" title="Permalink to this headline">¶</a></h1>
-<p><strong>Import Dump</strong></p>
-<p>Location of the SQL-data:  /opt/blinkdms/blinkdms/install/sql/schema_dump.sql</p>
-<p>Prerequisites:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>database, user, roles, schema must exist</p></li>
-<li><p>schema must exists before</p></li>
-<li><p>dump is in plain text (SQL)</p></li>
-<li><p>the dump must NOT contain schema-table names !!!</p></li>
-<li><p><a class="reference external" href="https://www.postgresql.org/docs/8.4/backup-dump.html">https://www.postgresql.org/docs/8.4/backup-dump.html</a></p></li>
-</ul>
-</div></blockquote>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>psql -v <span class="nv">ON_ERROR_STOP</span><span class="o">=</span><span class="m">1</span> -d dmsdb -U blinkdms
-  &lt; /opt/blinkdms/blinkdms/install/sql/schema_dump.sql
-</pre></div>
-</div>
-<p>test success …</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>psql -d dmsdb -U blinkdms
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>su - postgres
+psql -d dmsdb -U blinkdms
 <span class="k">select</span> * from DB_USER<span class="p">;</span>
 </pre></div>
 </div>
 <p>More tutorials for postgres + Python:
 <a class="reference external" href="https://medium.com/&#64;gitaumoses4/python-and-postgresql-without-orm-6e9d7fc9a38e">https://medium.com/&#64;gitaumoses4/python-and-postgresql-without-orm-6e9d7fc9a38e</a></p>
-</div>
 
 
           </div>
@@ -116,7 +94,7 @@ createdb dmsdb
 <li class="toctree-l1"><a class="reference internal" href="install_1.html">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial/index.html">User’s Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="postgres_maintenance.html">Postgres: maintenance</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tables.html">Database tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="db_model/index.html">Database model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="technologies.html">Technologies</a></li>
 </ul>
 

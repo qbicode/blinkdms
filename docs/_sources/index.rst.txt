@@ -4,6 +4,8 @@
 Welcome to blinkdms's documentation!
 ####################################
 
+This project is supported by   `Bling AG <https://www.blink-dx.com>`_ .
+
 .. toctree::
    :maxdepth: 3
    :caption: Contents:

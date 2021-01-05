@@ -34,25 +34,6 @@ Link sources for Admin:
 
 
 
-Configuration 
--------------
-
-  * copy config.dist.py to config.py
-  * Resource: /opt/blinkdms/blinkdms/conf/config.py
-
-Edit the config (at least the DB password):
-
-.. code-block:: bash    
-
-    superglobal['db'] = {
-       'main':  {
-           'dbname':'dmsdb',
-           'host':'localhost',
-           'user':'blinkdms',
-           'password':'xxxxx',
-         }   
-        } 
-
 
 Start Web server
 

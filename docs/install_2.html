@@ -56,26 +56,6 @@ ln -s /opt/blinkdms/blinkdms/ADM/templates /opt/blinkdms/blinkdms/templates/ADM
 ln -s /opt/blinkdms/blinkdms/ADM/static /opt/blinkdms/blinkdms/static/ADM
 </pre></div>
 </div>
-</div>
-<div class="section" id="configuration">
-<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h2>
-<blockquote>
-<div><ul class="simple">
-<li><p>copy config.dist.py to config.py</p></li>
-<li><p>Resource: /opt/blinkdms/blinkdms/conf/config.py</p></li>
-</ul>
-</div></blockquote>
-<p>Edit the config (at least the DB password):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>superglobal<span class="o">[</span><span class="s1">&#39;db&#39;</span><span class="o">]</span> <span class="o">=</span> <span class="o">{</span>
-   <span class="s1">&#39;main&#39;</span>:  <span class="o">{</span>
-       <span class="s1">&#39;dbname&#39;</span>:<span class="s1">&#39;dmsdb&#39;</span>,
-       <span class="s1">&#39;host&#39;</span>:<span class="s1">&#39;localhost&#39;</span>,
-       <span class="s1">&#39;user&#39;</span>:<span class="s1">&#39;blinkdms&#39;</span>,
-       <span class="s1">&#39;password&#39;</span>:<span class="s1">&#39;xxxxx&#39;</span>,
-     <span class="o">}</span>
-    <span class="o">}</span>
-</pre></div>
-</div>
 <p>Start Web server</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># start nginx</span>
 systemctl restart nginx
@@ -121,7 +101,7 @@ systemctl restart blinkdms
 <li class="toctree-l1"><a class="reference internal" href="install_1.html">Install</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial/index.html">User’s Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="postgres_maintenance.html">Postgres: maintenance</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tables.html">Database tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="db_model/index.html">Database model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="technologies.html">Technologies</a></li>
 </ul>
 

@@ -5,6 +5,15 @@ RDBMS Postgres
 The application is based on data transfer with a database service on a remote database server. 
 The underlying database model is named **Blinkdms Magasin**.
 
+Database - features:
+
+        * Indexing
+        * Trigger, Constraints
+        * Transaction (ACID)
+        * Referential Integrity
+        * Security
+        * Locking
+
 main Postgres directories/files:
 
   * [etc-config-dir] = /etc/postgresql/11/main

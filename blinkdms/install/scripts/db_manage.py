@@ -4,10 +4,13 @@ __docformat__ = "restructuredtext en"
 """
 script for CLI execution
 - create new BLINKDMS database schema from dumps
+- requirements: conf.py must exist with 'db' entry
+- OLD params: --dbuser "blk_dev" --dbuser_pw "jsHGj23456xXPL"
 
 # create new database ...
 export PYTHONPATH=/opt/blinkdms
-python3 /opt/blinkdms/blinkdms/install/scripts/db_manage.py --create --dbuser "blk_dev" --dbuser_pw "jsHGj23456xXPL"
+python3 /opt/blinkdms/blinkdms/install/scripts/db_manage.py --create --config_entry "dev" --app_root_pw "XXX"
+python3 /opt/blinkdms/blinkdms/install/scripts/db_manage.py --delete --dbuser "blinkdms" 
 
 File:           db_manage.py
 Copyright:      Blink AG   
@@ -24,10 +27,33 @@ import subprocess
 import argparse
 
 from blinkdms.code.lib.f_utilities import BlinkError
+from blinkdms.code.lib.db import db
+from blinkdms.code.lib.oDB_USER import oDB_USER
+
+try:
+    from blinkdms.conf import config
+except:
+    print('ERROR: Please create the file blinkdms/conf/config.py first !')
+    sys.exit()      
 
 _logarr=[]
-def _log(text):
-    _logarr.append(text)
+
+VERBOSE_LEVEL=0
+
+def _log(text, min_level=0):
+    
+    if min_level>VERBOSE_LEVEL:
+        return
+    
+    print("INFO: "+text)
+    
+def _help():
+    print('This is the BlinkDMS database Manager: Create a new copy of a database.')
+    print('Prerequisites:') 
+    print('  - set blinkdms/conf/config.py ==> entry "db" for your database.')  
+    print('Call:')
+    print('python db_manage.py --create --config_entry "main" --app_root_pw "XXX" ')
+    print('python db_manage.py --delete --dbuser "blinkdms" ')
 
 class Sql_perform:
     
@@ -47,9 +73,9 @@ class Sql_perform:
             
         os_cmd = os_cmd + substr + '" - postgres '
         
-        _log("_exec_sql_raw: CMD:" + os_cmd)
+        _log("_exec_sql_raw: CMD:" + os_cmd, 1)
         if self.simulation:
-            _log("SIMULATION: no execution"  ) 
+            _log("SIMULATION: no execution", 1  ) 
             return        
 
         
@@ -65,11 +91,11 @@ class Sql_perform:
             errs_str = errs.decode()
             raise ValueError ('SQL-Error: '+errs_str)
         
-        _log( "DEBUG:_exec_sql: output:" + str(outs) + ' err:'+str(errs_str) )    
+        _log( "DEBUG:_exec_sql: output:" + str(outs) + ' err:'+str(errs_str), 1 )    
     
     def exec_sqlfile(self, filename, user):
         
-        print ("DEBUG:_exec_sqlfile: filename:" + filename + ' user:'+user )
+        _log( "_exec_sqlfile: filename:" + filename + ' user:'+user, 1 )
         substr = ' < ' +  filename       
         self._exec_sql_raw(substr, user)
      
@@ -89,6 +115,9 @@ class Sql_perform:
 
 class Manage_DB:
     
+    _db_obj = None
+    infox= {}
+    
     def __init__(self, db_user):
         
         self.db_user = db_user
@@ -100,11 +129,40 @@ class Manage_DB:
         self.db_sql_src = '/opt/blinkdms/blinkdms/install/sql'
         
         self.sql_lib = Sql_perform()
+        
+        self.simulation = 0
+        self._verbose   = 0
         # self.sql_lib.simulation = 1
-       
+    
+    def verbose(self,verbose_flag):
+        self._verbose = verbose_flag
+    
+    def db_get_obj(self):
+        '''
+        connect to new database as normal user
+        create current DB_OBJ
+        '''
+        
+        if self._db_obj:
+            return self._db_obj
+        
+        config_entry = self.infox['config_entry']
+        if config_entry=='':
+            raise BlinkError(1, 'Need config_entry.') 
+        
+        if config_entry not in config.superglobal['db']:
+            raise BlinkError(2, 'Need entry for "'+config_entry+'" in conf.py: superglobal["db"] .')      
+        
+        access_config = config.superglobal['db'][config_entry]
+        
+        self._db_obj = db(0)
+        self._db_obj.open( access_config )
+    
+        return  self._db_obj        
         
     def crea_user(self):
         
+        _log('create database user + tablespace..')
                
         pw =  self.db_pw
         if pw=='':
@@ -126,6 +184,8 @@ class Manage_DB:
         
     def import_db(self):
         
+        _log('import the database schema + initial data.')
+        
         db_user = self.db_user
         # tablespace = self.tablespace
         db_sql_src = self.db_sql_src
@@ -146,6 +206,31 @@ class Manage_DB:
         
         self.sql_lib.exec_sql(sql_cmds)    
 
+    def _import_post_actions(self):
+        #
+        # set root pw
+        #
+        
+        _log('set password for application-user root.')
+        
+        if  self.infox['root.pw']=='':
+            raise BlinkError(1,'No root password given.')        
+        
+        pw_hash = oDB_USER.Table.hash_pw( self.infox['root.pw'] )
+        
+        user_id = self._db_obj.col_val_where('DB_USER', {'NICK':'root'}, 'DB_USER_ID')
+        if not user_id:
+            raise BlinkError(1,'Could not find user "root" in DB!')
+        
+        args = {  
+            'PASS_WORD': pw_hash, 
+        }
+        
+        if self.simulation:
+            pass
+        else:  
+            self._db_obj.update_row( 'DB_USER', {'DB_USER_ID': user_id }, args )         
+
     def create(self, crea_option):
         
         #db_user    = self.db_user
@@ -154,12 +239,20 @@ class Manage_DB:
         self.db_pw = crea_option['dbuser_pw']
         
         self.infox['dbuser_pw'] = self.db_pw
+        self.infox['config_entry'] = crea_option['config_entry']
+        self.infox['root.pw'] = crea_option['root.pw']
         
+        _log('Config-Entry: '+ self.infox['config_entry'] )
+        _log('DB-User: '     + self.db_user )
+        _log('root-password: ' + self.infox['root.pw'] )
+   
         self.crea_user()
         self.import_db()
-        #self.db_get_obj() # init user database handle
+        
+        self.db_get_obj() # init user database handle
         #self.dirs_create()
-        #self.import_post_actions()        
+        
+        self._import_post_actions()        
     
     def get_DB_infox(self):
         return self.infox
@@ -168,12 +261,30 @@ class Manage_DB:
     def dirs_delete():
         pass
     
+    
+    
 if __name__ == "__main__":
     
     # Create the parser
-    my_parser = argparse.ArgumentParser(description='BlinkDMS database Manager: Create a new copy of a database')
+    help_str = \
+    'This is the BlinkDMS database Manager: Create a new copy of a database.' + "\n" + \
+    'Prerequisites:'  + "\n" + \
+    '  - set blinkdms/conf/config.py ==> entry "db" for your database.'  + "\n" + \
+    'Call: ' + "\n" + \
+    'python db_manage.py --create --config_entry "main" --app_root_pw "XXX" '  + "\n" + \
+    'python db_manage.py --delete --dbuser "blinkdms" '  
+    
+    my_parser = argparse.ArgumentParser( description=help_str)
     
     print (str(sys.argv) )
+    
+    my_parser.add_argument('-v',  
+                           action="store_true",
+                           help='Verbose output')     
+    
+    my_parser.add_argument('--config_entry',  
+                           type=str,
+                           help='Config entry: superglobal["db"]: KEY ')    
     
     my_parser.add_argument('--dbuser',  
                            type=str,
@@ -183,6 +294,9 @@ if __name__ == "__main__":
                            type=str,
                            help='DB-user-Password')      
     
+    my_parser.add_argument('--app_root_pw',  
+                           type=str,
+                           help='Password of application user root')    
     
     my_parser.add_argument('--delete',  
                            action="store_true",
@@ -202,16 +316,21 @@ if __name__ == "__main__":
     # Execute the parse_args() method
     args = my_parser.parse_args(args_list)
     
-   
+    config_entry = args.config_entry
     dbuser = args.dbuser
     dbuser_pw = args.dbuser_pw
+    app_root_pw = args.app_root_pw
+    verbose = 0
     
     action = ''
     action_opt = ''
     need_customer_params = 1
     crea_option = {}
     
-  
+    if args.v:
+        print('Verbose!')
+        verbose = 1 
+        VERBOSE_LEVEL = 1
    
     if args.create:
         print('Create INSTANCE!.')
@@ -221,10 +340,22 @@ if __name__ == "__main__":
         print('Delete INSTANCE!.')  
         action = 'delete' 
 
+    
    
     if action=='' :
         print('Error: Please select an action!')
-        sys.exit()        
+        sys.exit()  
+        
+    if config_entry!='' and config_entry is not None:
+
+        if config_entry not in config.superglobal['db']:
+            print('ERROR: Need entry for "'+config_entry+'" in conf.py: superglobal["db"] .')
+            sys.exit()  
+            
+        db_entry  = config.superglobal['db'][config_entry]
+        dbuser    = db_entry.get('user','')
+        dbuser_pw = db_entry.get('password','')
+          
         
     if action=='new':
 
@@ -235,6 +366,10 @@ if __name__ == "__main__":
         if not dbuser_pw:
             print('ERROR: dbuser_pw not given.')
             sys.exit() 
+            
+        if not app_root_pw:
+            print('ERROR: app_root_pw not given.')
+            sys.exit()             
             
     if action=='delete':
 
@@ -247,10 +382,13 @@ if __name__ == "__main__":
         
         print('Action: '+action)
         db_mng_lib = Manage_DB(dbuser)
+        db_mng_lib.verbose(verbose)
         
         if action =='new':
-            crea_option['dbuser']=dbuser
-            crea_option['dbuser_pw']=dbuser_pw
+            crea_option['dbuser']       = dbuser
+            crea_option['dbuser_pw']    = dbuser_pw
+            crea_option['root.pw']      = app_root_pw
+            crea_option['config_entry'] = config_entry
             db_mng_lib.create(crea_option)
             
             infox = db_mng_lib.get_DB_infox()
@@ -271,9 +409,12 @@ if __name__ == "__main__":
     else: 
         print ('OK')
         
-    print ("")
-    print ("---------------------------------------------------")
-    print ("INFOS:")
-    for row in _logarr:
         
-        print("- "+str(row))
+    #if VERBOSE_LEVEL:
+        
+        #print ("")
+        #print ("---------------------------------------------------")
+        #print ("Detailed INFOS: (on -v)")
+        #for row in _logarr:
+            
+            #print("- "+str(row))

@@ -1,6 +1,9 @@
 Install
 #######
 
+  * Resource: GIT_PROJECT: https://github.com/qbicode/blinkdms
+  * Install-Doc-Version: 2021-01-05
+
 OTS software
 ************
 
@@ -124,13 +127,32 @@ Create data directories
     mkdir /data/blinkdms/work
     chown -R www-data:www-data /data/blinkdms
 
-Resource: GIT_PROJECT=TBD!
+Resource: GIT_PROJECT
 
 copy code from [GIT_PROJECT]/blinkdms to /opt/blinkdms/blinkdms
 
 .. code-block:: bash
 
      chown -R www-data:www-data /opt/blinkdms/blinkdms
+     
+Basic Configuration 
+===================
+
+  * Resource: /opt/blinkdms/blinkdms/conf
+  * copy config.dist.py to config.py
+
+Edit config.py (at least the DB password):
+
+.. code-block:: bash    
+
+    superglobal['db'] = {
+       'main':  {
+           'dbname':'dmsdb',
+           'host':'localhost',
+           'user':'blinkdms',
+           'password':'xxxxx',
+         }   
+        } 
 
 
 Postgres: database schema
@@ -148,8 +170,7 @@ First login to the system
 =========================
 
   * go to the web browser; url: x.x.x.x:8080  (depending on your nginx config)
-  * login as root, password: nopasswd
-  * go to user settings and change the initial password !
-  * go the the Admin area
+  * login as root, password: the password was set during "Postgres: database schema" : variable app_root_pw
+  * go to the Admin area
   * run the plugin "System Check"
 

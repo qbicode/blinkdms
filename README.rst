@@ -51,8 +51,8 @@ Links
  * Install:  https://qbicode.github.io/blinkdms/
  * Demo: http://www.blinkdms.org:8080/
  
- Support
- -------
+Support
+-------
  
- This project is supported by   `Bling AG <https://www.blink-dx.com>`_ .
+This project is supported by   `Bling AG <https://www.blink-dx.com>`_ .
 

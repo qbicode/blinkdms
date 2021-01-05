@@ -5,72 +5,47 @@
 **Scope:** Create the magasin-database-schema
 
 Resources:
+  * /opt/blinkdms/blinkdms/conf/config.py
   * [SQL_SRC_DIR]=/opt/blinkdms/blinkdms/install/sql
  
 Actions: 
-  * Change the password for user blinkdms in the file /opt/blinkdms/blinkdms/install/sql/create_user.sql
-  * Now login as postgres
-
+  
 .. code-block:: bash
 
+    # login as database root and create database
     su -s /bin/bash postgres
     createdb dmsdb
+    exit 
+    
+    # now you are root again
 
-**create user, roles and schema**
+
+
+**create user, tablespace, schema and initial data**
+
+  * check, if config_entry [db"]["main"]  exists in /opt/blinkdms/blinkdms/conf/config.py
+  * give a password for option --app_root_pw
 
 .. code-block:: bash
 
-    psql -d dmsdb -v ON_ERROR_STOP=1 
-      < /opt/blinkdms/blinkdms/install/sql/create_user.sql
+  python3 /opt/blinkdms/blinkdms/install/scripts/db_manage.py --create 
+        --config_entry "main" --app_root_pw "XXX"
+
+
+Just in case you have to delete this complete database schema + user: call this command line
+
+.. code-block:: bash
+
+  python3 /opt/blinkdms/blinkdms/install/scripts/db_manage.py --delete --dbuser "blinkdms" 
+  
 
 **login**
 
 .. code-block:: bash
-
-    psql -d dmsdb -U blinkdms -W
-
-
-database - features:
-
-	* Indexing
-	* Trigger, Constraints
-	* Transaction (ACID)
-	* Referential Integrity
-	* Security
-	* Locking
-
-
-..
-   COMMENT: EXPORT/IMPORT
-
-Import the database schema
---------------------------
-
-**Import Dump**
-
-Location of the SQL-data:  /opt/blinkdms/blinkdms/install/sql/schema_dump.sql
-
-Prerequisites:
-
-  * database, user, roles, schema must exist
-  * schema must exists before 
-  * dump is in plain text (SQL)
-  * the dump must NOT contain schema-table names !!!
-  * https://www.postgresql.org/docs/8.4/backup-dump.html
-
-
-
-.. code-block:: bash
-
-    psql -v ON_ERROR_STOP=1 -d dmsdb -U blinkdms  
-      < /opt/blinkdms/blinkdms/install/sql/schema_dump.sql
-      
-test success ...
-
-.. code-block:: bash
-
-    psql -d dmsdb -U blinkdms 
-    select * from DB_USER;
+  
+  su - postgres
+  psql -d dmsdb -U blinkdms 
+  select * from DB_USER;
     
    
 
