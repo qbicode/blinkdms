@@ -1620,7 +1620,7 @@ COPY d_link (m_doc_id, c_doc_id, key) FROM stdin;
 --
 
 COPY db_user (db_user_id, nick, pass_word, email, su, login_last, login_deny, logout_last, notes, full_name, login_meth, roles) FROM stdin;
-1	root	nopasswd	noemail@blink-dx.com	0	2020-12-17 16:52:33	0	\N	\N	Root account	\N	\N
+1	root	nopasswd	noemail@xxx.com	0	2020-12-17 16:52:33	0	\N	\N	Root account	\N	\N
 \.
 
 
