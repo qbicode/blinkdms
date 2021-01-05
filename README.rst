@@ -54,5 +54,5 @@ Links
 Support
 -------
  
-This project is supported by   `Bling AG <https://www.blink-dx.com>`_ .
+This project is supported by   `BlinK AG <https://www.blink-dx.com>`_ .
 
